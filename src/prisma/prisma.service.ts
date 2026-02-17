@@ -23,7 +23,7 @@ export class PrismaService
 
     super({ adapter });
 
-    console.log('prismaservice at:', NODE_ENV);
+    console.log('using prisma at:', NODE_ENV);
   }
 
   //the connect, disconnect and trnsacrion belongs
