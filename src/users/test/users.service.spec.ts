@@ -109,9 +109,6 @@ describe('UsersService (Integration with Real DB)', () => {
         .send(createUserDto)
         .expect(201);
 
-      console.log('Content-Type:', response.headers['content-type']);
-      console.log('Raw text:', response.text); // See raw response
-
       expect(response.body).toBeDefined();
       expect(response.body).not.toHaveProperty('id');
       expect(response.body).not.toHaveProperty('passwordHash');
@@ -122,9 +119,8 @@ describe('UsersService (Integration with Real DB)', () => {
         email: 'samplehaha@.com',
       });
 
-      // Verify in database using the correct email
       const dbUser = await prisma.user.findUnique({
-        where: { email: 'samplehaha@.com' }, // Fixed: using correct email
+        where: { email: 'samplehaha@.com' },
       });
       expect(dbUser).toBeDefined();
       expect(dbUser?.email).toBe('samplehaha@.com');
