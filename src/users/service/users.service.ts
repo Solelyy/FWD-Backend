@@ -23,6 +23,7 @@ export class UsersService {
           passwordHash: hashedPass,
         },
       });
+      //return user;
     } catch (e) {
       throw new Error(`error at: ${e.message}`); //passed the error message to controller via e.message
     }
