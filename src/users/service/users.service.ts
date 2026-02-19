@@ -13,7 +13,7 @@ export class UsersService {
         data: createUser,
       });
 
-      const { id, ...others } = user;
+      const { id: Number, passwordHash, ...others } = user;
 
       return others;
     } catch (e) {

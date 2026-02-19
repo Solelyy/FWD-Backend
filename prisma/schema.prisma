@@ -24,7 +24,7 @@ enum Provider {
 }
 
 model User {
-  id                    BigInt    @id @default(autoincrement())
+  id                    Int    @id @default(autoincrement())
   employeeId            String    @unique
   firstname             String
   lastname              String
