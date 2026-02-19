@@ -23,8 +23,8 @@ export class UsersController {
   @HttpCode(201)
   async create(@Body() createUserDto: CreateUserDto) {
     try {
-      const response = await this.usersService.create(createUserDto);
-      return response;
+      const response = await this.usersService.createUser(createUserDto);
+      //return response; remove the slash if testing
     } catch (e) {
       console.log('error at:', e.message);
       throw new HttpException( //a http class for catching bad responses
