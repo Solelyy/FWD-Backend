@@ -23,7 +23,7 @@ export class UsersController {
   @HttpCode(201)
   async create(@Body() createUserDto: CreateUserDto) {
     try {
-      const response = await this.usersService.create(createUserDto);
+      const response = await this.usersService.createUser(createUserDto);
       return response;
     } catch (e) {
       console.log('error at:', e.message);
