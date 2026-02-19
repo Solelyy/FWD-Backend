@@ -13,17 +13,17 @@ export class UsersService {
 
   async createUser(createUser: CreateUserDto) {
     try {
-      const { passwordHash, ...others } = createUser;
-
-      const hashedPass = await this.secUtil.hashPass(passwordHash);
+      const hashedPass = await this.secUtil.hashPass(createUser.passwordHash);
 
       const user = await this.prisma.user.create({
         data: {
-          ...others,
+          ...createUser,
           passwordHash: hashedPass,
         },
       });
-      //return user;
+
+      const { passwordHash, id, ...other } = user;
+      //return other; remove the slash if testing
     } catch (e) {
       throw new Error(`error at: ${e.message}`); //passed the error message to controller via e.message
     }

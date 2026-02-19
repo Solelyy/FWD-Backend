@@ -6,32 +6,34 @@ import { UsersService } from '../service/users.service';
 import { UsersController } from '../controller/users.controller';
 import { PrismaModule } from '../../prisma_global/prisma.module';
 import { CreateUserDto } from '../dto/create-user.dto';
+import SecurityUtil from 'src/utils/security/bcrypt';
 
 describe('UsersService (Integration with Real DB)', () => {
   //declare di thats gonna be used in testing module
   let app: INestApplication;
   let service: UsersService;
   let prisma: PrismaService;
+  let bcrypt: SecurityUtil;
 
   beforeAll(async () => {
-    //run this code for once
+    //run this code before starting
     const moduleRef = await Test.createTestingModule({
       imports: [PrismaModule],
-      providers: [UsersService],
+      providers: [UsersService, SecurityUtil],
       controllers: [UsersController],
     }).compile();
 
     app = moduleRef.createNestApplication();
     await app.init(); //bootstrap module
 
-    //should be using usersevice and prismaservice
+    //store
     service = moduleRef.get<UsersService>(UsersService);
     prisma = moduleRef.get<PrismaService>(PrismaService);
+    bcrypt = moduleRef.get<SecurityUtil>(SecurityUtil);
   });
 
   beforeEach(async () => {
     //run this code before each tests
-    // Clean the database before each test
     await prisma.user.deleteMany();
   });
 
@@ -51,11 +53,10 @@ describe('UsersService (Integration with Real DB)', () => {
         email: 'samplehaha@.com',
         passwordHash: 'strongpasswordshi',
       };
-
-      const result = await service.create(createUserDto);
-
+      const result = await service.createUser(createUserDto);
       expect(result).toBeDefined();
       expect(result).not.toHaveProperty('id');
+      expect(result).not.toHaveProperty('passwordHash');
       expect(result).toMatchObject({
         firstname: 'mang kepweng',
         lastname: 'hoho',
@@ -78,7 +79,7 @@ describe('UsersService (Integration with Real DB)', () => {
         email: 'samplehaha@.com',
         passwordHash: 'strongpasswordshi',
       };
-      await service.create(createUserDto);
+      await service.createUser(createUserDto);
 
       const duplicateDto: CreateUserDto = {
         firstname: 'mang kepweng',
@@ -88,7 +89,7 @@ describe('UsersService (Integration with Real DB)', () => {
         passwordHash: 'strongpasswordshi',
       };
 
-      await expect(service.create(duplicateDto)).rejects.toThrow();
+      await expect(service.createUser(duplicateDto)).rejects.toThrow();
     });
   });
 
@@ -104,18 +105,21 @@ describe('UsersService (Integration with Real DB)', () => {
       };
 
       const response = await request(app.getHttpServer())
-        .post('/users') // Make sure this matches your controller route
+        .post('/users')
         .send(createUserDto)
         .expect(201);
 
+      console.log('Content-Type:', response.headers['content-type']);
+      console.log('Raw text:', response.text); // See raw response
+
       expect(response.body).toBeDefined();
       expect(response.body).not.toHaveProperty('id');
+      expect(response.body).not.toHaveProperty('passwordHash');
       expect(response.body).toMatchObject({
         firstname: 'http',
         lastname: 'user',
         employeeId: 'HTTP123456',
         email: 'samplehaha@.com',
-        // passwordHash should not be returned in response
       });
 
       // Verify in database using the correct email
