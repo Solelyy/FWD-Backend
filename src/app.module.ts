@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { PrismaModule } from './prisma_global/prisma.module';
 import { UsersModule } from './users/module/users.module';
+import { UtilModule } from './utils/security/utils.module';
 
 @Module({
   imports: [
@@ -10,6 +11,7 @@ import { UsersModule } from './users/module/users.module';
     }),
     PrismaModule,
     UsersModule,
+    UtilModule,
   ], //bootstarp all modules
   controllers: [], //controllers
   providers: [], //services

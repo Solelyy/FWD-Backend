@@ -5,6 +5,7 @@ import SecurityUtil from 'src/utils/security/bcrypt';
 
 @Module({
   controllers: [UsersController],
-  providers: [UsersService, SecurityUtil], //using
+  providers: [UsersService, SecurityUtil],
+  exports: [UsersService, SecurityUtil], //using
 })
 export class UsersModule {}

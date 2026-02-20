@@ -1,4 +1,5 @@
-export class CreateUserDto {
+export class UserResponseInterface {
+  id: number;
   firstname: string;
   lastname: string;
   employeeId: string;
