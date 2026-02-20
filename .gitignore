@@ -62,3 +62,5 @@ prisma/dev.db
 docker-compose.override.yml
 docker-compose.override.*.yml
 /generated/prisma
+.env.development
+.env
