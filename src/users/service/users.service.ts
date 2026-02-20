@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { CreateUserDto } from '../dto/create-user.dto';
+import { UserRequestInterface } from '../interface/user-request.interface';
 import { UpdateUserDto } from '../dto/update-user.dto';
 import { PrismaService } from 'src/prisma_global/prisma.service';
 import SecurityUtil from 'src/utils/security/bcrypt';
@@ -13,7 +13,7 @@ export class UsersService {
     private secUtil: SecurityUtil,
   ) {}
 
-  async createUser(createUser: UserResponseInterface) {
+  async createUser(createUser: UserRequestInterface) {
     try {
       const hashedPass = await this.secUtil.hashPass(createUser.passwordHash);
 
@@ -42,7 +42,7 @@ export class UsersService {
       },
     });
 
-    return others;
+    return updateUser;
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {

@@ -39,15 +39,15 @@ export class EmailService {
       to,
       subject: 'Verify Your Email',
       html: `
-        <div style="font-family: Arial, sans-serif; max-width: 600px;">
-          <h2>Welcome!</h2>
-          <p>Click the link below to verify your email:</p>
-          <a href="${verificationLink}" 
-             style="display: inline-block; padding: 10px 20px; background-color: #4CAF50; color: white; text-decoration: none; border-radius: 5px;">
-            Verify Email
-          </a>
-        </div>
-      `,
+          <div style="font-family: Arial, sans-serif; max-width: 600px;">
+            <h2>Welcome!</h2>
+            <p>Click the link below to verify your email:</p>
+            <a href="${verificationLink}" 
+              style="display: inline-block; padding: 10px 20px; background-color: #4CAF50; color: white; text-decoration: none; border-radius: 5px;">
+              Verify Email
+            </a>
+          </div>
+        `,
     });
   }
 }

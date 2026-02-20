@@ -1,5 +1,4 @@
-export interface UserResponseInterface {
-  id: number;
+export interface UserRequestInterface {
   firstname: string;
   lastname: string;
   employeeId: string;
