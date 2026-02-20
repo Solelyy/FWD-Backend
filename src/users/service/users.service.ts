@@ -3,6 +3,8 @@ import { CreateUserDto } from '../dto/create-user.dto';
 import { UpdateUserDto } from '../dto/update-user.dto';
 import { PrismaService } from 'src/prisma_global/prisma.service';
 import SecurityUtil from 'src/utils/security/bcrypt';
+import { UserTokenInterface } from 'src/users/interface/usertoken.interface';
+import { UserResponseInterface } from '../interface/user-response.interface';
 
 @Injectable()
 export class UsersService {
@@ -11,7 +13,7 @@ export class UsersService {
     private secUtil: SecurityUtil,
   ) {}
 
-  async createUser(createUser: CreateUserDto) {
+  async createUser(createUser: UserResponseInterface) {
     try {
       const hashedPass = await this.secUtil.hashPass(createUser.passwordHash);
 
@@ -22,19 +24,25 @@ export class UsersService {
         },
       });
 
-      const { passwordHash, id, ...other } = user;
-      //return other; remove the slash if testing
+      const { passwordHash, ...other } = user;
+      return other;
     } catch (e) {
       throw new Error(`error at: ${e.message}`); //passed the error message to controller via e.message
     }
   }
 
-  findAll() {
-    return `This action returns all users`;
-  }
+  async updateUser(user: UserResponseInterface) {
+    const { id, passwordHash, isVerified, ...others } = user;
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+    const updateUser = await this.prisma.user.update({
+      where: { id },
+      data: {
+        ...others,
+        isVerified: true,
+      },
+    });
+
+    return others;
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {

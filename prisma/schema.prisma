@@ -39,6 +39,7 @@ model User {
   isApproved            Boolean   @default(false)
   isVerified            Boolean   @default(false)
   verificationToken     String?
+  verificationExpiration DateTime
 
   @@index([role, status])
   @@index([isApproved, status])
