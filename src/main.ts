@@ -18,7 +18,7 @@ async function startServer() {
   app.use(cookieParser('cookiesecretkey'));
 
   app.enableCors({
-    origin: 'https://localhost:3000',
+    origin: 'http://localhost:3000',
     credentials: true,
   });
   await app.listen(PORT ?? 3001);
