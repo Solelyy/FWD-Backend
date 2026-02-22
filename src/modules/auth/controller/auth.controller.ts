@@ -29,10 +29,7 @@ export class AuthController {
     this.cookie.setAuthCookies({ employeeId, role }, authCurrentToken, res);
     return {
       success: true,
-      user: {
-        employeeId,
-        role,
-      },
+      message: 'logged in successfully',
     };
   }
 }
