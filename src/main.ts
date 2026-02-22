@@ -1,6 +1,7 @@
 import env from 'dotenv';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
+import cookieParser from 'cookie-parser';
 
 async function startServer() {
   const environment = process.env.NODE_ENV || 'development';
@@ -12,6 +13,9 @@ async function startServer() {
   const { PORT, NODE_ENV, ...otherEnv } = process.env;
 
   const app = await NestFactory.create(AppModule);
+
+  //use at routes params
+  app.use(cookieParser('cookiesecretkey'));
 
   app.enableCors({
     origin: 'https://localhost:3000',

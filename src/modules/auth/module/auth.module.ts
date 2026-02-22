@@ -6,10 +6,10 @@ import { AuthService } from '../service/auth.service';
 import { AuthController } from '../controller/auth.controller';
 import { CustomValidationPipe } from '../../../common/custom-pipes/pipes.custom-pipes';
 import { JwtModule } from '@nestjs/jwt';
-
 import env from 'dotenv';
 import SecurityUtil from '../helper/bcrypt.security';
 import { JwtUtil } from '../helper/token.security';
+import { UtilModule } from 'src/utils/util.module';
 
 const environment = process.env.NODE_ENV || 'development';
 const path = `.env.${environment}`;
@@ -27,6 +27,7 @@ const { SECRET_KEY } = process.env;
       signOptions: { expiresIn: '1d' },
     }),
     EmailModule,
+    UtilModule,
   ],
   providers: [
     //AuthService,
