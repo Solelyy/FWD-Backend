@@ -11,8 +11,8 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import { UsersService } from '../service/users.service';
-import { CreateUserDto } from '../dto/create-user.dto';
-import { UpdateUserDto } from '../dto/update-user.dto';
+import { CreateUserDto } from '../../dto/users/create-user.dto';
+import { UpdateUserDto } from '../../dto/users/update-user.dto';
 
 @Controller('users') //this is the parent path
 export class UsersController {

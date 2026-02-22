@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { UserRequestInterface } from '../interface/user-request.interface';
-import { UpdateUserDto } from '../dto/update-user.dto';
+import { UpdateUserDto } from '../../dto/users/update-user.dto';
 import { PrismaService } from 'src/prisma_global/prisma.service';
 import SecurityUtil from 'src/utils/security/bcrypt';
 import { UserTokenInterface } from 'src/users/interface/usertoken.interface';

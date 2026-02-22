@@ -5,7 +5,7 @@ import { PrismaService } from '../../prisma_global/prisma.service';
 import { UsersService } from '../service/users.service';
 import { UsersController } from '../controller/users.controller';
 import { PrismaModule } from '../../prisma_global/prisma.module';
-import { CreateUserDto } from '../dto/create-user.dto';
+import { CreateUserDto } from '../../dto/users/create-user.dto';
 import SecurityUtil from 'src/utils/security/bcrypt';
 
 describe('UsersService (Integration with Real DB)', () => {

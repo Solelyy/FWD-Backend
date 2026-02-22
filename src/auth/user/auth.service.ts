@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from 'src/users/service/users.service';
-import { CreateUserDto } from 'src/users/dto/create-user.dto';
+import { CreateUserDto } from 'src/dto/users/create-user.dto';
 import { JwtUtil } from 'src/utils/security/token.security';
 import { EmailService } from 'src/email/email.service';
 
@@ -28,6 +28,7 @@ export class AuthService {
     const token = this.jwtUtil.generateToken({
       email: createdUser.email,
       sub: createdUser.id,
+      role: createdUser.role,
     });
 
     this.emailService.sendVerificationEmail(createdUser.email, token);

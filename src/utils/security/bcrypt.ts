@@ -18,3 +18,6 @@ export default class SecurityUtil {
     return comparePass;
   }
 }
+
+const jwt = new SecurityUtil();
+jwt.hashPass('binongofeb0206');

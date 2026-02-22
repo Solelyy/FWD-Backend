@@ -3,6 +3,7 @@ import { ConfigModule } from '@nestjs/config';
 import { PrismaModule } from './prisma_global/prisma.module';
 import { UsersModule } from './users/module/users.module';
 import { UtilModule } from './utils/security/utils.module';
+import { SuperadminModule } from './superadmin/module/superadmin.module';
 
 @Module({
   imports: [
@@ -12,6 +13,7 @@ import { UtilModule } from './utils/security/utils.module';
     PrismaModule,
     UsersModule,
     UtilModule,
+    SuperadminModule,
   ], //bootstarp all modules
   controllers: [], //controllers
   providers: [], //services
