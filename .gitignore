@@ -36,6 +36,7 @@ lerna-debug.log*
 !.vscode/extensions.json
 
 # dotenv environment variable files
+.env.development
 .env
 .env.development.local
 .env.test.local
@@ -62,4 +63,3 @@ prisma/dev.db
 docker-compose.override.yml
 docker-compose.override.*.yml
 /generated/prisma
-.env.development

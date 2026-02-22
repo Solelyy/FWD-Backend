@@ -1,48 +1,50 @@
-generator client {
-  provider = "prisma-client-js"
-  //output   = "../generated/prisma"
-}
+  generator client {
+    provider = "prisma-client-js"
+    //output   = "../generated/prisma"
+  }
 
-datasource db {
-  provider = "postgresql"
-}
-enum Role {
-  SUPER_ADMIN
-  ADMIN
-  EMPLOYEE
-}
+  datasource db {
+    provider = "postgresql"
+  }
+  enum Role {
+    SUPER_ADMIN
+    ADMIN
+    EMPLOYEE
+  }
 
-enum Status {
-  PENDING
-  ACTIVE
-  INACTIVE
-}
+  enum Status {
+    PENDING
+    ACTIVE
+    INACTIVE
+  }
 
-enum Provider {
-  LOCAL
-  GOOGLE
-}
+  enum Provider {
+    LOCAL
+    GOOGLE
+  }
 
-model User {
-  id                    Int    @id @default(autoincrement())
-  employeeId            String    @unique
-  firstname             String
-  lastname              String
-  email                 String    @unique
-  role                  Role      @default(EMPLOYEE)
-  status                Status    @default(PENDING)
-  passwordHash          String
-  dataPolicyAccepted    Boolean   @default(false)
-  createdAt             DateTime  @default(now())
-  updatedAt             DateTime  @updatedAt
-  provider              Provider  @default(LOCAL)
-  isApproved            Boolean   @default(false)
-  isVerified            Boolean   @default(false)
-  verificationToken     String?
-  verificationExpiration DateTime
+  model User {
+    id                    Int    @id @default(autoincrement())
+    employeeId            String    @unique
+    firstname             String
+    lastname              String
+    email                 String    @unique
+    role                  Role      @default(EMPLOYEE)
+    status                Status    @default(PENDING)
+    passwordHash          String
+    dataPolicyAccepted    Boolean   @default(false)
+    createdAt             DateTime  @default(now())
+    updatedAt             DateTime  @updatedAt
+    provider              Provider  @default(LOCAL)
+    isApproved            Boolean   @default(false)
+    isVerified            Boolean   @default(false)
+    verificationToken     String?
+    verificationExpiration DateTime?
+    authCurrentToken String?
+    authTokenExpiresAt DateTime?
 
-  @@index([role, status])
-  @@index([isApproved, status])
-  @@index([provider, email])
-}
+    @@index([role, status])
+    @@index([isApproved, status])
+    @@index([provider, email])
+  }
 

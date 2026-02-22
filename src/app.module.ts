@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { PrismaModule } from './prisma_global/prisma.module';
-import { UsersModule } from './users/module/users.module';
-import { UtilModule } from './utils/security/utils.module';
-import { SuperadminModule } from './superadmin/module/superadmin.module';
+import { UsersModule } from './modules/users/module/users.module';
+import { SuperadminModule } from './modules/superadmin/module/superadmin.module';
+import { AuthModule } from './modules/auth/module/auth.module';
 
 @Module({
   imports: [
@@ -12,7 +12,7 @@ import { SuperadminModule } from './superadmin/module/superadmin.module';
     }),
     PrismaModule,
     UsersModule,
-    UtilModule,
+    AuthModule,
     SuperadminModule,
   ], //bootstarp all modules
   controllers: [], //controllers
