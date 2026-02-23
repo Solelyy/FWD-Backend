@@ -2,30 +2,29 @@ import {
   CanActivate,
   ExecutionContext,
   Injectable,
+  NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import type { TokenExtractionType } from '../types/extract-token.types';
 import { Request } from 'express';
 import { JwtUtil } from '../helper/token.security';
+import { PrismaService } from 'src/prisma_global/prisma.service';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
   constructor(
-    private readonly jwt: JwtService,
-    private readonly jwtToken: JwtUtil,
+    private readonly prisma: PrismaService,
+    private readonly jwt: JwtUtil,
   ) {}
 
-  //token extraction
   private extractToken(req: Request): TokenExtractionType {
-    //extact the token by destructuring
-    //type and token
+    //bearer & token
     const [type, token] = req.headers.authorization?.split(' ') ?? []; //if undefined token empty array fallback
-    return type === 'bearer' ? token : undefined;
+    return type.toLowerCase() === 'bearer' ? token : undefined;
   }
 
-  //method of the parent
-  //any method that returns a promise needs to be async
+  //parent method
   async canActivate(context: ExecutionContext): Promise<boolean> {
     //get request
     const getReq = context.switchToHttp().getRequest();
@@ -35,13 +34,19 @@ export class AuthGuard implements CanActivate {
       throw new UnauthorizedException('missing or invalid token');
     }
 
-    try {
-      const payload = this.jwtToken.verifyToken(token);
+    await this.jwt.verifyAsync(token);
 
-      //attached the paylaod to the user
-      getReq['user'] = payload;
-    } catch (e) {
-      throw new UnauthorizedException('invalid payload or missing payload');
+    const checkTokenDb = await this.prisma.user.findFirst({
+      where: { authCurrentToken: token },
+    });
+
+    if (!checkTokenDb) {
+      throw new UnauthorizedException('token on localdb doesnt match');
+    } else if (
+      checkTokenDb.authTokenExpiresAt &&
+      new Date() > checkTokenDb.authTokenExpiresAt
+    ) {
+      throw new UnauthorizedException('token expired');
     }
 
     return true;

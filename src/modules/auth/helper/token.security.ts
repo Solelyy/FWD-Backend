@@ -24,7 +24,7 @@ export class JwtUtil {
     }
   }
 
-  verifyAsync(token: string) {
-    return this.jwtService.verifyAsync(token);
+  async verifyAsync(token: string) {
+    return await this.jwtService.verifyAsync(token);
   }
 }
