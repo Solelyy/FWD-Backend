@@ -10,6 +10,7 @@ import env from 'dotenv';
 import SecurityUtil from '../helper/bcrypt.security';
 import { JwtUtil } from '../helper/token.security';
 import { UtilModule } from 'src/utils/util.module';
+import { AuthGuard } from '../guard/auth.guard';
 
 const environment = process.env.NODE_ENV || 'development';
 const path = `.env.${environment}`;
@@ -35,6 +36,7 @@ const { SECRET_KEY } = process.env;
     CustomValidationPipe,
     SecurityUtil,
     JwtUtil,
+    AuthGuard,
   ],
   controllers: [AuthController],
 })

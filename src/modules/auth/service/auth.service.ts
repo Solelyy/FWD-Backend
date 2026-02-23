@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { LoginDto } from 'src/modules/auth/dto/login.dto';
 import { PrismaService } from 'src/prisma_global/prisma.service';
 import { JwtUtil } from 'src/modules/auth/helper/token.security';
@@ -49,5 +53,25 @@ export class AuthService {
     });
 
     return updateEmployee;
+  }
+
+  async getMe(token: string) {
+    const user = await this.prisma.user.findFirst({
+      where: { authCurrentToken: token },
+    });
+
+    if (!user) {
+      throw new NotFoundException('token do not match');
+    }
+
+    const { id, employeeId, firstname, lastname, role, ...others } = user;
+
+    return {
+      id,
+      employeeId,
+      firstname,
+      lastname,
+      role,
+    };
   }
 }

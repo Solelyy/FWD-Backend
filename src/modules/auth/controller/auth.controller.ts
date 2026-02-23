@@ -1,9 +1,19 @@
-import { Body, Controller, NotFoundException, Res } from '@nestjs/common';
-import { Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  NotFoundException,
+  Req,
+  Res,
+  Post,
+  Get,
+  UseGuards,
+} from '@nestjs/common';
 import { LoginDto } from 'src/modules/auth/dto/login.dto';
 import { AuthService } from '../service/auth.service';
-import type { Response } from 'express';
+import type { Response, Request } from 'express';
 import { CookieHelper } from 'src/utils/cookie';
+import { AuthGuard } from '../guard/auth.guard';
+import request from 'supertest';
 
 @Controller('auth')
 export class AuthController {
@@ -36,5 +46,15 @@ export class AuthController {
         message: 'logged in successfully',
       },
     };
+  }
+
+  @Get('me')
+  @UseGuards(AuthGuard)
+  async getMe(@Req() res: Request) {
+    const { token } = res as any;
+
+    const sendToken = await this.user.getMe(token);
+
+    return sendToken;
   }
 }
