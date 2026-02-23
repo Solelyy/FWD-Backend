@@ -28,8 +28,13 @@ export class AuthController {
     //cookies are aumatically at response no eed to store
     this.cookie.setAuthCookies({ employeeId, role }, authCurrentToken, res);
     return {
-      success: true,
-      message: 'logged in successfully',
+      //rootpoints
+      //accessed by response eg. res.token or res.data
+      token: authCurrentToken,
+      data: {
+        success: true,
+        message: 'logged in successfully',
+      },
     };
   }
 }
