@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { UsersController } from '../controller/users.controller';
-import { UsersService } from '../service/users.service';
+import { UsersService } from '../service/admin.service';
 import { PrismaModule } from 'src/prisma_global/prisma.module';
 import SecurityUtil from 'src/modules/auth/helper/bcrypt.security';
 

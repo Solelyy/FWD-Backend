@@ -2,16 +2,16 @@ import request from 'supertest';
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import { PrismaService } from '../../../prisma_global/prisma.service';
-import { UsersService } from '../service/users.service';
-import { UsersController } from '../controller/users.controller';
+import { AdminService } from '../service/admin.service';
+import { AdminController } from '../controller/users.controller';
 import { PrismaModule } from '../../../prisma_global/prisma.module';
-import { CreateUserDto } from '../dto/create-user.dto';
+import { CreateUserDto } from '../dto/create-admin.dto';
 import SecurityUtil from 'src/modules/auth/helper/bcrypt.security';
 
-describe('UsersService (Integration with Real DB)', () => {
+describe('AdminService (Integration with Real DB)', () => {
   //declare di thats gonna be used in testing module
   let app: INestApplication;
-  let service: UsersService;
+  let service: AdminService;
   let prisma: PrismaService;
   let bcrypt: SecurityUtil;
 
@@ -19,15 +19,15 @@ describe('UsersService (Integration with Real DB)', () => {
     //run this code before starting
     const moduleRef = await Test.createTestingModule({
       imports: [PrismaModule],
-      providers: [UsersService, SecurityUtil],
-      controllers: [UsersController],
+      providers: [AdminService, SecurityUtil],
+      controllers: [AdminController],
     }).compile();
 
     app = moduleRef.createNestApplication();
     await app.init(); //bootstrap module
 
     //store
-    service = moduleRef.get<UsersService>(UsersService);
+    service = moduleRef.get<AdminService>(AdminService);
     prisma = moduleRef.get<PrismaService>(PrismaService);
     bcrypt = moduleRef.get<SecurityUtil>(SecurityUtil);
   });
@@ -51,7 +51,6 @@ describe('UsersService (Integration with Real DB)', () => {
         lastname: 'hoho',
         employeeId: '34634364736643764374',
         email: 'samplehaha@.com',
-        passwordHash: 'strongpasswordshi',
       };
       const result = await service.createUser(createUserDto);
       expect(result).toBeDefined();
@@ -77,7 +76,6 @@ describe('UsersService (Integration with Real DB)', () => {
         lastname: 'hoho',
         employeeId: '34634364736643764374',
         email: 'samplehaha@.com',
-        passwordHash: 'strongpasswordshi',
       };
       await service.createUser(createUserDto);
 
@@ -86,7 +84,6 @@ describe('UsersService (Integration with Real DB)', () => {
         lastname: 'hoho',
         employeeId: '34634364736643764374',
         email: 'samplehaha@.com',
-        passwordHash: 'strongpasswordshi',
       };
 
       await expect(service.createUser(duplicateDto)).rejects.toThrow();
@@ -101,7 +98,6 @@ describe('UsersService (Integration with Real DB)', () => {
         lastname: 'user',
         employeeId: 'HTTP123456',
         email: 'samplehaha@.com',
-        passwordHash: 'httppassword',
       };
 
       const response = await request(app.getHttpServer())

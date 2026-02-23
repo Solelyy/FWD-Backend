@@ -14,3 +14,9 @@
    @Get(verify-email/:token)
    @Param('token', token: string)
 3. If a
+
+## NestJS
+
+### Modules
+
+1. u dont need to export services in each feature module to import it on bootstrap module - app.module, as long as the feature will not be used by another feature, thus you need to export the services.
