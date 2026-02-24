@@ -23,4 +23,8 @@ export class JwtUtil {
       throw new UnauthorizedException('invalid token');
     }
   }
+
+  async verifyAsync(token: string) {
+    return await this.jwtService.verifyAsync(token);
+  }
 }
