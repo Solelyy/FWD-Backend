@@ -14,6 +14,7 @@ import type { Response, Request } from 'express';
 import { CookieHelper } from 'src/utils/cookie';
 import { AuthGuard } from '../guard/auth.guard';
 import request from 'supertest';
+import { CustomValidationPipe } from 'src/common/custom-pipes/pipes.custom-pipes';
 
 @Controller('auth')
 export class AuthController {
@@ -24,7 +25,7 @@ export class AuthController {
 
   @Post('login')
   async login(
-    @Body() login: LoginDto,
+    @Body(CustomValidationPipe) login: LoginDto,
     @Res({ passthrough: true }) res: Response,
   ) {
     //no try catch since exception filters are already declare in superadmin sevice
@@ -55,4 +56,8 @@ export class AuthController {
 
     return sendTokenService;
   }
+
+  @Get('verify-email')
+  @UseGuards(AuthGuard)
+  
 }

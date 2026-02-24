@@ -6,40 +6,48 @@ import {
   Patch,
   Param,
   Delete,
+  UseGuards,
 } from '@nestjs/common';
-import { SuperadminService } from '../service/superadmin.service';
-import { CreateSuperadminDto } from '../dto/create-superadmin.dto';
-import { UpdateSuperadminDto } from '../dto/update-superadmin.dto';
 
-@Controller('superadmin')
+import { CustomValidationPipe } from 'src/common/custom-pipes/pipes.custom-pipes';
+import { CreateAdminUser } from '../dto/create-superadmin.dto';
+import { AuthGuard } from 'src/modules/auth/guard/auth.guard';
+import { SuperAdminUsersService } from '../service/users-superadmin.service';
+
+@Controller('users')
 export class SuperadminController {
-  constructor(private readonly superadminService: SuperadminService) {}
+  constructor(private readonly sAdmin: SuperAdminUsersService) {}
 
-  @Post()
-  create(@Body() createSuperadminDto: CreateSuperadminDto) {
-    return this.superadminService.create(createSuperadminDto);
+  @Post('create-admin-account')
+  @UseGuards(AuthGuard)
+  async create(@Body(CustomValidationPipe) createUser: CreateAdminUser) {
+    await this.sAdmin.createUserAdmin(createUser);
+
+    return {
+      data: {
+        success: true,
+        message: 'user invited',
+      },
+    };
   }
 
   @Get()
   findAll() {
-    return this.superadminService.findAll();
+    return this.sAdmin.findAll();
   }
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.superadminService.findOne(+id);
+    return this.sAdmin.findOne(+id);
   }
 
   @Patch(':id')
-  update(
-    @Param('id') id: string,
-    @Body() updateSuperadminDto: UpdateSuperadminDto,
-  ) {
-    return this.superadminService.update(+id, updateSuperadminDto);
+  update(@Param('id') id: string, @Body() updateSuperadminDto) {
+    //return this.sAdmin.update(+id, updateSuperadminDto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.superadminService.remove(+id);
+    return this.sAdmin.remove(+id);
   }
 }

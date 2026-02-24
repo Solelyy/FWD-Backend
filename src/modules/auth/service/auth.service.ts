@@ -24,6 +24,8 @@ export class AuthService {
 
     if (!findEmployeeId) {
       throw new UnauthorizedException('user not found');
+    } else if (!findEmployeeId.password) {
+      throw new BadRequestException();
     }
 
     const comparePassword = await this.util.comparePass(
@@ -69,5 +71,23 @@ export class AuthService {
       lastname,
       role,
     };
+  }
+
+  async verifyEmail(token: string) {
+    const user = await this.prisma.user.findFirst({
+      where: { verificationToken: token },
+    });
+
+    if (!user) {
+      throw new UnauthorizedException('Invalid token');
+    }
+
+    await this.prisma.user.update({
+      where: { email: user.email },
+      data: {
+        isVerified: true,
+        verificationToken: null,
+      },
+    });
   }
 }
