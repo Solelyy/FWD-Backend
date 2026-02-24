@@ -20,10 +20,10 @@ export class AuthGuard implements CanActivate {
 
   private extractToken(req: Request): TokenExtractionType {
     //bearer & token
-    const [type, token] = req.headers.authorization?.split(' ') ?? []; //if undefined token empty array fallback
-    return type.toLowerCase() === 'bearer' ? token : undefined;
+    //const [type, token] = req.headers.authorization?.split(' ') ?? []; //if undefined token empty array fallback
+    //return type.toLowerCase() === 'bearer' ? token : undefined;
+    return req.cookies?.['session_token'];
   }
-
   //parent method
   async canActivate(context: ExecutionContext): Promise<boolean> {
     //get request
@@ -33,21 +33,7 @@ export class AuthGuard implements CanActivate {
     if (!token) {
       throw new UnauthorizedException('missing or invalid token');
     }
-
     await this.jwt.verifyAsync(token);
-
-    const checkTokenDb = await this.prisma.user.findFirst({
-      where: { authCurrentToken: token },
-    });
-
-    if (!checkTokenDb) {
-      throw new UnauthorizedException('token on localdb doesnt match');
-    } else if (
-      checkTokenDb.authTokenExpiresAt &&
-      new Date() > checkTokenDb.authTokenExpiresAt
-    ) {
-      throw new UnauthorizedException('token expired');
-    }
 
     return true;
   }

@@ -20,11 +20,11 @@ export class UsersService {
       const user = await this.prisma.user.create({
         data: {
           ...createUser,
-          passwordHash: hashedPass,
+          password: hashedPass,
         },
       });
 
-      const { passwordHash, ...other } = user;
+      const { password, ...other } = user;
       return other;
     } catch (e) {
       throw new Error(`error at: ${e.message}`); //passed the error message to controller via e.message
@@ -38,7 +38,7 @@ export class UsersService {
       where: { id },
       data: {
         ...others,
-        isVerified: true,
+        //isVerified: true,
       },
     });
 

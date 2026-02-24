@@ -18,9 +18,6 @@ export class AuthService {
   ) {}
 
   async userLogin(login: LoginDto) {
-    const expiration = new Date();
-    expiration.setDate(expiration.getDate() + 1);
-
     const findEmployeeId = await this.prisma.user.findUnique({
       where: { employeeId: login.employeeId },
     });
@@ -30,8 +27,8 @@ export class AuthService {
     }
 
     const comparePassword = await this.util.comparePass(
-      login.passwordHash,
-      findEmployeeId.passwordHash,
+      login.password,
+      findEmployeeId.password,
     );
 
     if (!comparePassword) {
@@ -47,7 +44,6 @@ export class AuthService {
     const updateEmployee = await this.prisma.user.update({
       where: { employeeId: login.employeeId },
       data: {
-        authTokenExpiresAt: expiration,
         authCurrentToken: token,
       },
     });

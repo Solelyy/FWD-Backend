@@ -5,6 +5,7 @@ import { CookieInterfaceLogin } from 'src/common/interface/cookie.interface';
 @Injectable()
 export class CookieHelper {
   setAuthCookies(user: CookieInterfaceLogin, token: string, res: Response) {
+    //attached to requests
     res.cookie('session_token', token, {
       httpOnly: true, //unreadable to frontend
       secure: false, //if local/dev

@@ -38,9 +38,7 @@ export class AuthController {
     //cookies are aumatically at response no eed to store
     this.cookie.setAuthCookies({ employeeId, role }, authCurrentToken, res);
     return {
-      //rootpoints
-      //accessed by response eg. res.token or res.data
-      token: authCurrentToken,
+      //rootpoints cna be accesed
       data: {
         success: true,
         message: 'logged in successfully',
@@ -50,11 +48,11 @@ export class AuthController {
 
   @Get('me')
   @UseGuards(AuthGuard)
-  async getMe(@Req() res: Request) {
-    const { token } = res as any;
+  async getMe(@Req() req: Request) {
+    const token = req.cookies?.['session_token'];
 
-    const sendToken = await this.user.getMe(token);
+    const sendTokenService = await this.user.getMe(token);
 
-    return sendToken;
+    return sendTokenService;
   }
 }
