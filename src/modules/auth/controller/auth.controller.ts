@@ -7,13 +7,16 @@ import {
   Post,
   Get,
   UseGuards,
+  Query,
+  Param,
+  BadRequestException,
 } from '@nestjs/common';
 import { LoginDto } from 'src/modules/auth/dto/login.dto';
 import { AuthService } from '../service/auth.service';
 import type { Response, Request } from 'express';
 import { CookieHelper } from 'src/utils/cookie';
 import { AuthGuard } from '../guard/auth.guard';
-import request from 'supertest';
+import { CustomValidationPipe } from 'src/common/custom-pipes/pipes.custom-pipes';
 
 @Controller('auth')
 export class AuthController {
@@ -24,7 +27,7 @@ export class AuthController {
 
   @Post('login')
   async login(
-    @Body() login: LoginDto,
+    @Body(CustomValidationPipe) login: LoginDto,
     @Res({ passthrough: true }) res: Response,
   ) {
     //no try catch since exception filters are already declare in superadmin sevice
@@ -54,5 +57,22 @@ export class AuthController {
     const sendTokenService = await this.user.getMe(token);
 
     return sendTokenService;
+  }
+
+  @Get('verify-email/:token')
+  //use query when a data is sent on the url eg. token=
+  //only use request when directly from users
+  async verifyEmail(@Param('token') token: string) {
+    if (!token) {
+      throw new BadRequestException('invalid token');
+    }
+    const sendToken = await this.user.verifyEmail(token);
+
+    const { status } = sendToken;
+    return {
+      success: true,
+      message: 'email verified successfully',
+      isVerified: status,
+    };
   }
 }

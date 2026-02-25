@@ -5,6 +5,7 @@ import { CreateUserDto } from 'src/modules/users/dto/create-user.dto';
 import { JwtUtil } from 'src/modules/auth/helper/token.security';
 import { EmailService } from 'src/email/service/email.service';
 
+/*
 @Injectable()
 export class AuthService {
   constructor(
@@ -19,13 +20,13 @@ export class AuthService {
 
     expiration.setMinutes(expiration.getMinutes() + 15);
 
-    const createdUser = await this.userService.createUser({
-      ...user,
-      isVerified: false,
-      verificationExpiration: expiration,
-    });
+   // const createdUser = await this.userService.createUser({
+      //...user,
+      //isVerified: false,
+     // verificationExpiration: expiration,
+   // });
 
-    const token = this.jwtUtil.generateToken({
+  /* const token = this.jwtUtil.generateToken({
       email: createdUser.email,
       sub: createdUser.id,
       role: createdUser.role,
@@ -34,5 +35,7 @@ export class AuthService {
     this.emailService.sendVerificationEmail(createdUser.email, token);
   }
 
+
   async verifyUser() {}
 }
+  */

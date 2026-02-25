@@ -6,40 +6,40 @@ import {
   Patch,
   Param,
   Delete,
+  UseGuards,
+  Res,
+  BadRequestException,
 } from '@nestjs/common';
-import { SuperadminService } from '../service/superadmin.service';
-import { CreateSuperadminDto } from '../dto/create-superadmin.dto';
-import { UpdateSuperadminDto } from '../dto/update-superadmin.dto';
 
-@Controller('superadmin')
+import { CustomValidationPipe } from 'src/common/custom-pipes/pipes.custom-pipes';
+import { CreateAdminUser } from '../dto/create-superadmin.dto';
+import { AuthGuard } from 'src/modules/auth/guard/auth.guard';
+import { SuperAdminUsersService } from '../service/users-superadmin.service';
+import type { Response } from 'express';
+import { CookieHelper } from 'src/utils/cookie';
+
+@Controller('users')
 export class SuperadminController {
-  constructor(private readonly superadminService: SuperadminService) {}
+  constructor(
+    private readonly sAdmin: SuperAdminUsersService,
+    private readonly cookie: CookieHelper,
+  ) {}
 
-  @Post()
-  create(@Body() createSuperadminDto: CreateSuperadminDto) {
-    return this.superadminService.create(createSuperadminDto);
-  }
+  @Post('create-admin-account')
+  @UseGuards(AuthGuard)
+  async create(@Body(CustomValidationPipe) createUser: CreateAdminUser) {
+    const result = await this.sAdmin.createUserAdmin(createUser);
 
-  @Get()
-  findAll() {
-    return this.superadminService.findAll();
-  }
+    //token is one time no need for cookie since its public
+    if (!result.verificationToken) {
+      throw new BadRequestException('Verification token is required');
+    }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.superadminService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(
-    @Param('id') id: string,
-    @Body() updateSuperadminDto: UpdateSuperadminDto,
-  ) {
-    return this.superadminService.update(+id, updateSuperadminDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.superadminService.remove(+id);
+    return {
+      data: {
+        success: true,
+        message: 'user invited',
+      },
+    };
   }
 }

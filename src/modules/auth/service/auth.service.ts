@@ -8,6 +8,7 @@ import { PrismaService } from 'src/prisma_global/prisma.service';
 import { JwtUtil } from 'src/modules/auth/helper/token.security';
 import { UnauthorizedException } from '@nestjs/common';
 import SecurityUtil from '../helper/bcrypt.security';
+import { Status } from '@prisma/client';
 
 @Injectable()
 export class AuthService {
@@ -24,6 +25,8 @@ export class AuthService {
 
     if (!findEmployeeId) {
       throw new UnauthorizedException('user not found');
+    } else if (!findEmployeeId.password) {
+      throw new BadRequestException();
     }
 
     const comparePassword = await this.util.comparePass(
@@ -69,5 +72,25 @@ export class AuthService {
       lastname,
       role,
     };
+  }
+
+  async verifyEmail(token: string) {
+    const user = await this.prisma.user.findFirst({
+      where: { verificationToken: token },
+    });
+
+    if (!user) {
+      throw new UnauthorizedException('Invalid token');
+    }
+
+    const updatedUser = await this.prisma.user.update({
+      where: { email: user.email },
+      data: {
+        status: Status.ACTIVE,
+        verificationToken: null,
+      },
+    });
+
+    return updatedUser;
   }
 }

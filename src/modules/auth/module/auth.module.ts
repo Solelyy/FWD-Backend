@@ -20,7 +20,6 @@ env.config({ path: path });
 const { SECRET_KEY } = process.env;
 @Module({
   imports: [
-    UsersModule,
     JwtModule.register({
       //register a token life
       global: true,
@@ -39,5 +38,6 @@ const { SECRET_KEY } = process.env;
     AuthGuard,
   ],
   controllers: [AuthController],
+  exports: [JwtUtil],
 })
 export class AuthModule {}

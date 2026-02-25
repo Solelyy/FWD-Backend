@@ -1,9 +1,19 @@
+import { IsString, IsNotEmpty } from 'class-validator';
+
 export class CreateUserDto {
-  firstname: string;
-  lastname: string;
-  employeeId: string;
+  @IsString()
+  @IsNotEmpty()
   email: string;
-  passwordHash: string;
-  isVerified: false;
-  verificationExpiration: Date;
+
+  @IsNotEmpty()
+  @IsString()
+  employeeId: string;
+
+  @IsNotEmpty()
+  @IsString()
+  firstname: string;
+
+  @IsNotEmpty()
+  @IsString()
+  lastname: string;
 }
