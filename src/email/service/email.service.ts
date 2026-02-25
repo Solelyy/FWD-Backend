@@ -12,13 +12,22 @@ export class EmailService {
   private transporter: nodemailer.Transporter;
   private FROM_NAME?: string;
   private FROM_EMAIL?: string;
+  private APP_URL?: string;
 
   constructor() {
-    const { SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_KEY, FROM_NAME, FROM_EMAIL } =
-      process.env;
+    const {
+      SMTP_HOST,
+      SMTP_PORT,
+      SMTP_USER,
+      SMTP_KEY,
+      FROM_NAME,
+      FROM_EMAIL,
+      APP_URL,
+    } = process.env;
 
     this.FROM_NAME = FROM_NAME;
     this.FROM_EMAIL = FROM_EMAIL;
+    this.APP_URL = APP_URL;
 
     this.transporter = nodemailer.createTransport({
       host: SMTP_HOST,
@@ -32,7 +41,7 @@ export class EmailService {
   }
 
   async sendVerificationEmail(to: string, token: string): Promise<void> {
-    const verificationLink = `${process.env.APP_URL}/auth/verify-email?token=${token}`;
+    const verificationLink = `${process.env.APP_URL}/auth/verify-email/${token}`;
 
     const info = await this.transporter.sendMail({
       from: `"${this.FROM_NAME}" <${this.FROM_EMAIL}>`,

@@ -4,18 +4,15 @@ import {
   Post,
   UseGuards,
   ConflictException,
+  BadRequestException,
 } from '@nestjs/common';
 import { CreateAdminUser } from '../dto/create-superadmin.dto';
 //import { UpdateSuperadminDto } from '../dto/update-superadmin.dto';
-import { AuthGuard } from 'src/modules/auth/guard/auth.guard';
-import { CustomValidationPipe } from 'src/common/custom-pipes/pipes.custom-pipes';
 import { PrismaService } from 'src/prisma_global/prisma.service';
 import { EmailService } from 'src/email/service/email.service';
 import { JwtUtil } from 'src/modules/auth/helper/token.security';
 import { Role } from '@prisma/client';
 import { FilterQueryHelper } from 'src/utils/filter-query.utils';
-import { CookieHelper } from 'src/utils/cookie';
-import { Response } from '@nestjs/common';
 
 @Injectable()
 export class SuperAdminUsersService {
@@ -24,7 +21,6 @@ export class SuperAdminUsersService {
     private readonly email: EmailService,
     private readonly jwt: JwtUtil,
     private readonly filter: FilterQueryHelper,
-    private readonly cookie: CookieHelper,
   ) {}
 
   async createUserAdmin(createUser: CreateAdminUser) {
@@ -42,6 +38,12 @@ export class SuperAdminUsersService {
       this.filter.filterQuery(createUser, existingUser);
     }
 
+    const generatedToken = this.jwt.generateToken({
+      email: createUser.email,
+      sub: createUser.employeeId,
+      role: Role.ADMIN,
+    });
+
     const createAdmin = await this.prisma.user.create({
       data: {
         email: createUser.email,
@@ -49,28 +51,12 @@ export class SuperAdminUsersService {
         firstname: createUser.firstname,
         lastname: createUser.lastname,
         role: Role.ADMIN,
+        verificationToken: generatedToken,
       },
     });
 
-    const generatedToken = this.jwt.generateToken({
-      email: createAdmin.email,
-      sub: createAdmin.id,
-      role: createAdmin.role,
-    });
-
-    this.cookie.setAuthCookies({});
     await this.email.sendVerificationEmail(createAdmin.email, generatedToken);
-  }
 
-  findOne(id: number) {
-    return `This action returns a #${id} superadmin`;
-  }
-
-  //update(id: number, updateSuperadminDto: UpdateSuperadminDto) {
-  //return `This action updates a #${id} superadmin`;
-  // }
-
-  remove(id: number) {
-    return `This action removes a #${id} superadmin`;
+    return createAdmin;
   }
 }

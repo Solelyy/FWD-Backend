@@ -7,13 +7,15 @@ import {
   Post,
   Get,
   UseGuards,
+  Query,
+  Param,
+  BadRequestException,
 } from '@nestjs/common';
 import { LoginDto } from 'src/modules/auth/dto/login.dto';
 import { AuthService } from '../service/auth.service';
 import type { Response, Request } from 'express';
 import { CookieHelper } from 'src/utils/cookie';
 import { AuthGuard } from '../guard/auth.guard';
-import request from 'supertest';
 import { CustomValidationPipe } from 'src/common/custom-pipes/pipes.custom-pipes';
 
 @Controller('auth')
@@ -57,7 +59,20 @@ export class AuthController {
     return sendTokenService;
   }
 
-  @Get('verify-email')
-  @UseGuards(AuthGuard)
-  
+  @Get('verify-email/:token')
+  //use query when a data is sent on the url eg. token=
+  //only use request when directly from users
+  async verifyEmail(@Param('token') token: string) {
+    if (!token) {
+      throw new BadRequestException('invalid token');
+    }
+    const sendToken = await this.user.verifyEmail(token);
+
+    const { status } = sendToken;
+    return {
+      success: true,
+      message: 'email verified successfully',
+      isVerified: status,
+    };
+  }
 }

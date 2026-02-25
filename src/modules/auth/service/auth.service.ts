@@ -8,6 +8,7 @@ import { PrismaService } from 'src/prisma_global/prisma.service';
 import { JwtUtil } from 'src/modules/auth/helper/token.security';
 import { UnauthorizedException } from '@nestjs/common';
 import SecurityUtil from '../helper/bcrypt.security';
+import { Status } from '@prisma/client';
 
 @Injectable()
 export class AuthService {
@@ -82,12 +83,14 @@ export class AuthService {
       throw new UnauthorizedException('Invalid token');
     }
 
-    await this.prisma.user.update({
+    const updatedUser = await this.prisma.user.update({
       where: { email: user.email },
       data: {
-        isVerified: true,
+        status: Status.ACTIVE,
         verificationToken: null,
       },
     });
+
+    return updatedUser;
   }
 }
