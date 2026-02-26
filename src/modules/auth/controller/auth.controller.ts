@@ -12,6 +12,7 @@ import {
   BadRequestException,
 } from '@nestjs/common';
 import { LoginDto } from 'src/modules/auth/dto/login.dto';
+import { SetPasswordDto } from '../dto/setup-pass.dto';
 import { AuthService } from '../service/auth.service';
 import type { Response, Request } from 'express';
 import { CookieHelper } from 'src/utils/cookie';
@@ -59,14 +60,17 @@ export class AuthController {
     return sendTokenService;
   }
 
-  @Get('verify-email/:token')
+  @Post('verify-email/:token')
   //use query when a data is sent on the url eg. token=
   //only use request when directly from users
-  async verifyEmail(@Param('token') token: string) {
+  async verifyEmail(
+    @Param('token') token: string,
+    @Body(CustomValidationPipe) password: SetPasswordDto,
+  ) {
     if (!token) {
       throw new BadRequestException('invalid token');
     }
-    const sendToken = await this.user.verifyEmail(token);
+    const sendToken = await this.user.verifyEmailSetPassword(token, password);
 
     const { status } = sendToken;
     return {

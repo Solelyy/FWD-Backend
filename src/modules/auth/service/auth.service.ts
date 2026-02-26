@@ -9,6 +9,8 @@ import { JwtUtil } from 'src/modules/auth/helper/token.security';
 import { UnauthorizedException } from '@nestjs/common';
 import SecurityUtil from '../helper/bcrypt.security';
 import { Status } from '@prisma/client';
+import { password } from '../types/auth.types';
+import { SetPasswordDto } from '../dto/setup-pass.dto';
 
 @Injectable()
 export class AuthService {
@@ -74,7 +76,7 @@ export class AuthService {
     };
   }
 
-  async verifyEmail(token: string) {
+  async verifyEmailSetPassword(token: string, setPass: SetPasswordDto) {
     const user = await this.prisma.user.findFirst({
       where: { verificationToken: token },
     });
@@ -83,11 +85,14 @@ export class AuthService {
       throw new UnauthorizedException('Invalid token');
     }
 
+    const hashedPassword = await this.util.hashPass(setPass.password);
+
     const updatedUser = await this.prisma.user.update({
       where: { email: user.email },
       data: {
         status: Status.ACTIVE,
         verificationToken: null,
+        password: hashedPassword,
       },
     });
 

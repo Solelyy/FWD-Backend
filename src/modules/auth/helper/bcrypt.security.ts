@@ -20,4 +20,4 @@ export default class SecurityUtil {
 }
 
 const jwt = new SecurityUtil();
-jwt.hashPass('binongofeb0206');
+jwt.hashPass('Binongofeb0206!');
