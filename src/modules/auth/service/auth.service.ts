@@ -65,7 +65,8 @@ export class AuthService {
       throw new NotFoundException('token do not match');
     }
 
-    const { id, employeeId, firstname, lastname, role, ...others } = user;
+    const { id, employeeId, firstname, lastname, role, email, ...others } =
+      user;
 
     return {
       id,
@@ -73,6 +74,7 @@ export class AuthService {
       firstname,
       lastname,
       role,
+      email,
     };
   }
 
