@@ -50,6 +50,11 @@ export class AuthController {
     };
   }
 
+  @Post('logout')
+  // cookie deleted trhu response
+  async logout(@Res({ passthrough: true }) res: Response) {
+    this.cookie.clearAuthCookies(res);
+  }
   @Get('me')
   @UseGuards(AuthGuard)
   async getMe(@Req() req: Request) {
