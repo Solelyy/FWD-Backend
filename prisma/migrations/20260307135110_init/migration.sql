@@ -16,14 +16,13 @@ CREATE TABLE "User" (
     "email" TEXT NOT NULL,
     "role" "Role" NOT NULL DEFAULT 'EMPLOYEE',
     "status" "Status" NOT NULL DEFAULT 'PENDING',
-    "password" TEXT NOT NULL,
+    "password" TEXT,
     "dataPolicyAccepted" BOOLEAN NOT NULL DEFAULT false,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
-    "verificationToken" TEXT,
-    "verificationExpiration" TIMESTAMP(3),
     "authCurrentToken" TEXT,
     "authTokenExpiresAt" TIMESTAMP(3),
+    "verificationToken" TEXT,
 
     CONSTRAINT "User_pkey" PRIMARY KEY ("id")
 );
