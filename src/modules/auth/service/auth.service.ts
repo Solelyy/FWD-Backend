@@ -109,5 +109,9 @@ export class AuthService {
     if (!user) {
       throw new UnauthorizedException('invalid token or token doesnt exists');
     }
+
+    const { employeeId } = user;
+
+    return employeeId;
   }
 }

@@ -1,6 +1,10 @@
-import { IsString, MinLength, Matches } from 'class-validator';
+import { IsString, MinLength, Matches, IsNotEmpty } from 'class-validator';
 
 export class SetPasswordDto {
+  @IsString()
+  @IsNotEmpty()
+  token: string;
+
   @IsString()
   @MinLength(8)
   @Matches(/((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/, {
