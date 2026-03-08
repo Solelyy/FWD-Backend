@@ -65,11 +65,11 @@ export class AuthController {
     return sendTokenService;
   }
 
-  @Post('set-password/:token')
+  @Post('set-password')
   //use query when a data is sent on the url eg. token=
   //only use request when directly from users
   async verifyEmail(
-    @Param('token') token: string,
+    @Query('token') token: string,
     @Body(CustomValidationPipe) password: SetPasswordDto,
   ) {
     if (!token) {
@@ -85,8 +85,8 @@ export class AuthController {
     };
   }
 
-  @Get('validation/:token')
-  async verifyToken(@Param('token') token: string) {
+  @Get('validation')
+  async verifyToken(@Query('token') token: string) {
     const result = await this.user.verifyToken(token);
 
     return {
