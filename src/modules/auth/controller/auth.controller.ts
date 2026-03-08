@@ -65,23 +65,35 @@ export class AuthController {
     return sendTokenService;
   }
 
-  @Post('verify-email/:token')
+  @Post('set-password')
   //use query when a data is sent on the url eg. token=
   //only use request when directly from users
   async verifyEmail(
-    @Param('token') token: string,
+    @Query('token') token: string,
     @Body(CustomValidationPipe) password: SetPasswordDto,
   ) {
     if (!token) {
       throw new BadRequestException('invalid token');
     }
-    const sendToken = await this.user.verifyEmailSetPassword(token, password);
+    const sendToken = await this.user.setPassword(token, password);
 
     const { status } = sendToken;
     return {
       success: true,
       message: 'email verified successfully',
       isVerified: status,
+    };
+  }
+
+  @Get('validation')
+  async verifyToken(@Query('token') token: string) {
+    const result = await this.user.verifyToken(token);
+
+    return {
+      message: 'verified',
+      data: {
+        success: 'true',
+      },
     };
   }
 }

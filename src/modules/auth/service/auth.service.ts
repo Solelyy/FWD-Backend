@@ -78,7 +78,7 @@ export class AuthService {
     };
   }
 
-  async verifyEmailSetPassword(token: string, setPass: SetPasswordDto) {
+  async setPassword(token: string, setPass: SetPasswordDto) {
     const user = await this.prisma.user.findFirst({
       where: { verificationToken: token },
     });
@@ -92,12 +92,22 @@ export class AuthService {
     const updatedUser = await this.prisma.user.update({
       where: { email: user.email },
       data: {
-        status: Status.ACTIVE,
-        verificationToken: null,
         password: hashedPassword,
+        verificationToken: null,
+        status: Status.ACTIVE,
       },
     });
 
     return updatedUser;
+  }
+
+  async verifyToken(token: string) {
+    const user = await this.prisma.user.findFirst({
+      where: { verificationToken: token },
+    });
+
+    if (!user) {
+      throw new UnauthorizedException('invalid token or token doesnt exists');
+    }
   }
 }
