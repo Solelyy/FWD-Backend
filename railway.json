@@ -1,0 +1,9 @@
+{
+  "services": [
+    {
+      "name": "fwd-backend",
+      "type": "web",
+      "start": "npm run start:prod"
+    }
+  ]
+}
