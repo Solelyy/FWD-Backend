@@ -32,26 +32,25 @@ startServer();
 
 async function startServer() {
   const environment = process.env.NODE_ENV || 'development';
-  const envPath = `.env.${environment}`;
-  env.config({ path: envPath });
+
+  // Load .env only in development
+  if (environment === 'development') {
+    const envPath = `.env.${environment}`;
+    env.config({ path: envPath });
+  }
 
   const app = await NestFactory.create(AppModule);
 
-  // Set COOKIE_SECRET: fallback only for development
-  let cookieSecret = process.env.COOKIE_SECRET;
-  if (!cookieSecret) {
-    if (environment === 'development') {
-      cookieSecret = 'cookiesecretkey';
-    } else {
-      throw new Error(
-        'COOKIE_SECRET is required in production. Please set it in your environment variables.'
-      );
-    }
+  const cookieSecret = process.env.COOKIE_SECRET;
+  if (!cookieSecret && environment === 'production') {
+    throw new Error(
+      'COOKIE_SECRET is required in production. Please set it in your environment variables.'
+    );
   }
 
-  app.use(cookieParser(cookieSecret));
+  // In dev, fallback to a default key
+  app.use(cookieParser(cookieSecret || 'dev-cookie-secret'));
 
-  // Auto-select frontend origin based on environment
   const origin = environment === 'development'
     ? 'http://localhost:3000'
     : 'https://fwd-frontend.vercel.app';
