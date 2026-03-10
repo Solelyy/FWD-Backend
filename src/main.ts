@@ -2,7 +2,6 @@ import env from 'dotenv';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import cookieParser from 'cookie-parser';
-import express from 'express';
 
 /*
 async function startServer() {
@@ -48,17 +47,8 @@ async function startServer() {
       );
     }
 
-    // get Express instance
-    const expressApp = app.getHttpAdapter().getInstance();
-
-    // parse JSON and cookies
-    expressApp.use(express.json());
-    expressApp.use(cookieParser(cookieSecret || 'dinavelat0206'));
-
-    // handle OPTIONS preflight globally
-    expressApp.options('*', (req, res) => {
-      res.sendStatus(200);
-    });
+    // parse cookies
+    app.use(cookieParser(cookieSecret || 'dinavelat0206'));
 
     // enable CORS
     app.enableCors({
@@ -67,8 +57,8 @@ async function startServer() {
         'https://fwd-frontend.vercel.app',
       ],
       credentials: true,
-      methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-      allowedHeaders: ['Content-Type', 'Authorization'],
+      methods: ['GET','POST','PUT','PATCH','DELETE','OPTIONS'],
+      allowedHeaders: ['Content-Type','Authorization'],
     });
 
     const port = process.env.PORT || 3001;
