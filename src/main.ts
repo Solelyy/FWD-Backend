@@ -2,6 +2,7 @@ import env from 'dotenv';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import cookieParser from 'cookie-parser';
+import express from 'express';
 
 /*
 async function startServer() {
@@ -34,7 +35,6 @@ async function startServer() {
   try {
     const environment = process.env.NODE_ENV || 'development';
 
-    // Load env only for local development
     if (environment === 'development') {
       env.config({ path: `.env.${environment}` });
     }
@@ -42,14 +42,25 @@ async function startServer() {
     const app = await NestFactory.create(AppModule);
 
     const cookieSecret = process.env.COOKIE_SECRET;
-
     if (!cookieSecret && environment === 'production') {
       throw new Error(
         'COOKIE_SECRET is required in production. Please set it in your environment variables.'
       );
     }
 
-    // Enable CORS (important for Vercel- Railway communication)
+    // get Express instance
+    const expressApp = app.getHttpAdapter().getInstance();
+
+    // parse JSON and cookies
+    expressApp.use(express.json());
+    expressApp.use(cookieParser(cookieSecret || 'dinavelat0206'));
+
+    // handle OPTIONS preflight globally
+    expressApp.options('*', (req, res) => {
+      res.sendStatus(200);
+    });
+
+    // enable CORS
     app.enableCors({
       origin: [
         'http://localhost:3000',
@@ -60,9 +71,6 @@ async function startServer() {
       allowedHeaders: ['Content-Type', 'Authorization'],
     });
 
-    // Cookie parser for signed cookies
-    app.use(cookieParser(cookieSecret || 'dinavelat0206'));
-
     const port = process.env.PORT || 3001;
     await app.listen(port);
 
@@ -72,7 +80,7 @@ async function startServer() {
     console.log('COOKIE_SECRET:', process.env.COOKIE_SECRET ? '[SET]' : '[NOT SET]');
   } catch (error) {
     console.error('Server failed to start:', error);
-    process.exit(1); // ensures Railway container stops if startup fails
+    process.exit(1);
   }
 }
 
