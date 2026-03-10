@@ -33,29 +33,40 @@ startServer();
 async function startServer() {
   const environment = process.env.NODE_ENV || 'development';
   const envPath = `.env.${environment}`;
-
   env.config({ path: envPath });
 
   const app = await NestFactory.create(AppModule);
 
-  app.use(cookieParser(process.env.COOKIE_SECRET));
-  if (!process.env.COOKIE_SECRET) {
-    throw new Error('COOKIE_SECRET is not defined. Set it in your environment variables (railway).');
+  // Set COOKIE_SECRET: fallback only for development
+  let cookieSecret = process.env.COOKIE_SECRET;
+  if (!cookieSecret) {
+    if (environment === 'development') {
+      cookieSecret = 'cookiesecretkey';
+    } else {
+      throw new Error(
+        'COOKIE_SECRET is required in production. Please set it in your environment variables.'
+      );
+    }
   }
 
+  app.use(cookieParser(cookieSecret));
+
+  // Auto-select frontend origin based on environment
+  const origin = environment === 'development'
+    ? 'http://localhost:3000'
+    : 'https://fwd-frontend.vercel.app';
+
   app.enableCors({
-    origin: [
-      'http://localhost:3000',
-      'https://fwd-frontend.vercel.app/',
-    ],
+    origin,
     credentials: true,
   });
 
-  const port = process.env.PORT || 3000;
+  const port = process.env.PORT || 3001;
   await app.listen(port);
 
   console.log(`Environment: ${environment}`);
   console.log(`Server running on port ${port}`);
+  console.log(`Allowed CORS origin: ${origin}`);
 }
 
 startServer();
