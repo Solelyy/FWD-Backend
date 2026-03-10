@@ -31,41 +31,46 @@ startServer();
 */
 
 async function startServer() {
-  const environment = process.env.NODE_ENV || 'development';
+  try {
+    const environment = process.env.NODE_ENV || 'development';
 
-  // Load .env only in development
-  if (environment === 'development') {
-    const envPath = `.env.${environment}`;
-    env.config({ path: envPath });
+    // Load .env only in development
+    if (environment === 'development') {
+      const envPath = `.env.${environment}`;
+      env.config({ path: envPath });
+    }
+
+    const app = await NestFactory.create(AppModule);
+
+    const cookieSecret = process.env.COOKIE_SECRET;
+    if (!cookieSecret && environment === 'production') {
+      throw new Error(
+        'COOKIE_SECRET is required in production. Please set it in your environment variables.'
+      );
+    }
+
+    // In dev, fallback to a default key
+    app.use(cookieParser(cookieSecret || 'dinavelat0206'));
+
+    const origin = environment === 'development'
+      ? 'http://localhost:3000'
+      : 'https://fwd-frontend.vercel.app';
+
+    app.enableCors({ origin, credentials: true });
+
+    const port = process.env.PORT || 3001;
+    await app.listen(port);
+
+    console.log(`Environment: ${environment}`);
+    console.log(`Server running on port ${port}`);
+    console.log(`Allowed CORS origin: ${origin}`);
+    console.log('NODE_ENV:', process.env.NODE_ENV);
+    console.log('COOKIE_SECRET:', process.env.COOKIE_SECRET || '[NOT SET]');
+
+  } catch (error) {
+    console.error('Server failed to start:', error);
+    process.exit(1); //ensures the container stops if startup fails
   }
-
-  const app = await NestFactory.create(AppModule);
-
-  const cookieSecret = process.env.COOKIE_SECRET;
-  if (!cookieSecret && environment === 'production') {
-    throw new Error(
-      'COOKIE_SECRET is required in production. Please set it in your environment variables.'
-    );
-  }
-
-  // In dev, fallback to a default key
-  app.use(cookieParser(cookieSecret || 'dev-cookie-secret'));
-
-  const origin = environment === 'development'
-    ? 'http://localhost:3000'
-    : 'https://fwd-frontend.vercel.app';
-
-  app.enableCors({
-    origin,
-    credentials: true,
-  });
-
-  const port = process.env.PORT || 3001;
-  await app.listen(port);
-
-  console.log(`Environment: ${environment}`);
-  console.log(`Server running on port ${port}`);
-  console.log(`Allowed CORS origin: ${origin}`);
 }
 
 startServer();
