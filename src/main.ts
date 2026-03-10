@@ -47,19 +47,37 @@ async function startServer() {
       );
     }
 
-    // parse cookies
-    app.use(cookieParser(cookieSecret || 'dinavelat0206'));
-
-    // enable CORS
+    // CORS setup with logging
     app.enableCors({
-      origin: [
-        'http://localhost:3000',
-        'https://fwd-frontend.vercel.app',
-      ],
+      origin: (origin, callback) => {
+        const allowedOrigins = [
+          'http://localhost:3000',
+          'https://fwd-frontend.vercel.app',
+        ];
+
+        if (!origin || allowedOrigins.includes(origin)) {
+          callback(null, true);
+        } else {
+          console.warn(`[CORS] Blocked request from origin: ${origin}`);
+          callback(new Error(`Origin ${origin} not allowed by CORS`));
+        }
+      },
       credentials: true,
-      methods: ['GET','POST','PUT','PATCH','DELETE','OPTIONS'],
-      allowedHeaders: ['Content-Type','Authorization'],
+      methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+      allowedHeaders: ['Content-Type', 'Authorization'],
     });
+
+    // Preflight OPTIONS handler
+    app.use((req, res, next) => {
+      if (req.method === 'OPTIONS') {
+        res.sendStatus(200);
+      } else {
+        next();
+      }
+    });
+
+    // Cookie parser
+    app.use(cookieParser(cookieSecret || 'binongofeb0206'));
 
     const port = process.env.PORT || 3001;
     await app.listen(port);
