@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import type { Response } from 'express';
 import { CookieData } from 'src/common/interface/cookie.interface';
 
+/*
 @Injectable()
 export class CookieHelper {
   setAuthCookies(user: CookieData, token: string, res: Response) {
@@ -26,5 +27,34 @@ export class CookieHelper {
   clearAuthCookies(res: Response) {
     res.clearCookie('session_token');
     res.clearCookie('user');
+  }
+}
+
+*/
+
+@Injectable()
+export class CookieHelper {
+  setAuthCookies(user: CookieData, token: string, res: Response) {
+    const isProduction = process.env.NODE_ENV === 'production';
+
+    const cookieOptions = {
+      httpOnly: true,
+      secure: isProduction, // HTTPS required in production
+      sameSite: isProduction ? ('none' as const) : ('lax' as const),
+      maxAge: 24 * 60 * 60 * 1000,
+      path: '/',
+    };
+
+    res.cookie('session_token', token, cookieOptions);
+
+    res.cookie('user', JSON.stringify(user), {
+      ...cookieOptions,
+      httpOnly: false, // frontend can read user info
+    });
+  }
+
+  clearAuthCookies(res: Response) {
+    res.clearCookie('session_token', { path: '/' });
+    res.clearCookie('user', { path: '/' });
   }
 }
