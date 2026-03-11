@@ -1,6 +1,6 @@
 import { JwtService } from '@nestjs/jwt';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { UserTokenInterface } from 'src/modules/users/interface/usertoken.interface';
+import { UserTokenInterface } from 'src/modules/admin/interface/usertoken.interface';
 import { VerificationTokenPayload } from 'src/common/interface/auth.interface';
 
 @Injectable()

@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { UsersModule } from 'src/modules/users/module/users.module';
+import { AdminModule } from 'src/modules/admin/module/admin.module';
 //import { AuthService } from '../lilipat pa/auth.service';
 import { EmailModule } from 'src/email/module/email.module';
 import { AuthService } from '../service/auth.service';
