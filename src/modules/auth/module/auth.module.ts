@@ -24,7 +24,6 @@ const { SECRET_KEY } = process.env;
       //register a token life
       global: true,
       secret: SECRET_KEY,
-      signOptions: { expiresIn: '1d' },
     }),
     EmailModule,
     UtilModule,
