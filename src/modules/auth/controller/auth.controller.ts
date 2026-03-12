@@ -55,7 +55,7 @@ export class AuthController {
   async logout(@Res({ passthrough: true }) res: Response) {
     this.cookie.clearAuthCookies(res);
   }
-  
+
   @Get('me')
   @UseGuards(AuthGuard)
   async getMe(@Req() req: Request) {
@@ -88,7 +88,7 @@ export class AuthController {
     const result = await this.user.verifyToken(token);
 
     return {
-      message: 'verified',
+      message: 'token verified',
       success: 'true',
       employeeId: result,
     };

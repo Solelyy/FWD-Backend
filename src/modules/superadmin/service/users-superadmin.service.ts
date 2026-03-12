@@ -38,7 +38,7 @@ export class SuperAdminUsersService {
       this.filter.filterQuery(createUser, existingUser);
     }
 
-    const generatedToken = this.jwt.generateToken({
+    const generatedToken = this.jwt.verificationToken({
       email: createUser.email,
       sub: createUser.employeeId,
       role: Role.ADMIN,

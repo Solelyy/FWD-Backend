@@ -40,7 +40,7 @@ export class AuthService {
       throw new BadRequestException('passwords do not match');
     }
 
-    const token = this.jwt.generateToken({
+    const token = this.jwt.generateSessionToken({
       email: findEmployeeId.email,
       sub: findEmployeeId.employeeId,
       role: findEmployeeId.role,
@@ -79,12 +79,14 @@ export class AuthService {
   }
 
   async setPassword(token: string, setPass: SetPasswordDto) {
+    const verifiedToken = this.jwt.verifyToken(token);
+
     const user = await this.prisma.user.findFirst({
       where: { verificationToken: token },
     });
 
     if (!user) {
-      throw new UnauthorizedException('Invalid token');
+      throw new BadRequestException('token invalid or do not ex');
     }
 
     const hashedPassword = await this.util.hashPass(setPass.password);
@@ -102,6 +104,7 @@ export class AuthService {
   }
 
   async verifyToken(token: string) {
+    const verifiedToken = this.jwt.verifyToken(token);
     const user = await this.prisma.user.findFirst({
       where: { verificationToken: token },
     });

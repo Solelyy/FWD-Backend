@@ -34,7 +34,7 @@ export class AdminService {
       this.filterError.filterQuery(createUser, ifExists);
     }
 
-    const token = this.jwt.generateToken({
+    const token = this.jwt.verificationToken({
       email: createUser.email,
       sub: createUser.employeeId,
       role: Role.EMPLOYEE,
