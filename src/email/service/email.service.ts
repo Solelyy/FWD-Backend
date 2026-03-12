@@ -48,16 +48,29 @@ export class EmailService {
     const info = await this.transporter.sendMail({
       from: `"${this.FROM_NAME}" <${this.FROM_EMAIL}>`,
       to,
-      subject: 'Verify Your Email',
+      subject: 'Activate Your FWD Portal Account',
       html: `
-          <div style="font-family: Arial, sans-serif; max-width: 600px;">
-            <h2>Welcome!</h2>
-            <p>Click the link below to verify your email:</p>
-            <a href="${verificationLink}" 
-              style="display: inline-block; padding: 10px 20px; background-color: #4CAF50; color: white; text-decoration: none; border-radius: 5px;">
-              Verify Email
-            </a>
-          </div>
+       <div style="font-family: Arial, sans-serif; max-width: 300px; margin: 0; padding: 20px;">
+    <h2 style="margin: 0 0 16px 0; font-size: 20px; text-align: left;">Welcome to the FWD Portal! You have been invited to activate your account.</h2>
+    
+    <p style="margin: 0 0 18px 0; font-size: 16px; text-align: left;">To get started, please click the button below to <span style="font-weight: 700;">set your password and activate your account.</span></p>
+    
+    <div style="text-align: left; margin: 30px 0;">
+        <a href="${verificationLink}" 
+          style="display: inline-block; padding: 10px 20px; background-color: #301A79; color: white; text-decoration: none; border-radius: 5px; font-size: 16px;">
+          Verify Email
+        </a>
+    </div>
+    
+    <p style="margin: 0 0 18px 0; font-size: 16px; text-align: left;">Once completed, you will be able to log in and access the portal.</p>
+    
+    <p style="margin: 0 0 18px 0; font-size: 16px; text-align: left;">If you need help or have any questions, please contact the HR or IT support team.</p>
+    
+    <div style="margin-top: 30px; text-align: left;">
+        <p style="margin: 0 0 5px 0; font-size: 16px;">Best regards,</p>
+        <p style="margin: 0; font-size: 16px; font-weight: 700;">FWD Technologies</p>
+    </div>
+</div>  
         `,
     });
   }
