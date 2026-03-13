@@ -42,7 +42,7 @@ export class EmailService {
     });
   }
 
-  async sendVerificationEmail(to: string, token?: string): Promise<void> {
+  async sendVerificationEmail(to: string, token: string): Promise<void> {
     const verificationLink = `${this.APP_URL}/set-password?token=${token}`;
 
     const info = await this.transporter.sendMail({
@@ -57,8 +57,8 @@ export class EmailService {
     
     <div style="text-align: left; margin: 30px 0;">
         <a href="${verificationLink}" 
-          style="display: inline-block; padding: 10px 20px; background-color: #301A79; color: white; text-decoration: none; border-radius: 5px; font-size: 16px;">
-          Verify Email
+          style="display: inline-block; padding: 10px 20px; background-color: #FFEB94; color: black; text-decoration: none; border-radius: 5px; font-size: 16px;">
+          Activate Account
         </a>
     </div>
     
