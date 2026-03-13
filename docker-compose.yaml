@@ -1,4 +1,4 @@
-version: '1'
+version: '3.8'
 
 services:
   app:
@@ -9,8 +9,8 @@ services:
       dockerfile: dockerfile
     environment:
       PORT: ${PORT}
-      POSTGRES_HOST: postgres_db # localhost doesn't work in docker container, hence you should use postgres container name instead of localhost
-      REDIS_HOST: redis # the same for redis. Use redis container name instead of localhost
+      POSTGRES_HOST: postgres_db
+      REDIS_HOST: redis
     ports:
       - ${PORT}:${PORT}
     depends_on:
@@ -20,35 +20,27 @@ services:
       myapp_net:
 
   postgres_db:
-    image: bitnami/postgresql:15
-    container_name: 'myapp_postgres_db'
+    image: postgres:17-alpine
+    container_name: 'fwd-postgresql'
     restart: unless-stopped
     environment:
-      POSTGRESQL_USERNAME: ${POSTGRE-USER}
-      POSTGRESQL_PASSWORD: ${POSTGRE-PASS}
-      POSTGRESQL_DATABASE: ${POSTGRE-DB}
-      POSTGRESQL_TIMEZONE: 'Asia/Manila'
+      POSTGRES_USER: ${POSTGRE_USER}
+      POSTGRES_PASSWORD: ${POSTGRE_PASS}
+      POSTGRES_DB: ${POSTGRE_DB}
+      TZ: 'Asia/Manila'
     ports:
-      - ${POSTGRE-PORT}:5432
+      - ${POSTGRE_PORT}:5432
     volumes:
-      - 'postgres_data:/bitnami/postgresql'
+      - postgres_data:/var/lib/postgresql/data
     networks:
       myapp_net:
+
   redis:
-    image: 'bitnami/redis:7.2'
-    container_name: 'myapp_redis'
+    image: redis:8-alpine
+    container_name: fwd-redis
     restart: unless-stopped
-    ports:
-      - ${REDIS_PORT}:${REDIS_PORT}
     volumes:
-      - 'redis_data:/bitnami/redis/data'
-    environment:
-      REDIS_PASSWORD: ${REDIS_PASSWORD}
-      REDIS_PORT: ${REDIS_PORT}
-      REDIS_DB: ${REDIS_DB}
-      REDIS_IO_THREADS: 4
-      REDIS_IO_THREADS_DO_READS: yes
-      REDIS_DISABLE_COMMANDS: FLUSHDB,FLUSHALL
+      - redis_data:/data
     networks:
       myapp_net:
 
