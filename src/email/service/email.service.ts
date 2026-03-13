@@ -42,7 +42,7 @@ export class EmailService {
     });
   }
 
-  async sendVerificationEmail(to: string, token: string): Promise<void> {
+  async sendVerificationEmail(to: string, token?: string): Promise<void> {
     const verificationLink = `${this.APP_URL}/set-password?token=${token}`;
 
     const info = await this.transporter.sendMail({
