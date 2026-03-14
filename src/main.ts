@@ -3,6 +3,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import cookieParser from 'cookie-parser';
 
+/*
 async function startServer() {
   const environment = process.env.NODE_ENV || 'development';
   const envPath = `.env.${environment}`; //change the env value
@@ -26,4 +27,69 @@ async function startServer() {
   console.log('ur at:', NODE_ENV);
   console.log('server starting at localhost:', PORT);
 }
+startServer();
+*/
+
+async function startServer() {
+  try {
+    const environment = process.env.NODE_ENV || 'development';
+
+    if (environment === 'development') {
+      env.config({ path: `.env.${environment}` });
+    }
+
+    const app = await NestFactory.create(AppModule);
+
+    const cookieSecret = process.env.COOKIE_SECRET;
+    if (!cookieSecret && environment === 'production') {
+      throw new Error(
+        'COOKIE_SECRET is required in production. Please set it in your environment variables.'
+      );
+    }
+
+    // CORS setup with logging
+    app.enableCors({
+      origin: (origin, callback) => {
+        const allowedOrigins = [
+          'http://localhost:3000',
+          'https://fwd-frontend.vercel.app',
+        ];
+
+        if (!origin || allowedOrigins.includes(origin)) {
+          callback(null, true);
+        } else {
+          console.warn(`[CORS] Blocked request from origin: ${origin}`);
+          callback(new Error(`Origin ${origin} not allowed by CORS`));
+        }
+      },
+      credentials: true,
+      methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+      allowedHeaders: ['Content-Type', 'Authorization'],
+    });
+
+    // Preflight OPTIONS handler
+    app.use((req, res, next) => {
+      if (req.method === 'OPTIONS') {
+        res.sendStatus(200);
+      } else {
+        next();
+      }
+    });
+
+    // Cookie parser
+    app.use(cookieParser(cookieSecret || 'binongofeb0206'));
+
+    const port = process.env.PORT || 3001;
+    await app.listen(port);
+
+    console.log(`Environment: ${environment}`);
+    console.log(`Server running on port ${port}`);
+    console.log('NODE_ENV:', process.env.NODE_ENV);
+    console.log('COOKIE_SECRET:', process.env.COOKIE_SECRET ? '[SET]' : '[NOT SET]');
+  } catch (error) {
+    console.error('Server failed to start:', error);
+    process.exit(1);
+  }
+}
+
 startServer();

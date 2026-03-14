@@ -34,7 +34,7 @@
       password              String?
       dataPolicyAccepted    Boolean   @default(false)
       createdAt             DateTime  @default(now())
-      updatedAt             DateTime  @updatedAt
+      updatedAt            DateTime   @updatedAt
       authCurrentToken String?
       authTokenExpiresAt DateTime?
       invitationDate        String?
