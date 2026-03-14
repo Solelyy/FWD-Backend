@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import nodemailer from 'nodemailer';
 import env from 'dotenv';
+import { DateHelper } from 'src/utils/date.utils';
 
 const environment = process.env.NODE_ENV || 'development';
 const envPath = `.env.${environment}`; //change the env value
@@ -14,7 +15,10 @@ export class EmailService {
   private FROM_EMAIL?: string;
   private APP_URL?: string;
   private DEV_URL?: string;
-  constructor() {
+
+  // inside the constructor runs the code everytime,
+  // think of it as a bootstrap of the class
+  constructor(private readonly date: DateHelper) {
     const {
       SMTP_HOST,
       SMTP_PORT,
@@ -73,5 +77,7 @@ export class EmailService {
 </div>  
         `,
     });
+
+    await this.date.LocaleSetDateHelper(to);
   }
 }

@@ -4,11 +4,13 @@ WORKDIR /FWD-Backend
 
 COPY package*.json ./
 
-RUN npm install
+# npm install doenst work on docker nestjs, should be npm ci
+RUN npm ci
 
 COPY prisma ./prisma/
 
-RUN npx prisma generate
+
+RUN npx prisma generate 
 
 COPY . .
 

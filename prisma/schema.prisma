@@ -37,6 +37,7 @@
       updatedAt            DateTime   @updatedAt
       authCurrentToken String?
       authTokenExpiresAt DateTime?
+      invitationDate        String?
       verificationToken     String?
   
 
