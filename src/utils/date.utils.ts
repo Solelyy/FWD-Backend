@@ -5,7 +5,7 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 export class DateHelper {
   constructor(private readonly prisma: PrismaService) {}
 
-  async LocaleSetDateHelper(email: string) {
+  async LocaleSetDateHelper(email: string, token: string) {
     const date = new Date();
 
     const setEmailCreationDate = date.toLocaleString('en-PH', {
@@ -21,6 +21,7 @@ export class DateHelper {
         },
         data: {
           invitationDate: setEmailCreationDate,
+          verificationToken: token,
         },
       });
     } catch (e) {

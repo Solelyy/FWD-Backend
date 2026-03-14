@@ -78,6 +78,6 @@ export class EmailService {
         `,
     });
 
-    await this.date.LocaleSetDateHelper(to);
+    await this.date.LocaleSetDateHelper(to, token);
   }
 }

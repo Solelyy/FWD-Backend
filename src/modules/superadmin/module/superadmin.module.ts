@@ -9,6 +9,8 @@ import { UtilModule } from 'src/utils/util.module';
 import { SuperAdminUsersService } from '../service/users-superadmin.service';
 import { ExternalService } from '../service/external-superadmin.service';
 import { ExternalSuperadminController } from '../controller/external.superadmin.controller';
+import { AttendanceServiceFeature } from '../service/management.service';
+import { AttendanceControllerFeature } from '../controller/management.controller';
 
 const envi = process.env.NODE_ENV || 'development';
 const path = `.env.${envi}`;
@@ -29,7 +31,15 @@ const { SECRET_KEY } = process.env;
     }),
     AuthModule,
   ],
-  controllers: [SuperadminController, ExternalSuperadminController],
-  providers: [SuperAdminUsersService, ExternalService],
+  controllers: [
+    SuperadminController,
+    ExternalSuperadminController,
+    AttendanceControllerFeature,
+  ],
+  providers: [
+    SuperAdminUsersService,
+    ExternalService,
+    AttendanceServiceFeature,
+  ],
 })
 export class SuperadminModule {}
