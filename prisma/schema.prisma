@@ -16,6 +16,8 @@
       PENDING
       ACTIVE
       INACTIVE
+      EXPIRED
+      SUSPENDED
     }
 
     enum Provider {
