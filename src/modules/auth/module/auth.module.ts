@@ -37,6 +37,6 @@ const { SECRET_KEY } = process.env;
     AuthGuard,
   ],
   controllers: [AuthController],
-  exports: [JwtUtil],
+  exports: [JwtUtil, SecurityUtil],
 })
 export class AuthModule {}
