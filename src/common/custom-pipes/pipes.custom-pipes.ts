@@ -28,7 +28,7 @@ export class CustomValidationPipe implements PipeTransform<any> {
     const errors = await validate(object);
 
     if (errors.length > 0) {
-      throw new BadRequestException('validation failed');
+      throw new BadRequestException('Error validating values');
     }
     return value;
   }
