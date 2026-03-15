@@ -40,10 +40,10 @@ async function startServer() {
 
     const app = await NestFactory.create(AppModule);
 
-    const cookieSecret = process.env.COOKIE_SECRET;
+    const cookieSecret = process.env.API_KEY;
     if (!cookieSecret && environment === 'production') {
       throw new Error(
-        'COOKIE_SECRET is required in production. Please set it in your environment variables.'
+        'COOKIE_SECRET is required in production. Please set it in your environment variables.',
       );
     }
 
@@ -77,7 +77,7 @@ async function startServer() {
     });
 
     // Cookie parser
-    app.use(cookieParser(cookieSecret || 'binongofeb0206'));
+    app.use(cookieParser(cookieSecret));
 
     const port = process.env.PORT || 3001;
     await app.listen(port);
@@ -85,7 +85,7 @@ async function startServer() {
     console.log(`Environment: ${environment}`);
     console.log(`Server running on port ${port}`);
     console.log('NODE_ENV:', process.env.NODE_ENV);
-    console.log('COOKIE_SECRET:', process.env.COOKIE_SECRET ? '[SET]' : '[NOT SET]');
+    console.log('COOKIE_SECRET:', process.env.API_KEY ? '[SET]' : '[NOT SET]');
   } catch (error) {
     console.error('Server failed to start:', error);
     process.exit(1);

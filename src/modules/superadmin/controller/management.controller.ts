@@ -1,9 +1,21 @@
-import { Get, Controller, UseGuards, Patch, Query, Body } from '@nestjs/common';
+import {
+  Get,
+  Controller,
+  UseGuards,
+  Patch,
+  Query,
+  Body,
+  NotFoundException,
+} from '@nestjs/common';
 import { AuthGuard } from 'src/modules/auth/guard/auth.guard';
 import { AttendanceServiceFeature } from '../service/management.service';
 import { Role, Status } from '@prisma/client';
 import { CustomValidationPipe } from 'src/common/custom-pipes/pipes.custom-pipes';
 import { AdminStatusDTO, AllowedAdminStatus } from '../dto/admin.status.dto';
+import {
+  AdminStatusSuspendedDTO,
+  AllowedAdminStatusSuspended,
+} from '../dto/admin.status.suspended.dto';
 @Controller('superadmin/management')
 export class AttendanceControllerFeature {
   constructor(private readonly management: AttendanceServiceFeature) {}
@@ -27,11 +39,36 @@ export class AttendanceControllerFeature {
     // receive only status body
     @Body('status', CustomValidationPipe) status: AllowedAdminStatus,
   ) {
-    await this.management.updateStatus({ employeeId, status });
+    if (!status) {
+      throw new NotFoundException('must include status');
+    }
+    const result = await this.management.updateStatus({ employeeId, status });
 
     return {
       success: true,
       message: 'status updated',
+      status: result,
+    };
+  }
+
+  @Patch('employment')
+  @UseGuards(AuthGuard)
+  async updateAdminStatusSuspended(
+    @Query('employee') employeeId: string,
+    // receive only status body
+    // receive only what body contains eg. DTOS
+    // when patch is used
+    @Body(CustomValidationPipe) status: AdminStatusSuspendedDTO,
+  ) {
+    if (!status) {
+      throw new NotFoundException('must include status');
+    }
+    const result = await this.management.setStatusSuspended(employeeId, status);
+
+    return {
+      success: true,
+      message: 'status updated',
+      status: result,
     };
   }
 }

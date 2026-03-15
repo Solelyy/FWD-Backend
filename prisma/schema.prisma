@@ -41,7 +41,8 @@
       authTokenExpiresAt DateTime?
       invitationDate        String?
       verificationToken     String?
-  
+      startDate           DateTime?
+      endDate             DateTime?
 
       @@index([role, status])
     }

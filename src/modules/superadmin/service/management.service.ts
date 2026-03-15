@@ -2,6 +2,7 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma_global/prisma.service';
 import { Role } from '@prisma/client';
 import { AdminStatusDTO } from '../dto/admin.status.dto';
+import { AdminStatusSuspendedDTO } from '../dto/admin.status.suspended.dto';
 @Injectable()
 export class AttendanceServiceFeature {
   constructor(private readonly prisma: PrismaService) {}
@@ -41,6 +42,35 @@ export class AttendanceServiceFeature {
       },
     });
 
-    return update;
+    return update.status;
+  }
+
+  async setStatusSuspended(employeeId: string, admin: AdminStatusSuspendedDTO) {
+    const date = new Date();
+    const user = await this.prisma.user.findFirst({
+      where: { employeeId: employeeId },
+    });
+
+    if (!user) {
+      throw new BadRequestException('User not found');
+    }
+
+    admin.startDate = date.toISOString();
+    admin.endDate = date.toISOString();
+
+    const update = await this.prisma.user.update({
+      where: { employeeId: employeeId },
+      data: {
+        startDate: admin.startDate,
+        endDate: admin.endDate,
+        status: admin.status,
+      },
+    });
+
+    return {
+      status: update.status,
+      startDate: update.startDate,
+      endDate: update.endDate,
+    };
   }
 }
