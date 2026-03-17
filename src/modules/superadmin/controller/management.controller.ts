@@ -60,7 +60,7 @@ export class AttendanceControllerFeature {
     // when patch is used
     @Body(CustomValidationPipe) status: AdminStatusSuspendedDTO,
   ) {
-    if (!status) {
+    if (!status.status) {
       throw new NotFoundException('must include status');
     }
     const result = await this.management.setStatusSuspended(employeeId, status);

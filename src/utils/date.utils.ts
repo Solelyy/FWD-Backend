@@ -29,6 +29,7 @@ export class DateHelper {
     }
   }
 
+  /*
   async SetDateHelper() {
     const date = new Date();
 
@@ -38,4 +39,5 @@ export class DateHelper {
       timeStyle: 'medium',
     });
   }
+  */
 }

@@ -27,9 +27,21 @@ export class CustomValidationPipe implements PipeTransform<any> {
     const object = plainToInstance(metatype, value);
     const errors = await validate(object);
 
+    // errors are always an array in class vaidator
     if (errors.length > 0) {
-      throw new BadRequestException('Error validating values');
+      const messages = errors
+        .map((error) => {
+          if (error.constraints) {
+            return Object.values(error.constraints);
+          }
+
+          return 'error validating, must something be wrong at the data';
+        })
+        .flat();
+
+      throw new BadRequestException(messages);
     }
+
     return value;
   }
 }

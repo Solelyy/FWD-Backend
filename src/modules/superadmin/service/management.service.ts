@@ -55,14 +55,14 @@ export class AttendanceServiceFeature {
       throw new BadRequestException('User not found');
     }
 
-    admin.startDate = date.toISOString();
-    admin.endDate = date.toISOString();
+    const startDate = new Date(admin.startDate);
+    const endDate = new Date(admin.endDate);
 
     const update = await this.prisma.user.update({
       where: { employeeId: employeeId },
       data: {
-        startDate: admin.startDate,
-        endDate: admin.endDate,
+        startDate: startDate,
+        endDate: endDate,
         status: admin.status,
       },
     });
