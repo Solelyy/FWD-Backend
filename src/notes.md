@@ -20,3 +20,7 @@
 ### Modules
 
 1. u dont need to export services in each feature module to import it on bootstrap module - app.module, as long as the feature will not be used by another feature, thus you need to export the services.
+
+### Body
+
+- @Body("sample) only receives a body contains a sample json only, but none it set and has a dto, then the json must be match the dto shape.

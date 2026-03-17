@@ -11,6 +11,6 @@ import { ManagementControllerFeature } from '../controller/management.controller
 @Module({
   imports: [AuthModule, UtilModule, EmailModule],
   controllers: [AdminController, ManagementControllerFeature],
-  providers: [AdminService, SecurityUtil, ManagementServiceFeature],
+  providers: [AdminService, ManagementServiceFeature],
 })
 export class AdminModule {}

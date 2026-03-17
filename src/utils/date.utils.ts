@@ -28,4 +28,16 @@ export class DateHelper {
       throw new BadRequestException('User invalid or user not found');
     }
   }
+
+  /*
+  async SetDateHelper() {
+    const date = new Date();
+
+    const setEmailCreationDate = date.toLocaleString('en-PH', {
+      timeZone: 'Asia/Manila',
+      dateStyle: 'full',
+      timeStyle: 'medium',
+    });
+  }
+  */
 }

@@ -4,7 +4,7 @@ import { PrismaModule } from './prisma_global/prisma.module';
 import { AdminModule } from './modules/admin/module/admin.module';
 import { SuperadminModule } from './modules/superadmin/module/superadmin.module';
 import { AuthModule } from './modules/auth/module/auth.module';
-
+import { ScheduleModule } from '@nestjs/schedule';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -14,6 +14,7 @@ import { AuthModule } from './modules/auth/module/auth.module';
     AdminModule,
     AuthModule,
     SuperadminModule,
+    ScheduleModule.forRoot(),
   ], //bootstarp all modules
   controllers: [], //controllers
   providers: [], //services
