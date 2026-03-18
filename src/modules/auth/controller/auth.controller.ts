@@ -34,13 +34,13 @@ export class AuthController {
     //no try catch since exception filters are already declare in superadmin sevice
     const resultWithToken = await this.user.userLogin(login);
 
-    const { employeeId, role, authCurrentToken } = resultWithToken;
+    const { employeeId, role, session } = resultWithToken;
 
-    if (!authCurrentToken) {
+    if (!session) {
       throw new NotFoundException('no token');
     }
     //cookies are aumatically at response no eed to store
-    this.cookie.setAuthCookies({ employeeId, role }, authCurrentToken, res);
+    this.cookie.setAuthCookies({ employeeId, role }, session, res);
     return {
       //rootpoints cna be accesed
       data: {

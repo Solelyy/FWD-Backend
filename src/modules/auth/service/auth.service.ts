@@ -48,7 +48,7 @@ export class AuthService {
     const updateEmployee = await this.prisma.user.update({
       where: { employeeId: login.employeeId },
       data: {
-        authCurrentToken: token,
+        session: token,
       },
     });
 
@@ -57,7 +57,7 @@ export class AuthService {
 
   async getMe(token: string) {
     const user = await this.prisma.user.findFirst({
-      where: { authCurrentToken: token },
+      where: { session: token },
     });
 
     if (!user) {
