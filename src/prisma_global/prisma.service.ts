@@ -19,7 +19,7 @@ export class PrismaService
 
     const { NODE_ENV } = process.env;
 
-    const connectionString = `${process.env.DATABASE_URL}`;
+    const connectionString = `${process.env.NEON_DB}`;
     const adapter = new PrismaPg({ connectionString });
 
     super({ adapter });

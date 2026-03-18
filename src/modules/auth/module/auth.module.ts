@@ -7,8 +7,8 @@ import { AuthController } from '../controller/auth.controller';
 import { CustomValidationPipe } from '../../../common/custom-pipes/pipes.custom-pipes';
 import { JwtModule } from '@nestjs/jwt';
 import env from 'dotenv';
-import SecurityUtil from '../helper/bcrypt.security';
-import { JwtUtil } from '../helper/token.security';
+import SecurityUtil from '../../../common/helper/bcrypt.security';
+import { JwtHelper } from '../../../common/helper/token.security';
 import { UtilModule } from 'src/utils/util.module';
 import { AuthGuard } from '../guard/auth.guard';
 
@@ -33,10 +33,10 @@ const { SECRET_KEY } = process.env;
     AuthService,
     CustomValidationPipe,
     SecurityUtil,
-    JwtUtil,
+    JwtHelper,
     AuthGuard,
   ],
   controllers: [AuthController],
-  exports: [JwtUtil, SecurityUtil],
+  exports: [JwtHelper, SecurityUtil],
 })
 export class AuthModule {}

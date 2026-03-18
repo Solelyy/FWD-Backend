@@ -6,7 +6,7 @@ import { AdminService } from '../service/admin.service';
 import { AdminController } from '../controller/users.controller';
 import { PrismaModule } from '../../../prisma_global/prisma.module';
 import { CreateUserDto } from '../dto/create-admin.dto';
-import SecurityUtil from 'src/modules/auth/helper/bcrypt.security';
+import SecurityUtil from 'src/common/helper/bcrypt.security';
 
 describe('AdminService (Integration with Real DB)', () => {
   //declare di thats gonna be used in testing module

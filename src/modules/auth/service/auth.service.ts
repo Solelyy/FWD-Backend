@@ -5,18 +5,17 @@ import {
 } from '@nestjs/common';
 import { LoginDto } from 'src/modules/auth/dto/login.dto';
 import { PrismaService } from 'src/prisma_global/prisma.service';
-import { JwtUtil } from 'src/modules/auth/helper/token.security';
+import { JwtHelper } from 'src/common/helper/token.security';
 import { UnauthorizedException } from '@nestjs/common';
-import SecurityUtil from '../helper/bcrypt.security';
+import SecurityUtil from '../../../common/helper/bcrypt.security';
 import { Status } from '@prisma/client';
-import { password } from '../types/auth.types';
 import { SetPasswordDto } from '../dto/setup-pass.dto';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly prisma: PrismaService,
-    private readonly jwt: JwtUtil,
+    private readonly jwt: JwtHelper,
     private readonly util: SecurityUtil,
   ) {}
 

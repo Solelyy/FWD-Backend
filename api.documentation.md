@@ -3,6 +3,7 @@
 ### Endpoints URL
 
 - superadmin/management/status
+     eg. superadmin/management/status?employee=1234
 
 * status of an account eg. active & inactive
 * for updates of status eg. inactivate and activate

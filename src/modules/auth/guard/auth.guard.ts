@@ -8,14 +8,14 @@ import {
 import { JwtService } from '@nestjs/jwt';
 import type { TokenExtractionType } from '../types/extract-token.types';
 import { Request } from 'express';
-import { JwtUtil } from '../helper/token.security';
+import { JwtHelper } from '../../../common/helper/token.security';
 import { PrismaService } from 'src/prisma_global/prisma.service';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
   constructor(
     private readonly prisma: PrismaService,
-    private readonly jwt: JwtUtil,
+    private readonly jwt: JwtHelper,
   ) {}
 
   private extractToken(req: Request): TokenExtractionType {

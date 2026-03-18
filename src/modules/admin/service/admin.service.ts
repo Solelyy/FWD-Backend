@@ -2,11 +2,11 @@ import { Injectable } from '@nestjs/common';
 import { UserRequestInterface } from '../interface/admin-request.interface';
 import { UpdateUserDto } from '../dto/update-admin.dto';
 import { PrismaService } from 'src/prisma_global/prisma.service';
-import SecurityUtil from 'src/modules/auth/helper/bcrypt.security';
+import SecurityUtil from 'src/common/helper/bcrypt.security';
 import { UserTokenInterface } from 'src/modules/admin/interface/usertoken.interface';
 import { UserResponseInterface } from '../interface/admin-response.interface';
 import { FilterQueryHelper } from 'src/utils/filter-query.utils';
-import { JwtUtil } from 'src/modules/auth/helper/token.security';
+import { JwtHelper } from 'src/common/helper/token.security';
 import { Role } from '@prisma/client';
 import { EmailService } from 'src/email/service/email.service';
 @Injectable()
@@ -15,7 +15,7 @@ export class AdminService {
     private prisma: PrismaService,
     private secUtil: SecurityUtil,
     private readonly filterError: FilterQueryHelper,
-    private readonly jwt: JwtUtil,
+    private readonly jwt: JwtHelper,
     private readonly email: EmailService,
   ) {}
 

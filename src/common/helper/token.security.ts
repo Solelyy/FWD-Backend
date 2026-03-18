@@ -5,7 +5,7 @@
   import { JwtSignOptions } from '@nestjs/jwt';
 
   @Injectable()
-  export class JwtUtil {
+  export class JwtHelper {
     // private opts: JwtSignOptions;
     constructor(private jwtService: JwtService) {}
 
