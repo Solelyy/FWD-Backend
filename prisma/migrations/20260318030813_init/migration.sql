@@ -2,7 +2,7 @@
 CREATE TYPE "Role" AS ENUM ('SUPER_ADMIN', 'ADMIN', 'EMPLOYEE');
 
 -- CreateEnum
-CREATE TYPE "Status" AS ENUM ('PENDING', 'ACTIVE', 'INACTIVE');
+CREATE TYPE "Status" AS ENUM ('PENDING', 'ACTIVE', 'INACTIVE', 'EXPIRED', 'SUSPENDED');
 
 -- CreateEnum
 CREATE TYPE "Provider" AS ENUM ('LOCAL', 'GOOGLE');
@@ -22,7 +22,10 @@ CREATE TABLE "User" (
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "authCurrentToken" TEXT,
     "authTokenExpiresAt" TIMESTAMP(3),
+    "invitationDate" TEXT,
     "verificationToken" TEXT,
+    "startDate" TIMESTAMP(3),
+    "endDate" TIMESTAMP(3),
 
     CONSTRAINT "User_pkey" PRIMARY KEY ("id")
 );
