@@ -30,8 +30,8 @@ const { SECRET_KEY } = process.env;
       throttlers: [
         {
           name: 'login',
-          ttl: 60000, // 1 minute default
-          limit: 1, // 10 requests per minute default
+          ttl: 900000,
+          limit: 3,
         },
       ],
     }),

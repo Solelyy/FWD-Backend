@@ -27,7 +27,6 @@ export class AuthController {
     private readonly cookie: CookieHelper,
   ) {}
 
-  @Throttle({ default: { ttl: 900000, limit: 3 } })
   @Post('login')
   async login(
     @Body(CustomValidationPipe) login: LoginDto,
