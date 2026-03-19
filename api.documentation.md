@@ -3,28 +3,32 @@
 ### Endpoints URL
 
 - superadmin/management/status
+  eg. superadmin/management/status?employee=1234
 
-* status of an account eg. active & inactive
-* for updates of status eg. inactivate and activate
-* for basic updates
+* this endpoint only receives status "status" in body with values ACTIVE & INACTIVE
 
-- superadmin/management/employment
+- superadmin/management/employment?employee=1234
+  eg. superadmin/management/employment?employee=1234
 
-* for updating also but involves employee status in the company eg. suspended
+* this endpoint only receives "status" in body with a value of SUSPENDED
 
 - superadmin/admins/actions
+  eg superadmin/management/actions?employee=1234
 
-* for sensitive actions such as deleting a user
+* this triggers to changed the isDeleted (false) to true
 
-### Activate a admin user
+### Activate a admin user & employee user
 
 Api endpoint: superadmin/management/status
 Requirements:
 
-- frontend must send a status body
-- employeeId must be sent via url
+- frontend must send a "status" body
+- employeeId must be sent via url with a param of "employee"
+  eg. superadmin/management/status?employee=1234
 
-sample: superadmin/management/status?employee=1234
-body: {
-status: ACTIVE (must match on db enum Status)
-}
+  request must be look like:
+
+  url: superadmin/management/status?employee=1234 => passed the employeeId thru param (employee)
+  {
+  "status" : "ACTIVE"
+  }

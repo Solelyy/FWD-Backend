@@ -37,7 +37,7 @@ export class CustomValidationPipe implements PipeTransform<any> {
 
           return 'error validating, must something be wrong at the data';
         })
-        .flat();
+        .flat(); // returns the result as an not nested array
 
       throw new BadRequestException(messages);
     }

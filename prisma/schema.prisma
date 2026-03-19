@@ -37,8 +37,7 @@
       dataPolicyAccepted    Boolean   @default(false)
       createdAt             DateTime  @default(now())
       updatedAt            DateTime   @updatedAt
-      authCurrentToken String?
-      authTokenExpiresAt DateTime?
+      session String?
       invitationDate        String?
       verificationToken     String?
       startDate           DateTime?

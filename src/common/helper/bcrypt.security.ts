@@ -2,7 +2,7 @@ import bcrypt from 'bcrypt';
 import { Injectable } from '@nestjs/common';
 
 @Injectable()
-export default class SecurityUtil {
+export default class SecurityHelper {
   async hashPass(plainPass: string): Promise<string> {
     const saltLvl: number = 10;
 
@@ -19,5 +19,5 @@ export default class SecurityUtil {
   }
 }
 
-const jwt = new SecurityUtil();
+const jwt = new SecurityHelper();
 jwt.hashPass('Binongofeb0206!');

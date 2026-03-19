@@ -7,11 +7,12 @@ import { AuthController } from '../controller/auth.controller';
 import { CustomValidationPipe } from '../../../common/custom-pipes/pipes.custom-pipes';
 import { JwtModule } from '@nestjs/jwt';
 import env from 'dotenv';
-import SecurityUtil from '../helper/bcrypt.security';
-import { JwtUtil } from '../helper/token.security';
+import SecurityUtil from '../../../common/helper/bcrypt.security';
+import { JwtHelper } from '../../../common/helper/token.security';
 import { UtilModule } from 'src/utils/util.module';
 import { AuthGuard } from '../guard/auth.guard';
-
+import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
+import { APP_GUARD } from '@nestjs/core';
 const environment = process.env.NODE_ENV || 'development';
 const path = `.env.${environment}`;
 
@@ -25,6 +26,15 @@ const { SECRET_KEY } = process.env;
       global: true,
       secret: SECRET_KEY,
     }),
+    ThrottlerModule.forRoot({
+      throttlers: [
+        {
+          name: 'login',
+          ttl: 900000,
+          limit: 3,
+        },
+      ],
+    }),
     EmailModule,
     UtilModule,
   ],
@@ -33,10 +43,14 @@ const { SECRET_KEY } = process.env;
     AuthService,
     CustomValidationPipe,
     SecurityUtil,
-    JwtUtil,
+    JwtHelper,
     AuthGuard,
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
+    },
   ],
   controllers: [AuthController],
-  exports: [JwtUtil, SecurityUtil],
+  exports: [JwtHelper, SecurityUtil],
 })
 export class AuthModule {}

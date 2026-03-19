@@ -5,14 +5,14 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from 'src/prisma_global/prisma.service';
 import { EmailService } from 'src/email/service/email.service';
-import { JwtUtil } from 'src/modules/auth/helper/token.security';
+import { JwtHelper } from 'src/common/helper/token.security';
 
 @Injectable()
 export class ExternalService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly email: EmailService,
-    private readonly jwt: JwtUtil,
+    private readonly jwt: JwtHelper,
   ) {}
 
   async resendEmail(userEmail: string) {

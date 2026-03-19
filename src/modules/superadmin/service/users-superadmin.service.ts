@@ -10,7 +10,7 @@ import { CreateAdminUser } from '../dto/create-superadmin.dto';
 //import { UpdateSuperadminDto } from '../dto/update-superadmin.dto';
 import { PrismaService } from 'src/prisma_global/prisma.service';
 import { EmailService } from 'src/email/service/email.service';
-import { JwtUtil } from 'src/modules/auth/helper/token.security';
+import { JwtHelper } from 'src/common/helper/token.security';
 import { Role } from '@prisma/client';
 import { FilterQueryHelper } from 'src/utils/filter-query.utils';
 
@@ -19,7 +19,7 @@ export class SuperAdminUsersService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly email: EmailService,
-    private readonly jwt: JwtUtil,
+    private readonly jwt: JwtHelper,
     private readonly filter: FilterQueryHelper,
   ) {}
 
