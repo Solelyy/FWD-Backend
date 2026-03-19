@@ -18,6 +18,7 @@ import type { Response, Request } from 'express';
 import { CookieHelper } from 'src/utils/cookie';
 import { AuthGuard } from '../guard/auth.guard';
 import { CustomValidationPipe } from 'src/common/custom-pipes/pipes.custom-pipes';
+import { Throttle } from '@nestjs/throttler';
 
 @Controller('auth')
 export class AuthController {
@@ -26,6 +27,7 @@ export class AuthController {
     private readonly cookie: CookieHelper,
   ) {}
 
+  @Throttle({ default: { ttl: 900000, limit: 3 } })
   @Post('login')
   async login(
     @Body(CustomValidationPipe) login: LoginDto,

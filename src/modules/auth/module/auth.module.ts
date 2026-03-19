@@ -25,6 +25,7 @@ const { SECRET_KEY } = process.env;
       global: true,
       secret: SECRET_KEY,
     }),
+
     EmailModule,
     UtilModule,
   ],
