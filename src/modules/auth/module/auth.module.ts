@@ -11,7 +11,8 @@ import SecurityUtil from '../../../common/helper/bcrypt.security';
 import { JwtHelper } from '../../../common/helper/token.security';
 import { UtilModule } from 'src/utils/util.module';
 import { AuthGuard } from '../guard/auth.guard';
-
+import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
+import { APP_GUARD } from '@nestjs/core';
 const environment = process.env.NODE_ENV || 'development';
 const path = `.env.${environment}`;
 
@@ -25,7 +26,15 @@ const { SECRET_KEY } = process.env;
       global: true,
       secret: SECRET_KEY,
     }),
-
+    ThrottlerModule.forRoot({
+      throttlers: [
+        {
+          name: 'login',
+          ttl: 60000, // 1 minute default
+          limit: 1, // 10 requests per minute default
+        },
+      ],
+    }),
     EmailModule,
     UtilModule,
   ],
@@ -36,6 +45,10 @@ const { SECRET_KEY } = process.env;
     SecurityUtil,
     JwtHelper,
     AuthGuard,
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
+    },
   ],
   controllers: [AuthController],
   exports: [JwtHelper, SecurityUtil],
