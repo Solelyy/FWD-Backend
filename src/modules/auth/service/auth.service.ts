@@ -20,7 +20,9 @@ export class AuthService {
   ) {}
 
   async userLogin(login: LoginDto) {
-    const findEmployeeId = await this.prisma.user.findUnique({
+    const userStatus: Status[] = ['SUSPENDED', 'INACTIVE', 'EXPIRED'];
+
+    const findEmployeeId = await this.prisma.user.findFirst({
       where: { employeeId: login.employeeId },
     });
 
@@ -28,6 +30,11 @@ export class AuthService {
       throw new UnauthorizedException('user not found');
     } else if (!findEmployeeId.password) {
       throw new BadRequestException();
+      // includes() method checks if the value exists on the array
+    } else if (userStatus.includes(findEmployeeId.status)) {
+      throw new UnauthorizedException(
+        "user can't login, contact IT Support for information",
+      );
     }
 
     const comparePassword = await this.util.comparePass(
