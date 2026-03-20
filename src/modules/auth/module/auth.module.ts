@@ -31,7 +31,7 @@ const { SECRET_KEY } = process.env;
         {
           name: 'login',
           ttl: 900000,
-          limit: 3,
+          limit: 5,
         },
       ],
     }),
