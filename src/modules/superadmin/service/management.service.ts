@@ -20,6 +20,7 @@ export class AttendanceServiceFeature {
         email: true,
         status: true,
         invitationDate: true,
+        role: true
       },
     });
 

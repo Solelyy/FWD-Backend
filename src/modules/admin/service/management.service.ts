@@ -20,6 +20,7 @@ export class ManagementServiceFeature {
         email: true,
         status: true,
         invitationDate: true,
+        role: true
       },
     });
 
