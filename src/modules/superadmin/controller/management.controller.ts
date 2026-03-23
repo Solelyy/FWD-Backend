@@ -72,14 +72,14 @@ export class AttendanceControllerFeature {
     };
   }
 
-  @Patch("remove-user")
+  @Patch('remove-user')
   @UseGuards(AuthGuard)
-  async deleteUser(@Query("email") email: string){
-    const res = await this.management.softDelete(email)
+  async deleteUser(@Query('employee') employeeId: string) {
+    const res = await this.management.softDelete(employeeId);
 
     return {
       success: true,
-      message: "User deleted successfully"
-    }
+      message: 'User deleted successfully',
+    };
   }
 }
