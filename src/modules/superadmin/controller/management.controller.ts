@@ -72,7 +72,7 @@ export class AttendanceControllerFeature {
     };
   }
 
-  @Patch()
+  @Patch("remove-user")
   @UseGuards(AuthGuard)
   async deleteUser(@Query("email") email: string){
     const res = await this.management.softDelete(email)
