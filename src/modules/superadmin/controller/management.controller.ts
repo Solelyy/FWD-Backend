@@ -71,4 +71,15 @@ export class AttendanceControllerFeature {
       status: result,
     };
   }
+
+  @Patch()
+  @UseGuards(AuthGuard)
+  async deleteUser(@Query("email") email: string){
+    const res = await this.management.softDelete(email)
+
+    return {
+      success: true,
+      message: "User deleted successfully"
+    }
+  }
 }
