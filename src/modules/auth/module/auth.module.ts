@@ -27,6 +27,7 @@ const { SECRET_KEY } = process.env;
       secret: SECRET_KEY,
     }),
     ThrottlerModule.forRoot({
+      // throttler must be configured at module, where rate limiting is gonna be used for
       throttlers: [
         {
           name: 'login',
@@ -45,11 +46,10 @@ const { SECRET_KEY } = process.env;
     SecurityUtil,
     JwtHelper,
     AuthGuard,
-    {
-      provide: APP_GUARD,
-      useClass: ThrottlerGuard,
-    },
+    // disable appguard to not set it globally,
+    // if specific routes only need rate limiting, not all
   ],
+
   controllers: [AuthController],
   exports: [JwtHelper, SecurityUtil],
 })
