@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { PrismaService } from 'src/prisma_global/prisma.service';
 import { Role } from '@prisma/client';
 import { AdminStatusDTO } from '../dto/admin.status.dto';
@@ -20,7 +24,7 @@ export class AttendanceServiceFeature {
         email: true,
         status: true,
         invitationDate: true,
-        role: true
+        role: true,
       },
     });
 
@@ -73,5 +77,26 @@ export class AttendanceServiceFeature {
       startDate: update.startDate,
       endDate: update.endDate,
     };
+  }
+
+  async softDelete(email: string) {
+    const user = await this.prisma.user.findFirst({
+      where: {
+        email: email,
+      },
+    });
+
+    if (!user) {
+      throw new NotFoundException('User does not exists');
+    }
+
+    await this.prisma.user.update({
+      where: {
+        email: user.email,
+      },
+      data: {
+        isDeleted: true,
+      },
+    });
   }
 }
