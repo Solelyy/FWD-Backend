@@ -34,7 +34,6 @@
       role                  Role      @default(EMPLOYEE)
       status                Status    @default(PENDING)
       password              String?
-      dataPolicyAccepted    Boolean   @default(false)
       createdAt             DateTime  @default(now())
       updatedAt            DateTime   @updatedAt
       session String?

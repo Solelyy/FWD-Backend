@@ -67,6 +67,7 @@ export class AuthService {
       role: updateEmployee.role,
       email: updateEmployee.email,
       session: updateEmployee.session,
+      isDataPolicyAccepted: updateEmployee.isDataPolicyAccepted,
     };
   }
 
