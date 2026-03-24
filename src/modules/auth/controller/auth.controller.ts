@@ -35,7 +35,6 @@ export class AuthController {
     @Body(CustomValidationPipe) login: LoginDto,
     @Res({ passthrough: true }) res: Response,
   ) {
-    //no try catch since exception filters are already declare in superadmin sevice
     const resultWithToken = await this.user.userLogin(login);
 
     const { employeeId, role, session } = resultWithToken;
@@ -46,8 +45,8 @@ export class AuthController {
     //cookies are aumatically at response no eed to store
     this.cookie.setAuthCookies({ employeeId, role }, session, res);
     return {
-      //rootpoints cna be accesed
       data: {
+        user: resultWithToken,
         success: true,
         message: 'logged in successfully',
       },
