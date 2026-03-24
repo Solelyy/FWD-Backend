@@ -37,16 +37,20 @@ export class AuthController {
   ) {
     const resultWithToken = await this.user.userLogin(login);
 
-    const { employeeId, role, session } = resultWithToken;
+    const { session, ...data } = resultWithToken;
 
     if (!session) {
       throw new NotFoundException('no token');
     }
+
+    const employeeId = data.employeeId;
+    const role = data.role;
+
     //cookies are aumatically at response no eed to store
     this.cookie.setAuthCookies({ employeeId, role }, session, res);
     return {
       data: {
-        user: resultWithToken,
+        user: data,
         success: true,
         message: 'logged in successfully',
       },
