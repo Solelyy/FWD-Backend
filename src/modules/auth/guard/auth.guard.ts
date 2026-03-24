@@ -33,7 +33,23 @@ export class AuthGuard implements CanActivate {
     if (!token) {
       throw new UnauthorizedException('missing or invalid token');
     }
-    await this.jwt.verifyAsync(token);
+    const decoded = await this.jwt.verifyAsync(token);
+
+    const user = await this.prisma.user.findUnique({
+      where: { employeeId: decoded.sub },
+    });
+
+    if (!user) {
+      throw new UnauthorizedException();
+    }
+
+    //attached the user to request
+    getReq.user = {
+      id: user.id,
+      employeeId: user.employeeId,
+      email: user.email,
+      role: user.role,
+    };
 
     return true;
   }
