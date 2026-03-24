@@ -20,12 +20,13 @@ CREATE TABLE "User" (
     "dataPolicyAccepted" BOOLEAN NOT NULL DEFAULT false,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
-    "authCurrentToken" TEXT,
-    "authTokenExpiresAt" TIMESTAMP(3),
+    "session" TEXT,
     "invitationDate" TEXT,
     "verificationToken" TEXT,
     "startDate" TIMESTAMP(3),
     "endDate" TIMESTAMP(3),
+    "isDeleted" BOOLEAN NOT NULL DEFAULT false,
+    "isDataPolicyAccepted" BOOLEAN NOT NULL DEFAULT false,
 
     CONSTRAINT "User_pkey" PRIMARY KEY ("id")
 );

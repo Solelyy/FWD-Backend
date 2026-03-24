@@ -27,7 +27,7 @@ export class AuthService {
     });
 
     if (!findEmployeeId) {
-      throw new UnauthorizedException('user not found');
+      throw new NotFoundException('user not found');
     } else if (!findEmployeeId.password) {
       throw new BadRequestException();
       // includes() method checks if the value exists on the array
@@ -59,7 +59,16 @@ export class AuthService {
       },
     });
 
-    return updateEmployee;
+    return {
+      id: updateEmployee.id,
+      employeeId: updateEmployee.employeeId,
+      firstname: updateEmployee.firstname,
+      lastname: updateEmployee.lastname,
+      role: updateEmployee.role,
+      email: updateEmployee.email,
+      session: updateEmployee.session,
+      isDataPolicyAccepted: updateEmployee.isDataPolicyAccepted,
+    };
   }
 
   async getMe(token: string) {

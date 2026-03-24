@@ -7,7 +7,7 @@ export class CronCheckerHelper {
   constructor(private readonly prisma: PrismaService) {}
   //  test, remove one asterisk to check every hour
   // this checks every minute
-  @Cron('0 * * * * *')
+  @Cron('0 * * * *')
   async dateChecker() {
     const date = new Date();
 
