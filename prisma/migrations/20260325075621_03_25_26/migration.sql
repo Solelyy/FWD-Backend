@@ -17,7 +17,6 @@ CREATE TABLE "User" (
     "role" "Role" NOT NULL DEFAULT 'EMPLOYEE',
     "status" "Status" NOT NULL DEFAULT 'PENDING',
     "password" TEXT,
-    "dataPolicyAccepted" BOOLEAN NOT NULL DEFAULT false,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "session" TEXT,
