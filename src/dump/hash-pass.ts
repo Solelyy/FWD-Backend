@@ -1,7 +1,7 @@
 import bcrypt from 'bcrypt';
 
 async function generateHash() {
-  const password = 'binongofeb0206';
+  const password = 'jessa1234@';
   const saltRounds = 10;
 
   const hash = await bcrypt.hash(password, saltRounds);

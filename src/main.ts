@@ -42,7 +42,7 @@ async function startServer() {
 
     if (!cookieSecret ) {
       throw new Error(
-        'COOKIE_SECRET is required in production. Please set it in your environment variables.',
+        'api-key is required in production. Please set it in your environment variables.',
       );
     }else if (environment !== 'production') {
       console.warn('production env is not set,please set NODE_ENV to production for better security');
