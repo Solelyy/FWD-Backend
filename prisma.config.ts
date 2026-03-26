@@ -4,7 +4,7 @@ import { DateHelper } from './src/utils/date.utils';
 
 // Load correct .env file based on NODE_ENV
 dotenv.config({
-  path: `.env.${process.env.NODE_ENV || 'development'}`,
+  path: `.env.${process.env.NODE_ENV || 'production'}`,
 });
 
 export default defineConfig({

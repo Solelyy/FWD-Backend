@@ -32,7 +32,7 @@ startServer();
 
 async function startServer() {
   try {
-    const environment = process.env.NODE_ENV || 'development';
+    const environment = process.env.NODE_ENV || 'production';
     const path = `.env.${environment}`;
     env.config({ path: path });
 
@@ -42,11 +42,11 @@ async function startServer() {
 
     if (!cookieSecret) {
       throw new Error(
-        'api-key is required in development. Please set it in your environment variables.',
+        'api-key is required in production. Please set it in your environment variables.',
       );
     } else if (environment !== 'development') {
       console.warn(
-        'development env is not set,please set NODE_ENV to development for testing',
+        'production env is not set,please set NODE_ENV to production',
       );
     }
 
