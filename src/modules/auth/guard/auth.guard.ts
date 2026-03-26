@@ -43,6 +43,10 @@ export class AuthGuard implements CanActivate {
       throw new UnauthorizedException();
     }
 
+    if (decoded.role !== user.role) {
+      throw new UnauthorizedException('Invalid role');
+    }
+
     //attached the user to request
     getReq.user = {
       id: user.id,

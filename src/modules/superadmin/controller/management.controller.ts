@@ -8,6 +8,8 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { AuthGuard } from 'src/modules/auth/guard/auth.guard';
+import { Roles } from 'src/common/custom-decorators/Roles.decorator';
+import { RolesGuard } from 'src/modules/auth/guard/roles.guard';
 import { AttendanceServiceFeature } from '../service/management.service';
 import { Role, Status } from '@prisma/client';
 import { CustomValidationPipe } from 'src/common/custom-pipes/pipes.custom-pipes';
@@ -20,8 +22,9 @@ import {
 export class AttendanceControllerFeature {
   constructor(private readonly management: AttendanceServiceFeature) {}
 
+  @Roles('SUPER_ADMIN')
+  @UseGuards(AuthGuard, RolesGuard)
   @Get('users')
-  @UseGuards(AuthGuard)
   async getAdmins() {
     const viewAdmins = await this.management.viewAdmins();
 
@@ -32,8 +35,9 @@ export class AttendanceControllerFeature {
     };
   }
 
+  @Roles('SUPER_ADMIN')
+  @UseGuards(AuthGuard, RolesGuard)
   @Patch('status')
-  @UseGuards(AuthGuard)
   async updateAdminStatus(
     @Query('employee') employeeId: string,
     // receive only status body
@@ -51,8 +55,9 @@ export class AttendanceControllerFeature {
     };
   }
 
+  @Roles('SUPER_ADMIN')
+  @UseGuards(AuthGuard, RolesGuard)
   @Patch('employment')
-  @UseGuards(AuthGuard)
   async updateAdminStatusSuspended(
     @Query('employee') employeeId: string,
     // receive only status body
@@ -72,14 +77,16 @@ export class AttendanceControllerFeature {
     };
   }
 
+  @Roles('SUPER_ADMIN')
+  @UseGuards(AuthGuard, RolesGuard)
   @Patch('remove-user')
-  @UseGuards(AuthGuard)
   async deleteUser(@Query('employee') employeeId: string) {
     const res = await this.management.softDelete(employeeId);
 
     return {
       success: true,
       message: 'User deleted successfully',
+      deleted: res.isDeleted,
     };
   }
 }
