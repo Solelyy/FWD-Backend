@@ -22,7 +22,7 @@ import { AllowedAdminStatus } from 'src/modules/superadmin/dto/admin.status.dto'
 export class ManagementControllerFeature {
   constructor(private readonly management: ManagementServiceFeature) {}
 
-  @Roles('ADMIN')
+  @Roles('ADMIN', 'SUPER_ADMIN')
   @UseGuards(AuthGuard, RolesGuard)
   @Get('users')
   @UseGuards(AuthGuard)
