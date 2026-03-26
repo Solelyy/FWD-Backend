@@ -32,7 +32,7 @@ startServer();
 
 async function startServer() {
   try {
-    const environment = process.env.NODE_ENV || 'production';
+    const environment = process.env.NODE_ENV || 'development';
     const path = `.env.${environment}`;
     env.config({ path: path });
 
@@ -40,12 +40,14 @@ async function startServer() {
 
     const cookieSecret = process.env.API_KEY;
 
-    if (!cookieSecret ) {
+    if (!cookieSecret) {
       throw new Error(
-        'COOKIE_SECRET is required in production. Please set it in your environment variables.',
+        'api-key is required in development. Please set it in your environment variables.',
       );
-    }else if (environment !== 'production') {
-      console.warn('production env is not set,please set NODE_ENV to production for better security');
+    } else if (environment !== 'development') {
+      console.warn(
+        'development env is not set,please set NODE_ENV to development for testing',
+      );
     }
 
     // CORS setup with logging
@@ -86,7 +88,7 @@ async function startServer() {
     console.log(`Environment: ${environment}`);
     console.log(`Server running on port ${port}`);
     console.log('NODE_ENV:', process.env.NODE_ENV);
-    console.log('COOKIE_SECRET:', cookieSecret   ? '[SET]' : '[NOT SET]');
+    console.log('COOKIE_SECRET:', cookieSecret ? '[SET]' : '[NOT SET]');
   } catch (error) {
     console.error('Server failed to start:', error);
     process.exit(1);
