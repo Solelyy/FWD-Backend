@@ -3,7 +3,7 @@ import { AuthGuard } from 'src/modules/auth/guard/auth.guard';
 import { ExternalService } from '../service/external-superadmin.service';
 import { Roles } from 'src/common/custom-decorators/Roles.decorator';
 import { RolesGuard } from 'src/modules/auth/guard/roles.guard';
-@Controller('users/email')
+@Controller('superadmin/users')
 export class ExternalSuperadminController {
   constructor(private readonly service: ExternalService) {}
 
