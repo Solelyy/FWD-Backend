@@ -7,10 +7,16 @@ import { UtilModule } from 'src/utils/util.module';
 import { EmailModule } from 'src/email/module/email.module';
 import { ManagementServiceFeature } from '../service/management.service';
 import { ManagementControllerFeature } from '../controller/management.controller';
+import { ExternalService } from '../service/external-admin.service';
+import { ExternalAdminController } from '../controller/external.admin.controller';
 
 @Module({
   imports: [AuthModule, UtilModule, EmailModule],
-  controllers: [AdminController, ManagementControllerFeature],
-  providers: [AdminService, ManagementServiceFeature],
+  controllers: [
+    AdminController,
+    ManagementControllerFeature,
+    ExternalAdminController,
+  ],
+  providers: [AdminService, ManagementServiceFeature, ExternalService],
 })
 export class AdminModule {}

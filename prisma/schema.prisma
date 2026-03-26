@@ -18,6 +18,7 @@
       INACTIVE
       EXPIRED
       SUSPENDED
+      REMOVED
     }
 
     enum Provider {

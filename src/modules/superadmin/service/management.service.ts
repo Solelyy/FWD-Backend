@@ -4,7 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { PrismaService } from 'src/prisma_global/prisma.service';
-import { Role } from '@prisma/client';
+import { Role, Status } from '@prisma/client';
 import { AdminStatusDTO } from '../dto/admin.status.dto';
 import { AdminStatusSuspendedDTO } from '../dto/admin.status.suspended.dto';
 @Injectable()
@@ -79,10 +79,10 @@ export class AttendanceServiceFeature {
     };
   }
 
-  async softDelete(email: string) {
-    const user = await this.prisma.user.findFirst({
+  async softDelete(employeeId: string) {
+    const user = await this.prisma.user.findUnique({
       where: {
-        email: email,
+        employeeId: employeeId,
       },
     });
 
@@ -90,12 +90,13 @@ export class AttendanceServiceFeature {
       throw new NotFoundException('User does not exists');
     }
 
-    await this.prisma.user.update({
+    return await this.prisma.user.update({
       where: {
-        email: user.email,
+        employeeId: user.employeeId,
       },
       data: {
         isDeleted: true,
+        status: Status.REMOVED,
       },
     });
   }

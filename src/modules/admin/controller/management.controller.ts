@@ -8,6 +8,8 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { AuthGuard } from 'src/modules/auth/guard/auth.guard';
+import { RolesGuard } from 'src/modules/auth/guard/roles.guard';
+import { Roles } from 'src/common/custom-decorators/Roles.decorator';
 import { ManagementServiceFeature } from '../service/management.service';
 import { CustomValidationPipe } from 'src/common/custom-pipes/pipes.custom-pipes';
 import {
@@ -20,6 +22,8 @@ import { AllowedAdminStatus } from 'src/modules/superadmin/dto/admin.status.dto'
 export class ManagementControllerFeature {
   constructor(private readonly management: ManagementServiceFeature) {}
 
+  @Roles('ADMIN')
+  @UseGuards(AuthGuard, RolesGuard)
   @Get('users')
   @UseGuards(AuthGuard)
   async getAdmins() {
@@ -32,8 +36,9 @@ export class ManagementControllerFeature {
     };
   }
 
+  @Roles('ADMIN')
+  @UseGuards(AuthGuard, RolesGuard)
   @Patch('status')
-  @UseGuards(AuthGuard)
   async updateAdminStatus(
     @Query('employee') employeeId: string,
     // receive only status body
@@ -51,8 +56,9 @@ export class ManagementControllerFeature {
     };
   }
 
+  @Roles('ADMIN')
+  @UseGuards(AuthGuard, RolesGuard)
   @Patch('employment')
-  @UseGuards(AuthGuard)
   async updateAdminStatusSuspended(
     @Query('employee') employeeId: string,
     // receive only status body
@@ -69,6 +75,19 @@ export class ManagementControllerFeature {
       success: true,
       message: 'status updated',
       status: result,
+    };
+  }
+
+  @Roles('ADMIN')
+  @UseGuards(AuthGuard, RolesGuard)
+  @Patch('remove-user')
+  async deleteUser(@Query('employee') employeeId: string) {
+    const res = await this.management.softDelete(employeeId);
+
+    return {
+      success: true,
+      message: 'User deleted successfully',
+      deleted: res.isDeleted,
     };
   }
 }

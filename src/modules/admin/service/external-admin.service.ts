@@ -6,6 +6,7 @@ import {
 import { PrismaService } from 'src/prisma_global/prisma.service';
 import { EmailService } from 'src/email/service/email.service';
 import { JwtHelper } from 'src/common/helper/token.security';
+import { Status } from '@prisma/client';
 
 @Injectable()
 export class ExternalService {
@@ -32,6 +33,15 @@ export class ExternalService {
       role: user.role,
     });
 
+    const update = await this.prisma.user.update({
+      where: { email: user.email },
+      data: {
+        status: Status.PENDING,
+      },
+    });
+
     await this.email.sendVerificationEmail(userEmail, token);
+
+    return update;
   }
 }

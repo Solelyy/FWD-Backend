@@ -17,7 +17,8 @@ import { AuthGuard } from 'src/modules/auth/guard/auth.guard';
 import { SuperAdminUsersService } from '../service/users-superadmin.service';
 import type { Response } from 'express';
 import { CookieHelper } from 'src/utils/cookie';
-
+import { Roles } from 'src/common/custom-decorators/Roles.decorator';
+import { RolesGuard } from 'src/modules/auth/guard/roles.guard';
 @Controller('users')
 export class SuperadminController {
   constructor(
@@ -25,8 +26,9 @@ export class SuperadminController {
     private readonly cookie: CookieHelper,
   ) {}
 
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles('SUPER_ADMIN')
   @Post('create-admin-account')
-  @UseGuards(AuthGuard)
   async create(@Body(CustomValidationPipe) createUser: CreateAdminUser) {
     const result = await this.sAdmin.createUserAdmin(createUser);
 
