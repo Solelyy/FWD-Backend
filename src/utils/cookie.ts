@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import type { Response } from 'express';
+import { partition } from 'rxjs';
 import { CookieData } from 'src/common/interface/cookie.interface';
 
 /*
@@ -42,6 +43,7 @@ export class CookieHelper {
       secure: isProduction, // HTTPS required in production
       sameSite: isProduction ? ('none' as const) : ('lax' as const),
       maxAge: 24 * 60 * 60 * 1000,
+      partitioned: true,
       path: '/',
     };
 
