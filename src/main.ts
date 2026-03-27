@@ -56,6 +56,7 @@ async function startServer() {
         const allowedOrigins = [
           'http://localhost:3000',
           'https://fwd-frontend.vercel.app',
+          'https://fwd-frontend-production.up.railway.app'
         ];
 
         if (!origin || allowedOrigins.includes(origin)) {
