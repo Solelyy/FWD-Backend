@@ -43,7 +43,6 @@ export class CookieHelper {
       secure: isProduction, // HTTPS required in production
       sameSite: isProduction ? ('none' as const) : ('lax' as const),
       maxAge: 24 * 60 * 60 * 1000,
-      partitioned: true,
       path: '/',
     };
 
