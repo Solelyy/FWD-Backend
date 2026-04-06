@@ -51,3 +51,18 @@ execution process, typically used in guards, filters, and interceptors.
    Returns an object providing methods for a WebSockets context.
 
 NOTE: Ip address is default attached in every web request, hence it can be extracted using this class Execution Context
+
+## Core ThrottlerGuard Methods
+
+- When extending the base ThrottlerGuard to create custom rate-limiting logic, you can override the following key methods:
+
+1. getTracker():
+   Determines how a request is uniquely identified for tracking. By default, it uses the client's IP address. You can override this to track by user ID, email, or custom headers.
+
+generateKey(): 2. Defines the final string key used to store the rate-limit value in your storage (e.g., Redis or in-memory). It typically combines the tracker string and the throttler name.
+
+handleRequest(): 3. The primary method that executes the throttling logic. It checks if the request exceeds the limit and throws a ThrottlerException (HTTP 429) if it does.
+
+getLimit(): 4. Allows for dynamic rate limits based on the request context, such as higher limits for admin users versus regular users.
+
+getTTL(): 5. Dynamically sets the Time-to-Live (duration) for the rate-limiting window based on the request.

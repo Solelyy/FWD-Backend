@@ -28,10 +28,9 @@ export class AuthController {
   ) {}
 
   // use guard if not set App_global in module for throttling
-
+  @UseGuards(CustomThrottleGuard)
   @Throttle({ login: { ttl: 900000, limit: 5 } })
   @Post('login')
-  @UseGuards(CustomThrottleGuard)
   async login(
     @Body(CustomValidationPipe) login: LoginDto,
     @Res({ passthrough: true }) res: Response,
