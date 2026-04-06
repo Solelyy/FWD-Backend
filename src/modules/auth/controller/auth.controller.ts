@@ -19,7 +19,7 @@ import { CookieHelper } from 'src/utils/cookie';
 import { AuthGuard } from '../guard/auth.guard';
 import { CustomValidationPipe } from 'src/common/custom-pipes/pipes.custom-pipes';
 import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
-
+import { CustomThrottleGuard } from '../guard/custom-throttle.guard';
 @Controller('auth')
 export class AuthController {
   constructor(
@@ -28,9 +28,10 @@ export class AuthController {
   ) {}
 
   // use guard if not set App_global in module for throttling
-  @UseGuards(ThrottlerGuard)
+
   @Throttle({ login: { ttl: 900000, limit: 5 } })
   @Post('login')
+  @UseGuards(CustomThrottleGuard)
   async login(
     @Body(CustomValidationPipe) login: LoginDto,
     @Res({ passthrough: true }) res: Response,
