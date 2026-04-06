@@ -32,7 +32,7 @@ startServer();
 
 async function startServer() {
   try {
-    const environment = process.env.NODE_ENV || 'production';
+    const environment = process.env.NODE_ENV || 'development';
     const path = `.env.${environment}`;
     env.config({ path: path });
 

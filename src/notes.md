@@ -24,3 +24,45 @@
 ### Body
 
 - @Body("sample) only receives a body contains a sample json only, but none it set and has a dto, then the json must be match the dto shape.
+
+## Execution Context
+
+- execution context is a class with methods to be used to extract metadatas at the requests and often used at guards such as guard for roles checking session token if valid.
+
+In NestJS, the ExecutionContext class extends ArgumentsHost to provide more details about the current
+execution process, typically used in guards, filters, and interceptors.
+
+1. getClass():
+   Returns the type of the Controller class to which the current handler belongs.
+
+2. getHandler():
+   Returns a reference to the specific handler (method) about to be invoked.
+
+3. getType():
+   Returns the type of the current application context (e.g., 'http', 'rpc', or 'ws').
+
+4. switchToHttp():
+   Returns an object providing methods appropriate for an HTTP context.
+
+5. switchToRpc():
+   Returns an object providing methods for a Microservice (RPC) context.
+
+6. switchToWs():
+   Returns an object providing methods for a WebSockets context.
+
+NOTE: Ip address is default attached in every web request, hence it can be extracted using this class Execution Context
+
+## Core ThrottlerGuard Methods
+
+- When extending the base ThrottlerGuard to create custom rate-limiting logic, you can override the following key methods:
+
+1. getTracker():
+   Determines how a request is uniquely identified for tracking. By default, it uses the client's IP address. You can override this to track by user ID, email, or custom headers.
+
+generateKey(): 2. Defines the final string key used to store the rate-limit value in your storage (e.g., Redis or in-memory). It typically combines the tracker string and the throttler name.
+
+handleRequest(): 3. The primary method that executes the throttling logic. It checks if the request exceeds the limit and throws a ThrottlerException (HTTP 429) if it does.
+
+getLimit(): 4. Allows for dynamic rate limits based on the request context, such as higher limits for admin users versus regular users.
+
+getTTL(): 5. Dynamically sets the Time-to-Live (duration) for the rate-limiting window based on the request.
