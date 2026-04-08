@@ -26,6 +26,14 @@
       GOOGLE
     }
 
+    enum attendance_Status {
+      NONE
+      IN_PROGRESS
+      COMPLETED
+      ON_LEAVE
+      SUSPENDED
+    }
+
     model User {
       id                    Int    @id @default(autoincrement())
       employeeId            String    @unique
@@ -46,4 +54,25 @@
       isDataPolicyAccepted Boolean    @default(false)
       @@index([role, status])
     }
+
+    model tbl_attendance {
+      attendanceId                  Int    @id @default(autoincrement())
+      employeeId Int
+      date DateTime  @default(now())
+      timeIn  DateTime  @default(now())
+      timeOut DateTime  @default(now())
+      timeInLoc String  
+      timeOutLoc String
+      timeInImg String
+      timeOutImg String
+      isLate Boolean
+      isOvertime Boolean
+      overtimeHours  Int
+      status  attendance_Status @default(NONE)  
+      createdAt DateTime @default(now())
+      updatedAt DateTime @updatedAt
+      editedByAdminId String
+    }
+
+
 

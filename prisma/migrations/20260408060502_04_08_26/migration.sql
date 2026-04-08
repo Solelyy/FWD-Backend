@@ -7,6 +7,9 @@ CREATE TYPE "Status" AS ENUM ('PENDING', 'ACTIVE', 'INACTIVE', 'EXPIRED', 'SUSPE
 -- CreateEnum
 CREATE TYPE "Provider" AS ENUM ('LOCAL', 'GOOGLE');
 
+-- CreateEnum
+CREATE TYPE "attendance_Status" AS ENUM ('NONE', 'IN_PROGRESS', 'COMPLETED', 'ON_LEAVE', 'SUSPENDED');
+
 -- CreateTable
 CREATE TABLE "User" (
     "id" SERIAL NOT NULL,
@@ -28,6 +31,28 @@ CREATE TABLE "User" (
     "isDataPolicyAccepted" BOOLEAN NOT NULL DEFAULT false,
 
     CONSTRAINT "User_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "tbl_attendance" (
+    "attendanceId" SERIAL NOT NULL,
+    "employeeId" INTEGER NOT NULL,
+    "date" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "timeIn" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "timeOut" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "timeInLoc" TEXT NOT NULL,
+    "timeOutLoc" TEXT NOT NULL,
+    "timeInImg" TEXT NOT NULL,
+    "timeOutImg" TEXT NOT NULL,
+    "isLate" BOOLEAN NOT NULL,
+    "isOvertime" BOOLEAN NOT NULL,
+    "overtimeHours" INTEGER NOT NULL,
+    "status" "attendance_Status" NOT NULL DEFAULT 'NONE',
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+    "editedByAdminId" TEXT NOT NULL,
+
+    CONSTRAINT "tbl_attendance_pkey" PRIMARY KEY ("attendanceId")
 );
 
 -- CreateIndex
