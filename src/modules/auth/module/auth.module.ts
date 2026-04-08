@@ -13,6 +13,8 @@ import { UtilModule } from 'src/utils/util.module';
 import { AuthGuard } from '../guard/auth.guard';
 import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
+import { CustomThrottleGuard } from '../guard/custom-throttle.guard';
+import { RolesGuard } from '../guard/roles.guard';
 const environment = process.env.NODE_ENV || 'development';
 const path = `.env.${environment}`;
 
@@ -46,11 +48,19 @@ const { SECRET_KEY } = process.env;
     SecurityUtil,
     JwtHelper,
     AuthGuard,
+    CustomThrottleGuard,
+    RolesGuard,
     // disable appguard to not set it globally,
     // if specific routes only need rate limiting, not all
   ],
 
   controllers: [AuthController],
-  exports: [JwtHelper, SecurityUtil],
+  exports: [
+    JwtHelper,
+    SecurityUtil,
+    AuthGuard,
+    CustomThrottleGuard,
+    RolesGuard,
+  ],
 })
 export class AuthModule {}
