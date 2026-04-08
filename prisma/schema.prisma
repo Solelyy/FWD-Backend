@@ -26,9 +26,17 @@
       GOOGLE
     }
 
+    enum attendance_Status {
+      NONE
+      IN_PROGRESS
+      COMPLETED
+      ON_LEAVE
+      SUSPENDED
+    }
+
     model User {
       id                    Int    @id @default(autoincrement())
-      employeeId            String    @unique
+      employeeId            String    @unique // as long its unique it can be referenced
       firstname             String
       lastname              String
       email                 String    @unique
@@ -44,6 +52,29 @@
       endDate             DateTime?
       isDeleted            Boolean    @default(false)
       isDataPolicyAccepted Boolean    @default(false)
+      attendance tbl_attendance[]
       @@index([role, status])
     }
+
+    model tbl_attendance {
+      attendanceId                  Int    @id @default(autoincrement())
+      employeeId String // as long the reference is unique it can be used as a reference
+      user User @relation(fields: [employeeId], references: [employeeId]) // the table relies on the user table therefore the attendance is recorded for a specific employee
+      date DateTime  @default(now())
+      timeIn  DateTime  @default(now())
+      timeOut DateTime  @default(now())
+      timeInLoc String  
+      timeOutLoc String
+      timeInImg String
+      timeOutImg String
+      isLate Boolean
+      isOvertime Boolean
+      overtimeHours  Int
+      status  attendance_Status @default(NONE)  
+      createdAt DateTime @default(now())
+      updatedAt DateTime @updatedAt
+      editedByAdminId String
+    }
+
+
 

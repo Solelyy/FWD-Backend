@@ -11,13 +11,9 @@ import { AuthGuard } from 'src/modules/auth/guard/auth.guard';
 import { Roles } from 'src/common/custom-decorators/Roles.decorator';
 import { RolesGuard } from 'src/modules/auth/guard/roles.guard';
 import { AttendanceServiceFeature } from '../service/management.service';
-import { Role, Status } from '@prisma/client';
 import { CustomValidationPipe } from 'src/common/custom-pipes/pipes.custom-pipes';
-import { AdminStatusDTO, AllowedAdminStatus } from '../dto/admin.status.dto';
-import {
-  AdminStatusSuspendedDTO,
-  AllowedAdminStatusSuspended,
-} from '../dto/admin.status.suspended.dto';
+import { AllowedAdminStatus } from '../dto/admin.status.dto';
+import { AdminStatusSuspendedDTO } from '../dto/admin.status.suspended.dto';
 @Controller('superadmin/management')
 export class AttendanceControllerFeature {
   constructor(private readonly management: AttendanceServiceFeature) {}
