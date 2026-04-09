@@ -32,7 +32,7 @@ startServer();
 
 async function startServer() {
   try {
-    const environment = process.env.NODE_ENV || 'development';
+    const environment = process.env.NODE_ENV || 'production';
     const path = `.env.${environment}`;
     env.config({ path: path });
 
@@ -44,7 +44,7 @@ async function startServer() {
       throw new Error(
         'api-key is required in production. Please set it in your environment variables.',
       );
-    } else if (environment !== 'development') {
+    } else if (environment !== 'production') {
       console.warn(
         'production env is not set,please set NODE_ENV to production',
       );
@@ -56,7 +56,7 @@ async function startServer() {
         const allowedOrigins = [
           'http://localhost:3000',
           'https://fwd-frontend.vercel.app',
-          'https://fwd-frontend-production.up.railway.app'
+          'https://fwd-frontend-production.up.railway.app',
         ];
 
         if (!origin || allowedOrigins.includes(origin)) {
