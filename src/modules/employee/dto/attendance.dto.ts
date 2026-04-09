@@ -1,18 +1,31 @@
-import { IsString, IsNotEmpty, IsEnum, IsBoolean } from 'class-validator';
+import {
+  IsString,
+  IsNotEmpty,
+  IsEnum,
+  IsBoolean,
+  IsDate,
+  IsDateString,
+} from 'class-validator';
 import { attendance_Status } from '@prisma/client';
 export class AttendanceDTO {
+  @IsNotEmpty()
   @IsString()
-  location?: string;
+  location: string;
 
+  @IsDateString()
+  @IsNotEmpty()
   @IsString()
   timeStamp: string;
 
+  @IsNotEmpty()
   @IsString()
-  imageUrl?: string;
+  imageUrl: string;
 
+  @IsNotEmpty()
   @IsEnum(attendance_Status)
   attendanceType: attendance_Status;
 
+  @IsNotEmpty()
   @IsBoolean()
-  isOvertime?: boolean;
+  isOvertime: boolean;
 }
