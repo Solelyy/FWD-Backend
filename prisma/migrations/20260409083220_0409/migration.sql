@@ -36,7 +36,7 @@ CREATE TABLE "User" (
 -- CreateTable
 CREATE TABLE "tbl_attendance" (
     "attendanceId" SERIAL NOT NULL,
-    "employeeId" INTEGER NOT NULL,
+    "employeeId" TEXT NOT NULL,
     "date" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "timeIn" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "timeOut" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -63,3 +63,6 @@ CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
 
 -- CreateIndex
 CREATE INDEX "User_role_status_idx" ON "User"("role", "status");
+
+-- AddForeignKey
+ALTER TABLE "tbl_attendance" ADD CONSTRAINT "tbl_attendance_employeeId_fkey" FOREIGN KEY ("employeeId") REFERENCES "User"("employeeId") ON DELETE RESTRICT ON UPDATE CASCADE;
