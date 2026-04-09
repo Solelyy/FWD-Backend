@@ -3,7 +3,7 @@ import nodemailer from 'nodemailer';
 import env from 'dotenv';
 import { DateHelper } from 'src/utils/date.utils';
 
-const environment = process.env.NODE_ENV || 'development';
+const environment = process.env.NODE_ENV || 'production';
 const envPath = `.env.${environment}`; //change the env value
 
 env.config({ path: envPath });
