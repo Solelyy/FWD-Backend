@@ -68,11 +68,12 @@ export class AdminService {
     return updateUser;
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  async acceptDataPolicy(employeeId: string) {
+    const update = await this.prisma.user.update({
+      where: { employeeId: employeeId },
+      data: {
+        isDataPolicyAccepted: true,
+      },
+    });
   }
 }

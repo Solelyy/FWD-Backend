@@ -59,4 +59,13 @@ export class SuperAdminUsersService {
 
     return createAdmin;
   }
+
+  async acceptDataPolicy(employeeId: string) {
+    const update = await this.prisma.user.update({
+      where: { employeeId: employeeId },
+      data: {
+        isDataPolicyAccepted: true,
+      },
+    });
+  }
 }
