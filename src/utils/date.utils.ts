@@ -3,7 +3,15 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 
 @Injectable()
 export class DateHelper {
-  constructor(private readonly prisma: PrismaService) {}
+  workStart: Date;
+  workEnd: Date;
+  graceMin: Date;
+
+  constructor(private readonly prisma: PrismaService) {
+    this.workStart = new Date('1970-01-01T07:00:00Z');
+    this.workEnd = new Date('1970-01-01T17:00:00Z');
+    this.graceMin = new Date(this.workStart.getTime() + 15 * 60 * 1000);
+  }
 
   async LocaleSetDateHelper(email: string, token: string) {
     const date = new Date();
@@ -29,15 +37,14 @@ export class DateHelper {
     }
   }
 
-  /*
-  async SetDateHelper() {
-    const date = new Date();
-
-    const setEmailCreationDate = date.toLocaleString('en-PH', {
-      timeZone: 'Asia/Manila',
-      dateStyle: 'full',
-      timeStyle: 'medium',
-    });
+  getWorkingConstraints() {
+    return {
+      startHour: this.workStart.getUTCHours(),
+      startMinute: this.workStart.getUTCMinutes(),
+      endHour: this.workEnd.getUTCHours(),
+      endMinute: this.workEnd.getUTCMinutes(),
+      graceHour: this.graceMin.getUTCHours(),
+      graceMinute: this.graceMin.getUTCMinutes(),
+    };
   }
-  */
 }

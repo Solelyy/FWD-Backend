@@ -2,7 +2,9 @@ import env from 'dotenv';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import cookieParser from 'cookie-parser';
-
+const environment = process.env.NODE_ENV || 'production';
+const path = `.env.${environment}`;
+env.config({ path: path });
 /*
 async function startServer() {
   const environment = process.env.NODE_ENV || 'development';
@@ -32,10 +34,6 @@ startServer();
 
 async function startServer() {
   try {
-    const environment = process.env.NODE_ENV || 'production';
-    const path = `.env.${environment}`;
-    env.config({ path: path });
-
     const app = await NestFactory.create(AppModule);
 
     const cookieSecret = process.env.API_KEY;

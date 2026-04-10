@@ -62,18 +62,18 @@
       user User @relation(fields: [employeeId], references: [employeeId]) // the table relies on the user table therefore the attendance is recorded for a specific employee
       date DateTime  @default(now())
       timeIn  DateTime  @default(now())
-      timeOut DateTime  @default(now())
-      timeInLoc String  
-      timeOutLoc String
-      timeInImg String
-      timeOutImg String
-      isLate Boolean
-      isOvertime Boolean
-      overtimeHours  Int
+      timeOut DateTime @default(now())
+      timeInLoc String?
+      timeOutLoc String?
+      timeInImg String?
+      timeOutImg String?
+      isLate Boolean @default(false)
+      isOvertime Boolean @default(false)
+      overtimeHours  Int?
       status  attendance_Status @default(NONE)  
       createdAt DateTime @default(now())
       updatedAt DateTime @updatedAt
-      editedByAdminId String
+      editedByAdminId String?
     }
 
 
