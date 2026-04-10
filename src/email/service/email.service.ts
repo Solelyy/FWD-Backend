@@ -54,28 +54,71 @@ export class EmailService {
       to,
       subject: 'Activate Your FWD Portal Account',
       html: `
-       <div style="font-family: Arial, sans-serif; max-width: 300px; margin: 0; padding: 20px;">
-    <h2 style="margin: 0 0 16px 0; font-size: 20px; text-align: left;">Welcome to the FWD Portal! You have been invited to activate your account.</h2>
-    
-    <p style="margin: 0 0 18px 0; font-size: 16px; text-align: left;">To get started, please click the button below to <span style="font-weight: 700;">set your password and activate your account.</span></p>
-    
-    <div style="text-align: left; margin: 30px 0;">
-        <a href="${verificationLink}" 
-          style="display: inline-block; padding: 10px 20px; background-color: #FFEB94; color: black; text-decoration: none; border-radius: 5px; font-size: 16px;">
-          Activate Account
-        </a>
-    </div>
-    
-    <p style="margin: 0 0 18px 0; font-size: 16px; text-align: left;">Once completed, you will be able to log in and access the portal.</p>
-    
-    <p style="margin: 0 0 18px 0; font-size: 16px; text-align: left;">If you need help or have any questions, please contact the HR or IT support team.</p>
-    
-    <div style="margin-top: 30px; text-align: left;">
-        <p style="margin: 0 0 5px 0; font-size: 16px;">Best regards,</p>
-        <p style="margin: 0; font-size: 16px; font-weight: 700;">FWD Technologies</p>
-    </div>
-</div>  
-        `,
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Welcome to FWD Portal</title>
+      </head>
+      <body style="margin: 0; padding: 0; background-color: #f5f7fa; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;">
+        <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color: #f5f7fa; padding: 40px 20px;">
+          <tr>
+            <td align="center">
+              <table width="100%" max-width="560px" cellpadding="0" cellspacing="0" border="0" style="max-width: 560px; width: 100%; background-color: #ffffff; border-radius: 16px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); overflow: hidden;">
+                
+                <!-- Header -->
+                <tr>
+                  <td style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); padding: 40px 32px; text-align: center;">
+                    <h1 style="margin: 0; color: #ffffff; font-size: 28px; font-weight: 600; letter-spacing: -0.5px;">FWD Portal</h1>
+                    <p style="margin: 8px 0 0 0; color: #a0aec0; font-size: 14px;">FWD Technologies</p>
+                  </td>
+                </tr>
+                
+                <!-- Content -->
+                <tr>
+                  <td style="padding: 48px 32px 40px 32px;">
+                    <h2 style="margin: 0 0 12px 0; color: #1a202c; font-size: 24px; font-weight: 600;">Welcome to the FWD Portal!</h2>
+                    <p style="margin: 0 0 24px 0; color: #4a5568; font-size: 16px; line-height: 1.5;">You have been invited to activate your account.</p>
+                    
+                    <p style="margin: 0 0 16px 0; color: #4a5568; font-size: 16px; line-height: 1.5;">To get started, please click the button below to <strong>set your password and activate your account.</strong></p>
+                    
+                    <!-- Button -->
+                    <div style="margin: 32px 0; text-align: center;">
+                      <a href="${verificationLink}" 
+                         style="display: inline-block; background: linear-gradient(135deg, #f5b042 0%, #ffd700 100%); color: #1a202c; text-decoration: none; padding: 14px 32px; border-radius: 8px; font-weight: 600; font-size: 16px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); transition: all 0.3s ease;">
+                        Activate Account →
+                      </a>
+                    </div>
+                    
+                    <p style="margin: 0 0 20px 0; color: #4a5568; font-size: 16px; line-height: 1.5;">Once completed, you will be able to log in and access the portal.</p>
+                    
+                    <p style="margin: 0 0 20px 0; color: #4a5568; font-size: 16px; line-height: 1.5;">If you need help or have any questions, please contact the HR or IT support team.</p>
+                  </td>
+                </tr>
+                
+                <!-- Divider -->
+                <tr>
+                  <td style="padding: 0 32px;">
+                    <hr style="border: none; height: 1px; background-color: #e2e8f0; margin: 0;">
+                  </td>
+                </tr>
+                
+                <!-- Footer -->
+                <tr>
+                  <td style="padding: 32px; background-color: #fafbfc;">
+                    <p style="margin: 0 0 8px 0; color: #718096; font-size: 14px; line-height: 1.5;">Best regards,</p>
+                    <p style="margin: 0; color: #1a202c; font-size: 16px; font-weight: 600;">FWD Technologies</p>
+                    <p style="margin: 16px 0 0 0; color: #a0aec0; font-size: 12px;">© ${new Date().getFullYear()} FWD Technologies. All rights reserved.</p>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+        </table>
+      </body>
+      </html>
+    `,
     });
 
     await this.date.LocaleSetDateHelper(to, token);

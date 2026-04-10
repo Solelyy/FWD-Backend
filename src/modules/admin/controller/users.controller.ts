@@ -3,12 +3,8 @@ import {
   Get,
   Post,
   Body,
-  Patch,
-  Param,
-  Delete,
-  HttpCode,
-  HttpException,
-  HttpStatus,
+  Req,
+  NotFoundException,
   UseGuards,
 } from '@nestjs/common';
 import { AdminService } from '../service/admin.service';
@@ -18,7 +14,7 @@ import { CustomValidationPipe } from 'src/common/custom-pipes/pipes.custom-pipes
 import { RolesGuard } from 'src/modules/auth/guard/roles.guard';
 import { AuthGuard } from 'src/modules/auth/guard/auth.guard';
 import { Roles } from 'src/common/custom-decorators/Roles.decorator';
-
+import type { RequestData } from 'src/modules/auth/interface/reqdata';
 @Controller('users') //this is the parent path
 export class AdminController {
   constructor(private readonly AdminService: AdminService) {}
@@ -35,19 +31,21 @@ export class AdminController {
     };
   }
 
-  @Get()
-  findAll() {}
+  @Post('admin-data-policy')
+  @Roles('ADMIN')
+  @UseGuards(AuthGuard, RolesGuard)
+  async setDataPolicy(@Req() req: RequestData) {
+    const data = req.user?.employeeId;
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {}
+    if (!data) {
+      throw new NotFoundException('User not found');
+    }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.AdminService.update(+id, updateUserDto);
-  }
+    await this.AdminService.acceptDataPolicy(data);
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.AdminService.remove(+id);
+    return {
+      success: true,
+      message: 'data policy accepted',
+    };
   }
 }

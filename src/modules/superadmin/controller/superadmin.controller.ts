@@ -9,8 +9,10 @@ import {
   UseGuards,
   Res,
   BadRequestException,
+  Req,
+  NotFoundException,
 } from '@nestjs/common';
-
+import type { RequestData } from 'src/modules/auth/interface/reqdata';
 import { CustomValidationPipe } from 'src/common/custom-pipes/pipes.custom-pipes';
 import { CreateAdminUser } from '../dto/create-superadmin.dto';
 import { AuthGuard } from 'src/modules/auth/guard/auth.guard';
@@ -42,6 +44,24 @@ export class SuperadminController {
         success: true,
         message: 'user invited',
       },
+    };
+  }
+
+  @Patch('superadmin-data-policy')
+  @Roles('SUPER_ADMIN')
+  @UseGuards(AuthGuard, RolesGuard)
+  async setDataPolicy(@Req() req: RequestData) {
+    const data = req.user?.employeeId;
+
+    if (!data) {
+      throw new NotFoundException('User not found');
+    }
+
+    await this.sAdmin.acceptDataPolicy(data);
+
+    return {
+      success: true,
+      message: 'data policy accepted',
     };
   }
 }
