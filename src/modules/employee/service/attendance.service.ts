@@ -5,8 +5,8 @@ import { DateHelper } from 'src/utils/date.utils';
 import { WorkingConstraints } from '../types/get-time.types';
 @Injectable()
 export class EmployeeAttendanceService {
-  isLate: boolean;
-  getTime: WorkingConstraints;
+  private isLate: boolean;
+  private getTime: WorkingConstraints;
 
   constructor(
     private readonly prisma: PrismaService,
@@ -47,5 +47,13 @@ export class EmployeeAttendanceService {
         isLate: this.isLate,
       },
     });
+
+    return {
+      isLate: storeAttendance.isLate,
+      timeIn: new Date(storeAttendance.timeIn).toLocaleString('en-PH', {
+        timeZone: 'Asia/Manila',
+        hour12: true,
+      }),
+    };
   }
 }
