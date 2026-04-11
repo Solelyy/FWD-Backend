@@ -44,7 +44,7 @@ export class CookieHelper {
       sameSite: isProduction ? ('none' as const) : ('lax' as const),
       maxAge: 24 * 60 * 60 * 1000,
       path: '/',
-      partitioned: true, // Enable cookie partitioning for better security
+      //partitioned: true, // Enable cookie partitioning for better security
     };
 
     res.cookie('session_token', token, cookieOptions);
@@ -60,3 +60,48 @@ export class CookieHelper {
     res.clearCookie('user', { path: '/' });
   }
 }
+
+/*
+@Injectable()
+export class CookieHelper {
+  private getCookieOptions() {
+    const isProduction = process.env.NODE_ENV === 'production';
+
+    return {
+      httpOnly: true,
+      secure: isProduction, // HTTPS only in production
+      sameSite: isProduction ? ('none' as const) : ('lax' as const),
+      path: '/',
+    };
+  }
+
+  setAuthCookies(user: CookieData, token: string, res: Response) {
+    const cookieOptions = this.getCookieOptions();
+
+    // AUTH TOKEN COOKIE (important one)
+    res.cookie('session_token', token, {
+      ...cookieOptions,
+      maxAge: 24 * 60 * 60 * 1000, // 1 day
+    });
+
+    // USER COOKIE (frontend readable)
+    res.cookie('user', JSON.stringify(user), {
+      ...cookieOptions,
+      httpOnly: false,
+      maxAge: 24 * 60 * 60 * 1000,
+    });
+  }
+
+  clearAuthCookies(res: Response) {
+    const cookieOptions = this.getCookieOptions();
+
+    // MUST MATCH setCookie options EXACTLY (except maxAge)
+    res.clearCookie('session_token', cookieOptions);
+
+    res.clearCookie('user', {
+      ...cookieOptions,
+      httpOnly: false,
+    });
+  }
+}
+  */

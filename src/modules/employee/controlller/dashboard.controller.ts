@@ -25,11 +25,18 @@ export class DashboardController {
       throw new NotFoundException('User not found');
     }
 
-    await this.service.acceptDataPolicy(data);
+    const update = await this.service.acceptDataPolicy(data);
 
     return {
       success: true,
       message: 'data policy accepted',
+      id: update.id,
+      employeeId: update.employeeId,
+      firstname:update.firstname,
+      lastname: update.lastname,
+      role: update.role,
+      email: update.email,
+      isDataPolicyAccepted: update.isDataPolicyAccepted
     };
   }
 }

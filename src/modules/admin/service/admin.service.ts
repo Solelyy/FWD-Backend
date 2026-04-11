@@ -74,6 +74,16 @@ export class AdminService {
       data: {
         isDataPolicyAccepted: true,
       },
-    });
+    });      
+    
+    return {
+      id: update.id,
+      employeeId: update.employeeId,
+      firstname:update.firstname,
+      lastname: update.lastname,
+      role: update.role,
+      email: update.email,
+      isDataPolicyAccepted: update.isDataPolicyAccepted
+    };
   }
 }
