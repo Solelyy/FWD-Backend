@@ -47,4 +47,30 @@ export class DateHelper {
       graceMinute: this.graceMin.getUTCMinutes(),
     };
   }
+
+  getSpanAttendanceDatesLogs(year: number, month: number) {
+    let date = {};
+
+    if (year && month) {
+      const startDate = new Date(year, month - 1, 1); // first day
+      const endDate = new Date(year, month, 0); // last day since dates are zero index esp in js
+
+      return {
+        date: {
+          gte: startDate,
+          lte: endDate,
+        },
+      };
+    } else if (year) {
+      const startDate = new Date(year, 0, 1);
+      const endDate = new Date(year, 11, 31);
+
+      return {
+        date: {
+          gte: startDate,
+          lte: endDate,
+        },
+      };
+    }
+  }
 }

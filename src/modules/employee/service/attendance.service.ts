@@ -2,7 +2,8 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma_global/prisma.service';
 import { AttendanceDTO } from '../dto/attendance.dto';
 import { DateHelper } from 'src/utils/date.utils';
-import { WorkingConstraints } from '../types/get-time.types';
+import { WorkingConstraints } from '../interface/get-time.interface';
+import { EmployeeAttendanceLog } from '../types/attendancelog.types';
 @Injectable()
 export class EmployeeAttendanceService {
   private isLate: boolean;
@@ -45,6 +46,7 @@ export class EmployeeAttendanceService {
         timeInImg: employee.imageUrl,
         overtimeHours: null,
         isLate: this.isLate,
+        totalHours: null,
       },
     });
 
@@ -54,6 +56,74 @@ export class EmployeeAttendanceService {
         timeZone: 'Asia/Manila',
         hour12: true,
       }),
+    };
+  }
+
+  async getEmployeeAttendanceLogs(
+    employeeId: string,
+    page: number,
+    limit: number,
+    year: number,
+    month: number,
+  ): Promise<EmployeeAttendanceLog> {
+    const dates = this.date.getSpanAttendanceDatesLogs(year, month);
+
+    const employee = await this.prisma.user.findUnique({
+      where: { employeeId: employeeId },
+      include: {
+        attendance: {
+          // skip and take are top level for arrays like findMany
+          // if single object (findUnique) then skip and take params are called inside of the include
+          where: {
+            date: {
+              gte: dates?.date.gte,
+              lte: dates?.date.lte,
+            },
+          },
+          skip: (page - 1) * limit,
+          take: limit,
+          orderBy: {
+            date: 'desc',
+          },
+          include: { overtime: true },
+        },
+      },
+    });
+
+    if (!employee) {
+      throw new NotFoundException('Employee not found');
+    }
+
+    const total = await this.prisma.tbl_attendance.count({
+      where: {
+        employeeId: employeeId,
+        ...(dates && { date: dates.date }),
+      },
+    });
+
+    const logs = employee.attendance.map((attendance) => ({
+      id: attendance.attendanceId,
+      date: attendance.date,
+      timeIn: {
+        timestamp: attendance.timeIn,
+      },
+      timeOut: {
+        timestamp: attendance.timeOut,
+      },
+      status: attendance.status,
+      overtimeStatus: attendance.overtime.map(
+        (overtime) => overtime.overtime_status,
+      ),
+      totalHours: attendance.totalHours,
+    }));
+
+    return {
+      logs: logs,
+      meta: {
+        page: page,
+        limit: limit,
+        total: total,
+      },
     };
   }
 }
