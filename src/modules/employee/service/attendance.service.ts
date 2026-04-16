@@ -59,6 +59,21 @@ export class EmployeeAttendanceService {
     };
   }
 
+  async getEmployeeToday(employeeId: string) {
+    const user = await this.prisma.tbl_attendance.findFirst({
+      where: { employeeId: employeeId },
+      include: {
+        overtime: true, //
+      },
+    });
+
+    if (!user) {
+      throw new NotFoundException('User doesnt exists');
+    }
+
+    return user;
+  }
+
   async getEmployeeAttendanceLogs(
     employeeId: string,
     page: number,
@@ -112,7 +127,7 @@ export class EmployeeAttendanceService {
         timestamp: attendance.timeOut,
       },
       status: attendance.status,
-      overtimeStatus: attendance.overtime?.overtime_status,
+      overtimeStatus: attendance.overtime?.overtime_status || 'NONE', // default fallback since overtimeStatus can only have a value when a record is created
       totalHours: attendance.totalHours,
     }));
 
