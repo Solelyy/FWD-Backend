@@ -49,7 +49,7 @@ export class AttendanceController {
     const employeeId = user.user?.employeeId;
 
     if (!employeeId) {
-      throw new NotFoundException('error at controller');
+      throw new NotFoundException('User not found');
     }
 
     const results = await this.service.getEmployeeToday(employeeId);

@@ -12,11 +12,6 @@ export class AttendanceDTO {
   @IsString()
   location: string;
 
-  @IsDateString()
-  @IsNotEmpty()
-  @IsString()
-  timeStamp: string;
-
   @IsNotEmpty()
   @IsString()
   imageUrl: string;

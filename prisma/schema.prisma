@@ -71,7 +71,7 @@
           canTimeIn Boolean @default(true)
           date DateTime  @default(now())
           timeIn  DateTime  @default(now())
-          timeOut DateTime @default(now())
+          timeOut DateTime 
           timeInLoc String?
           timeOutLoc String?
           timeInImg String?

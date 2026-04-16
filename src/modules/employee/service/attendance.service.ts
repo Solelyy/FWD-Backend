@@ -17,6 +17,7 @@ export class EmployeeAttendanceService {
   }
 
   async EmployeeTimein(employeeId: string, employee: AttendanceDTO) {
+    const date = new Date();
     const Euser = await this.prisma.user.findUnique({
       where: { employeeId: employeeId },
     });
@@ -25,9 +26,8 @@ export class EmployeeAttendanceService {
       throw new NotFoundException("User didn't exists.");
     }
 
-    const timeIn = new Date(employee.timeStamp);
-    const timeHour = timeIn.getHours();
-    const timeInMin = timeIn.getMinutes();
+    const timeHour = date.getHours();
+    const timeInMin = date.getMinutes();
     if (
       timeHour > this.getTime.graceHour ||
       (timeHour === this.getTime.graceHour &&
@@ -41,7 +41,7 @@ export class EmployeeAttendanceService {
     const storeAttendance = await this.prisma.tbl_attendance.create({
       data: {
         employeeId: Euser.employeeId,
-        timeIn: employee.timeStamp,
+        timeIn: date,
         timeInLoc: employee.location,
         timeInImg: employee.imageUrl,
         overtimeHours: null,
@@ -60,10 +60,21 @@ export class EmployeeAttendanceService {
   }
 
   async getEmployeeToday(employeeId: string) {
+    const date = this.date.getEmployeeToday();
+
     const user = await this.prisma.tbl_attendance.findFirst({
-      where: { employeeId: employeeId },
+      where: {
+        employeeId: employeeId,
+        date: {
+          gte: date.gte,
+          lte: date.lte,
+        },
+      },
+      orderBy: {
+        timeIn: 'desc',
+      },
       include: {
-        overtime: true, //
+        overtime: true,
       },
     });
 
@@ -71,7 +82,21 @@ export class EmployeeAttendanceService {
       throw new NotFoundException('User doesnt exists');
     }
 
-    return user;
+    const timeIn = new Date(user.timeIn).toLocaleString('en-US', {
+      timeZone: 'Asia/manila',
+      hour12: true,
+    });
+
+    const timeOut = new Date(user.timeOut).toLocaleString('en-US', {
+      timeZone: 'Asia/manila',
+      hour12: true,
+    });
+
+    return {
+      ...user,
+      timeIn: timeIn,
+      timeOut: timeOut,
+    };
   }
 
   async getEmployeeAttendanceLogs(
