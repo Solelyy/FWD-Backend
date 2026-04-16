@@ -83,12 +83,12 @@
           createdAt DateTime @default(now())
           updatedAt DateTime @updatedAt
           editedByAdminId String?
-          overtime tbl_overtime[]
+          overtime tbl_overtime? //zero or one relation
         }
       
       model tbl_overtime {
         id Int    @id @default(autoincrement())
-        attendance_id Int
+        attendance_id Int @unique // enforce unique to ensure one to one rs
         attendance tbl_attendance @relation(fields: [attendance_id], references: [attendanceId])
         requested_hours Int 
         time_out  DateTime  

@@ -2,6 +2,7 @@ import env from 'dotenv';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import cookieParser from 'cookie-parser';
+import { ValidationPipe } from '@nestjs/common';
 const environment = process.env.NODE_ENV || 'production';
 const path = `.env.${environment}`;
 env.config({ path: path });
@@ -68,6 +69,16 @@ async function startServer() {
       methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
       allowedHeaders: ['Content-Type', 'Authorization'],
     });
+
+    //allows transforming queries or params etc.
+    app.useGlobalPipes(
+      new ValidationPipe({
+        transform: true,
+        transformOptions: {
+          enableImplicitConversion: true,
+        },
+      }),
+    );
 
     // Preflight OPTIONS handler
     app.use((req, res, next) => {

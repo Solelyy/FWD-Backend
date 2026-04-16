@@ -7,6 +7,7 @@ import {
   Req,
   NotFoundException,
   Body,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { AuthGuard } from 'src/modules/auth/guard/auth.guard';
 import type { RequestData } from 'src/modules/auth/interface/reqdata';
@@ -46,10 +47,12 @@ export class AttendanceController {
   @UseGuards(AuthGuard, RolesGuard)
   @Roles('EMPLOYEE')
   async getAttendanceLogs(
-    @Query() queries: AttendanceLogsQueries,
+    @Query('page', ParseIntPipe) page: number,
+    @Query('limit', ParseIntPipe) limit: number,
+    @Query('year', ParseIntPipe) year: number,
+    @Query('month', ParseIntPipe) month: number,
     @Req() user: RequestData,
   ) {
-    const { page, limit, year, month } = queries;
     const employeeId = user.user?.employeeId;
 
     if (!employeeId) {

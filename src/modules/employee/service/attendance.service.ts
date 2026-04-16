@@ -73,7 +73,7 @@ export class EmployeeAttendanceService {
       include: {
         attendance: {
           // skip and take are top level for arrays like findMany
-          // if single object (findUnique) then skip and take params are called inside of the include
+          // if single object (findUnique) then skip and take params are called inside of the nessted attribute
           where: {
             date: {
               gte: dates?.date.gte,
@@ -103,6 +103,7 @@ export class EmployeeAttendanceService {
 
     const logs = employee.attendance.map((attendance) => ({
       id: attendance.attendanceId,
+      employeeId: attendance.employeeId,
       date: attendance.date,
       timeIn: {
         timestamp: attendance.timeIn,
@@ -111,9 +112,7 @@ export class EmployeeAttendanceService {
         timestamp: attendance.timeOut,
       },
       status: attendance.status,
-      overtimeStatus: attendance.overtime.map(
-        (overtime) => overtime.overtime_status,
-      ),
+      overtimeStatus: attendance.overtime?.overtime_status,
       totalHours: attendance.totalHours,
     }));
 
