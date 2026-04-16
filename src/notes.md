@@ -70,3 +70,15 @@ getTTL(): 5. Dynamically sets the Time-to-Live (duration) for the rate-limiting 
 ## Types
 
 - only use types when returning or shaping a complex data such as combining different data types or worst data shapes such as arrays etc
+
+### Schemas
+
+## Unique
+
+- add a unique keyword for a record one to one, and avoid having duplicate records of a specific table, example is if a employee can have one record of attendance only then set @unique to avoid multiple records of attendance with the same employeeId, same as on the date if you dont want to have multiple records of attendance per day
+
+### Syntax
+
+## spread operator
+
+- to override a value, spread value are always first before the override value, if just extracting then spread values are called lastly

@@ -73,4 +73,25 @@ export class DateHelper {
       };
     }
   }
+
+  getEmployeeToday(): { gte: Date; lte: Date } {
+    const date = new Date();
+    const phTime = new Date(
+      // param, options
+      date.toLocaleString('en-US', { timeZone: 'Asia/Manila' }),
+    );
+
+    // set to todays start Hour or zero Hour of the day
+    const startDate = new Date(phTime);
+    startDate.setHours(0, 0, 0, 0);
+
+    const endDate = new Date(phTime);
+    endDate.setDate(endDate.getDate() + 1); // add one day for today
+    endDate.setHours(0, 0, 0, 0);
+
+    return {
+      gte: startDate,
+      lte: endDate,
+    };
+  }
 }

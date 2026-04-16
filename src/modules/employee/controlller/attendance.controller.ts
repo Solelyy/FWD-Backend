@@ -43,6 +43,34 @@ export class AttendanceController {
     };
   }
 
+  @Get('attendance/today')
+  @UseGuards(AuthGuard)
+  async getEmployeeAttendanceToday(@Req() user: RequestData) {
+    const employeeId = user.user?.employeeId;
+
+    if (!employeeId) {
+      throw new NotFoundException('User not found');
+    }
+
+    const results = await this.service.getEmployeeToday(employeeId);
+
+    return {
+      message: "employee's today attendance retrieved succcesfully",
+      success: true,
+      status: results.status,
+      canTimeIn: results.canTimeIn,
+      isLate: results.isLate,
+      isUndertime: results.isUndertime,
+      timeIn: results.timeIn,
+      timeOut: results.timeOut,
+      timeInLocation: results.timeInLoc,
+      timeOutLocation: results.timeOutLoc,
+      timeInImage: results.timeInImg,
+      timeOutImage: results.timeOutImg,
+      overtimeStatus: results.overtime?.overtime_status,
+    };
+  }
+
   @Get('attendance-logs')
   @UseGuards(AuthGuard, RolesGuard)
   @Roles('EMPLOYEE')
