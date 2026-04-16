@@ -66,3 +66,7 @@ handleRequest(): 3. The primary method that executes the throttling logic. It ch
 getLimit(): 4. Allows for dynamic rate limits based on the request context, such as higher limits for admin users versus regular users.
 
 getTTL(): 5. Dynamically sets the Time-to-Live (duration) for the rate-limiting window based on the request.
+
+## Types
+
+- only use types when returning or shaping a complex data such as combining different data types or worst data shapes such as arrays etc
