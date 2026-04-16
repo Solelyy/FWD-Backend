@@ -87,10 +87,12 @@ export class EmployeeAttendanceService {
       hour12: true,
     });
 
-    const timeOut = new Date(user.timeOut).toLocaleString('en-US', {
-      timeZone: 'Asia/manila',
-      hour12: true,
-    });
+    const timeOut = user.timeOut
+      ? new Date(user.timeOut).toLocaleString('en-US', {
+          timeZone: 'Asia/manila',
+          hour12: true,
+        })
+      : null;
 
     return {
       ...user,

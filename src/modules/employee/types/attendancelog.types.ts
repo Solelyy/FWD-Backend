@@ -8,7 +8,7 @@ export type EmployeeAttendanceLog = {
       timestamp: Date;
     };
     timeOut: {
-      timestamp: Date;
+      timestamp: Date | null;
     };
     status: attendance_Status;
     totalHours: number | null;
