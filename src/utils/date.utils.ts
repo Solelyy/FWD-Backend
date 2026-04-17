@@ -94,4 +94,16 @@ export class DateHelper {
       lte: endDate,
     };
   }
+
+  calculateHoursWorked(timeIn: Date, timeOut: Date): number {
+    // set span
+    const diffMs = timeOut.getTime() - timeIn.getTime();
+
+    //convert to hours
+    const diffHours = diffMs / (1000 * 60 * 60);
+
+    const total = Number(diffHours.toFixed(2));
+    // decimal
+    return total;
+  }
 }
