@@ -109,4 +109,18 @@ export class DateHelper {
     // decimal
     return total;
   }
+
+  calculateRequestedHours(timeIn: Date, timeOut: Date) {
+    let regularWorkingMinutes = 10 * 60; // set work span in minutes
+    const totalWorkMinutes = timeOut.getTime() - timeIn.getTime(); // get ms
+
+    const WorkMinutes = totalWorkMinutes / (1000 * 60); // convert to minutes
+
+    const overtimeWorkingHours = Math.max(
+      0,
+      WorkMinutes - regularWorkingMinutes,
+    );
+
+    return overtimeWorkingHours;
+  }
 }

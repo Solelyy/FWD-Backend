@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { PrismaService } from 'src/prisma_global/prisma.service';
 import { AttendanceDTO } from '../dto/attendance.dto';
 import { DateHelper } from 'src/utils/date.utils';
@@ -19,12 +23,20 @@ export class EmployeeAttendanceService {
 
   async EmployeeTimein(employeeId: string, employee: AttendanceDTO) {
     const date = new Date();
-    const Euser = await this.prisma.user.findUnique({
-      where: { employeeId: employeeId },
+    const timeInOnce = this.date.getEmployeeToday();
+
+    const Euser = await this.prisma.tbl_attendance.findFirst({
+      where: {
+        employeeId: employeeId,
+        date: {
+          gte: timeInOnce.gte,
+          lte: timeInOnce.lte,
+        },
+      },
     });
 
-    if (!Euser) {
-      throw new NotFoundException("User didn't exists.");
+    if (Euser) {
+      throw new BadRequestException('Can only time time-in once');
     }
 
     const timeHour = date.getHours();
@@ -41,7 +53,7 @@ export class EmployeeAttendanceService {
 
     const storeAttendance = await this.prisma.tbl_attendance.create({
       data: {
-        employeeId: Euser.employeeId,
+        employeeId: employeeId,
         timeIn: date,
         timeInLoc: employee.location,
         timeInImg: employee.imageUrl,
@@ -60,7 +72,106 @@ export class EmployeeAttendanceService {
     };
   }
 
-  async RegularEmployeeTimeOut() {}
+  async RegularEmployeeTimeOut(employee: AttendanceDTO, employeeId: string) {
+    const date = new Date();
+
+    let isUndertime = false;
+
+    const workConstraints = this.date.getWorkingConstraints();
+
+    const findEmployee = await this.prisma.tbl_attendance.findFirst({
+      where: { employeeId: employeeId, status: attendance_Status.IN_PROGRESS },
+      orderBy: {
+        date: 'desc',
+      },
+    });
+
+    if (!findEmployee) {
+      throw new NotFoundException(
+        'No existing attendances for today, please time in tomorrow or time in first',
+      );
+    }
+
+    const timeOutHours = date.getHours();
+    const timeOutMins = date.getMinutes();
+
+    if (
+      timeOutHours < workConstraints.endHour ||
+      (timeOutHours === workConstraints.endHour &&
+        timeOutMins < workConstraints.endMinute)
+    ) {
+      isUndertime = true;
+    }
+    const totalHours = this.date.calculateHoursWorked(
+      findEmployee.timeIn,
+      date,
+    );
+
+    const updateRec = await this.prisma.tbl_attendance.update({
+      where: {
+        attendanceId: findEmployee.attendanceId,
+      },
+      data: {
+        timeOutLoc: employee.location,
+        timeOutImg: employee.imageUrl,
+        status: attendance_Status.COMPLETED,
+        timeOut: date,
+        totalHours: totalHours,
+        isUndertime: isUndertime,
+      },
+    });
+
+    return {
+      timeOut: new Date(updateRec.timeOut!).toLocaleString('en-PH', {
+        timeZone: 'Asia/Manila',
+        hour12: true,
+      }),
+      status: updateRec.status,
+      atetndanceId: updateRec.attendanceId,
+      totalHours: totalHours,
+    };
+  }
+
+  async overtimeEmployeeTimeOut(employee: AttendanceDTO, employeeId: string) {
+    const date = new Date();
+    const findAttendance = await this.prisma.tbl_attendance.findFirst({
+      where: { employeeId: employeeId, status: attendance_Status.IN_PROGRESS },
+      orderBy: { date: 'desc' },
+    });
+
+    if (!findAttendance) {
+      throw new NotFoundException(
+        'No existing attendances for today, please time in tomorrow or time in first',
+      );
+    }
+
+    const reqHours = this.date.calculateRequestedHours(
+      findAttendance.timeIn,
+      date,
+    );
+    const updateRec = await this.prisma.tbl_attendance.update({
+      where: {
+        attendanceId: findAttendance.attendanceId,
+      },
+      data: {
+        status: attendance_Status.COMPLETED,
+        // can create a new data inside of data object in update action of prisma
+        overtime: {
+          create: {
+            requested_hours: reqHours,
+          },
+        },
+      },
+      // for getting data
+      include: {
+        overtime: true,
+      },
+    });
+
+    return {
+      status: updateRec.overtime?.overtime_status,
+    };
+  }
 
   async getEmployeeToday(employeeId: string) {
     const date = this.date.getEmployeeToday();

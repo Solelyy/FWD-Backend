@@ -22,8 +22,9 @@ export class AttendanceController {
   constructor(private readonly service: EmployeeAttendanceService) {}
 
   @Post('attendance/time-in')
-  @UseGuards(AuthGuard)
-  async setDataPolicy(
+  @Roles('EMPLOYEE')
+  @UseGuards(AuthGuard, RolesGuard)
+  async employeeTimeIn(
     @Req() req: RequestData,
     @Body(CustomValidationPipe) user: AttendanceDTO,
   ) {
@@ -44,8 +45,59 @@ export class AttendanceController {
     };
   }
 
+  @Post('attendance/time-out')
+  @Roles('EMPLOYEE')
+  @UseGuards(AuthGuard, RolesGuard)
+  async employeeTimeOut(
+    @Req() req: RequestData,
+    @Body(CustomValidationPipe) employee: AttendanceDTO,
+  ) {
+    const employeeId = req.user?.employeeId;
+
+    if (!employeeId) {
+      throw new NotFoundException('User not found');
+    }
+
+    const service = await this.service.RegularEmployeeTimeOut(
+      employee,
+      employeeId,
+    );
+
+    return {
+      success: true,
+      message: 'user time out successfully',
+      status: service.status,
+    };
+  }
+
+  @Post('attendance/overtime/time-out')
+  @Roles('EMPLOYEE')
+  @UseGuards(AuthGuard, RolesGuard)
+  async employeeTimeOutOvertime(
+    @Req() req: RequestData,
+    @Body(CustomValidationPipe) employee: AttendanceDTO,
+  ) {
+    const employeeId = req.user?.employeeId;
+
+    if (!employeeId) {
+      throw new NotFoundException('User not found');
+    }
+
+    const service = await this.service.overtimeEmployeeTimeOut(
+      employee,
+      employeeId,
+    );
+
+    return {
+      success: true,
+      message: 'user time out successfully, waiting for overtime approval',
+      status: service.status,
+    };
+  }
+
   @Get('attendance/today')
-  @UseGuards(AuthGuard)
+  @Roles('EMPLOYEE')
+  @UseGuards(AuthGuard, RolesGuard)
   async getEmployeeAttendanceToday(@Req() user: RequestData) {
     const employeeId = user.user?.employeeId;
 
