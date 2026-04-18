@@ -15,12 +15,4 @@ export class AttendanceDTO {
   @IsNotEmpty()
   @IsString()
   imageUrl: string;
-
-  @IsNotEmpty()
-  @IsEnum(attendance_Status)
-  attendanceType: attendance_Status;
-
-  @IsNotEmpty()
-  @IsBoolean()
-  isOvertime: boolean;
 }

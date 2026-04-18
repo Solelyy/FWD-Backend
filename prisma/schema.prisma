@@ -62,7 +62,7 @@
         attendance tbl_attendance[]
         approved_overtime tbl_overtime[] @relation("approvedBy")
         @@index([role, status])
-      }
+      } 
 
           model tbl_attendance {
             attendanceId                  Int    @id @default(autoincrement())
@@ -88,17 +88,17 @@
             overtime tbl_overtime? //zero or one relation
           }
         
-        model tbl_overtime {
+  model tbl_overtime {
           id Int    @id @default(autoincrement())
           attendance_id Int @unique // enforce unique to ensure one to one rs
           attendance tbl_attendance @relation(fields: [attendance_id], references: [attendanceId])
           requested_hours Int 
-          time_out  DateTime  
+          time_out  DateTime  @default(now())
           overtime_status OvertimeStatus @default(NONE)
           approved_by  String
           approve_user User @relation("approvedBy", fields: [approved_by], references: [employeeId])
           approved_at DateTime
-          
+
         }
 
 

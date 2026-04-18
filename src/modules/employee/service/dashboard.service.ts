@@ -76,4 +76,27 @@ export class DashboardService {
       accumulatedOvertime: accumulatedOvertime._sum.requested_hours,
     };
   }
+
+  isOvertime() {
+    let isOvertime = false;
+    const date = new Date();
+    const workHours = this.date.getWorkingConstraints();
+
+    const nowDateHours = date.getHours();
+    const nowDateMinutes = date.getMinutes();
+
+    if (
+      nowDateHours > workHours.overtimeHour ||
+      (nowDateHours === workHours.overtimeHour &&
+        nowDateMinutes > workHours.overtimeMinute)
+    ) {
+      isOvertime = true;
+    } else {
+      isOvertime = false;
+    }
+
+    return {
+      isOvertime,
+    };
+  }
 }

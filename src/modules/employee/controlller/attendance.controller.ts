@@ -40,6 +40,7 @@ export class AttendanceController {
       message: 'user time in successfully',
       isLate: service.isLate,
       timeIn: service.timeIn,
+      status: service.status,
     };
   }
 

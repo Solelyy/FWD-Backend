@@ -60,4 +60,15 @@ export class DashboardController {
       accumulatedOvertime: summary.accumulatedOvertime,
     };
   }
+
+  @Get('is-overtime')
+  isOvertime() {
+    const service = this.service.isOvertime();
+
+    return {
+      success: true,
+      message: 'User can now time out as overtime',
+      isOvertime: service.isOvertime,
+    };
+  }
 }

@@ -4,6 +4,7 @@ import { AttendanceDTO } from '../dto/attendance.dto';
 import { DateHelper } from 'src/utils/date.utils';
 import { WorkingConstraints } from '../interface/get-time.interface';
 import { EmployeeAttendanceLog } from '../types/attendancelog.types';
+import { attendance_Status } from '@prisma/client';
 @Injectable()
 export class EmployeeAttendanceService {
   private isLate: boolean;
@@ -44,9 +45,8 @@ export class EmployeeAttendanceService {
         timeIn: date,
         timeInLoc: employee.location,
         timeInImg: employee.imageUrl,
-        overtimeHours: null,
         isLate: this.isLate,
-        totalHours: null,
+        status: attendance_Status.IN_PROGRESS,
       },
     });
 
@@ -56,8 +56,11 @@ export class EmployeeAttendanceService {
         timeZone: 'Asia/Manila',
         hour12: true,
       }),
+      status: storeAttendance.status,
     };
   }
+
+  async RegularEmployeeTimeOut() {}
 
   async getEmployeeToday(employeeId: string) {
     const date = this.date.getEmployeeToday();
