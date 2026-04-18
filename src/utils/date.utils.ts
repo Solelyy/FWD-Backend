@@ -6,11 +6,12 @@ export class DateHelper {
   workStart: Date;
   workEnd: Date;
   graceMin: Date;
-
+  overtimeEnd: Date;
   constructor(private readonly prisma: PrismaService) {
     this.workStart = new Date('1970-01-01T07:00:00Z');
     this.workEnd = new Date('1970-01-01T17:00:00Z');
     this.graceMin = new Date(this.workStart.getTime() + 15 * 60 * 1000);
+    this.overtimeEnd = new Date(this.workEnd.getTime() + 30 * 60 * 1000);
   }
 
   async LocaleSetDateHelper(email: string, token: string) {
@@ -45,6 +46,8 @@ export class DateHelper {
       endMinute: this.workEnd.getUTCMinutes(),
       graceHour: this.graceMin.getUTCHours(),
       graceMinute: this.graceMin.getUTCMinutes(),
+      overtimeHour: this.overtimeEnd.getHours(),
+      overtimeMinute: this.overtimeEnd.getMinutes(),
     };
   }
 
@@ -93,5 +96,17 @@ export class DateHelper {
       gte: startDate,
       lte: endDate,
     };
+  }
+
+  calculateHoursWorked(timeIn: Date, timeOut: Date): number {
+    // set span
+    const diffMs = timeOut.getTime() - timeIn.getTime();
+
+    //convert to hours
+    const diffHours = diffMs / (1000 * 60 * 60);
+
+    const total = Number(diffHours.toFixed(2));
+    // decimal
+    return total;
   }
 }

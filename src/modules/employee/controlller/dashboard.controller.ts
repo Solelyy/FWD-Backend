@@ -1,10 +1,12 @@
 import {
   Controller,
   Patch,
-  Post,
+  Get,
   UseGuards,
   Req,
+  Query,
   NotFoundException,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { AuthGuard } from 'src/modules/auth/guard/auth.guard';
 import { DashboardService } from '../service/dashboard.service';
@@ -37,6 +39,43 @@ export class DashboardController {
       role: update.role,
       email: update.email,
       isDataPolicyAccepted: update.isDataPolicyAccepted
+    };
+  }
+
+  @Get('attendance-summary')
+  @Roles('EMPLOYEE')
+  @UseGuards(AuthGuard, RolesGuard)
+  async getAttendanceEmployeeSummary(
+    @Query('year', ParseIntPipe) year: number,
+    @Query('month', ParseIntPipe) month: number,
+    @Req() req: RequestData,
+  ) {
+    const employeeId = req.user?.employeeId;
+    if (!employeeId) {
+      throw new NotFoundException('User not found');
+    }
+    const summary = await this.service.getAttendanceSummary(
+      year,
+      month,
+      employeeId,
+    );
+
+    return {
+      totalLogs: summary.totalLogs,
+      totalWorkedHours: summary.totalHours,
+      presentDays: summary.presentDays,
+      accumulatedOvertime: summary.accumulatedOvertime,
+    };
+  }
+
+  @Get('is-overtime')
+  isOvertime() {
+    const service = this.service.isOvertime();
+
+    return {
+      success: true,
+      message: 'User can now time out as overtime',
+      isOvertime: service.isOvertime,
     };
   }
 }

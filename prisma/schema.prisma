@@ -1,104 +1,105 @@
-    generator client {
-      provider = "prisma-client-js"
-      //output   = "../generated/prisma"
-    }
-
-    datasource db {
-      provider = "postgresql"
-    }
-    enum Role {
-      SUPER_ADMIN
-      ADMIN
-      EMPLOYEE
-    }
-
-    enum Status {
-      PENDING
-      ACTIVE
-      INACTIVE
-      EXPIRED
-      SUSPENDED
-      REMOVED
-    }
-
-    enum Provider {
-      LOCAL
-      GOOGLE
-    }
-
-    enum attendance_Status {
-      NONE
-      IN_PROGRESS
-      COMPLETED
-      ON_LEAVE
-      SUSPENDED
-    }
-
-    enum OvertimeStatus {
-      NONE
-      PENDING
-      APPROVED
-      REJECTED
-    }
-
-    model User {
-      id                    Int    @id @default(autoincrement())
-      employeeId            String    @unique // as long its unique it can be referenced
-      firstname             String
-      lastname              String
-      email                 String    @unique
-      role                  Role      @default(EMPLOYEE)
-      status                Status    @default(PENDING)
-      password              String?
-      createdAt             DateTime  @default(now())
-      updatedAt            DateTime   @updatedAt
-      session String?
-      invitationDate        String?
-      verificationToken     String?
-      startDate           DateTime?
-      endDate             DateTime?
-      isDeleted            Boolean    @default(false)
-      isDataPolicyAccepted Boolean    @default(false)
-      attendance tbl_attendance[]
-      approved_overtime tbl_overtime[] @relation("approvedBy")
-      @@index([role, status])
-    }
-
-        model tbl_attendance {
-          attendanceId                  Int    @id @default(autoincrement())
-          employeeId String // as long the reference is unique it can be used as a reference
-          user User @relation(fields: [employeeId], references: [employeeId]) // the table relies on the user table therefore the attendance is recorded for a specific employee
-          canTimeIn Boolean @default(true)
-          date DateTime  @default(now())
-          timeIn  DateTime  @default(now())
-          timeOut DateTime 
-          timeInLoc String?
-          timeOutLoc String?
-          timeInImg String?
-          timeOutImg String?
-          isLate Boolean @default(false)
-          isOvertime Boolean @default(false)
-          isUndertime Boolean @default(false)
-          overtimeHours  Int?
-          status  attendance_Status @default(NONE)
-          totalHours Int?  
-          createdAt DateTime @default(now())
-          updatedAt DateTime @updatedAt
-          editedByAdminId String?
-          overtime tbl_overtime? //zero or one relation
-        }
-      
-      model tbl_overtime {
-        id Int    @id @default(autoincrement())
-        attendance_id Int @unique // enforce unique to ensure one to one rs
-        attendance tbl_attendance @relation(fields: [attendance_id], references: [attendanceId])
-        requested_hours Int 
-        time_out  DateTime  
-        overtime_status OvertimeStatus @default(NONE)
-        approved_by  String
-        approve_user User @relation("approvedBy", fields: [approved_by], references: [employeeId])
-        approved_at DateTime
+      generator client {
+        provider = "prisma-client-js"
+        //output   = "../generated/prisma"
       }
+
+      datasource db {
+        provider = "postgresql"
+      }
+      enum Role {
+        SUPER_ADMIN
+        ADMIN
+        EMPLOYEE
+      }
+
+      enum Status {
+        PENDING
+        ACTIVE
+        INACTIVE
+        EXPIRED
+        SUSPENDED
+        REMOVED
+      }
+
+      enum Provider {
+        LOCAL
+        GOOGLE
+      }
+
+      enum attendance_Status {
+        NONE
+        IN_PROGRESS
+        COMPLETED
+        ON_LEAVE
+        SUSPENDED
+      }
+
+      enum OvertimeStatus {
+        NONE
+        PENDING
+        APPROVED
+        REJECTED
+      }
+
+      model User {
+        id                    Int    @id @default(autoincrement())
+        employeeId            String    @unique // as long its unique it can be referenced
+        firstname             String
+        lastname              String
+        email                 String    @unique
+        role                  Role      @default(EMPLOYEE)
+        status                Status    @default(PENDING)
+        password              String?
+        createdAt             DateTime  @default(now())
+        updatedAt            DateTime   @updatedAt
+        session String?
+        invitationDate        String?
+        verificationToken     String?
+        startDate           DateTime?
+        endDate             DateTime?
+        isDeleted            Boolean    @default(false)
+        isDataPolicyAccepted Boolean    @default(false)
+        attendance tbl_attendance[]
+        approved_overtime tbl_overtime[] @relation("approvedBy")
+        @@index([role, status])
+      } 
+
+          model tbl_attendance {
+            attendanceId                  Int    @id @default(autoincrement())
+            employeeId String // as long the reference is unique it can be used as a reference
+            user User @relation(fields: [employeeId], references: [employeeId]) // the table relies on the user table therefore the attendance is recorded for a specific employee
+            canTimeIn Boolean @default(true)
+            date DateTime  @default(now())
+            timeIn  DateTime  @default(now())
+            timeOut DateTime?
+            timeInLoc String?
+            timeOutLoc String?
+            timeInImg String?
+            timeOutImg String?
+            isLate Boolean @default(false)
+            isOvertime Boolean @default(false)
+            isUndertime Boolean @default(false)
+            overtimeHours  Int?
+            status  attendance_Status @default(NONE)
+            totalHours Int?  
+            createdAt DateTime @default(now())
+            updatedAt DateTime @updatedAt
+            editedByAdminId String?
+            overtime tbl_overtime? //zero or one relation
+          }
+        
+  model tbl_overtime {
+          id Int    @id @default(autoincrement())
+          attendance_id Int @unique // enforce unique to ensure one to one rs
+          attendance tbl_attendance @relation(fields: [attendance_id], references: [attendanceId])
+          requested_hours Int 
+          time_out  DateTime  @default(now())
+          overtime_status OvertimeStatus @default(NONE)
+          approved_by  String
+          approve_user User @relation("approvedBy", fields: [approved_by], references: [employeeId])
+          approved_at DateTime
+
+        }
 
 
 
