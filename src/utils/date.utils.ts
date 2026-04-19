@@ -51,12 +51,22 @@ export class DateHelper {
     };
   }
 
-  getSpanAttendanceDatesLogs(year: number, month: number) {
+  getSpanAttendanceDatesLogs(year: number, month: number, day?: number) {
     let date = {};
 
-    if (year && month) {
-      const startDate = new Date(year, month - 1, 1); // first day
-      const endDate = new Date(year, month, 0); // last day since dates are zero index esp in js
+    if (year && month && day) {
+      const startDate = new Date(year, month - 1, day); // first day
+      const endDate = new Date(year, month - 1, day + 1); // last day since dates are zero index esp in js
+
+      return {
+        date: {
+          gte: startDate,
+          lte: endDate,
+        },
+      };
+    } else if (year && month) {
+      const startDate = new Date(year, month - 1, 0); // first day
+      const endDate = new Date(year, month, 1); // last day since dates are zero index esp in js
 
       return {
         date: {
