@@ -44,7 +44,6 @@ export class CookieHelper {
       sameSite: isProduction ? ('none' as const) : ('lax' as const),
       maxAge: 24 * 60 * 60 * 1000,
       path: '/',
-      //partitioned: true, // Enable cookie partitioning for better security
     };
 
     res.cookie('session_token', token, cookieOptions);

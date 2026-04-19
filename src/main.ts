@@ -3,6 +3,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import cookieParser from 'cookie-parser';
 import { ValidationPipe } from '@nestjs/common';
+import { json, urlencoded } from 'express';
 const environment = process.env.NODE_ENV || 'production';
 const path = `.env.${environment}`;
 env.config({ path: path });
@@ -36,6 +37,9 @@ startServer();
 async function startServer() {
   try {
     const app = await NestFactory.create(AppModule);
+
+    app.use(json({ limit: '10mb' })); // ← THIS IS THE KEY FIX
+    app.use(urlencoded({ extended: true, limit: '10mb' }));
 
     const cookieSecret = process.env.API_KEY;
 

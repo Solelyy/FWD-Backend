@@ -46,8 +46,8 @@ export class DateHelper {
       endMinute: this.workEnd.getUTCMinutes(),
       graceHour: this.graceMin.getUTCHours(),
       graceMinute: this.graceMin.getUTCMinutes(),
-      overtimeHour: this.overtimeEnd.getHours(),
-      overtimeMinute: this.overtimeEnd.getMinutes(),
+      overtimeHour: this.overtimeEnd.getUTCHours(),
+      overtimeMinute: this.overtimeEnd.getUTCMinutes(),
     };
   }
 
@@ -108,5 +108,16 @@ export class DateHelper {
     const total = Number(diffHours.toFixed(2));
     // decimal
     return total;
+  }
+
+  calculateRequestedHours(timeIn: Date, timeOut: Date) {
+    let regularWorkingHours = 10; // set work span in hours which is a whole num
+    const totalMs = timeOut.getTime() - timeIn.getTime(); // get ms
+
+    const WorkHours = totalMs / (1000 * 60 * 60); // convert to hours
+
+    const overtimeWorkingHours = Math.max(0, WorkHours - regularWorkingHours);
+
+    return overtimeWorkingHours;
   }
 }

@@ -79,9 +79,9 @@
             isLate Boolean @default(false)
             isOvertime Boolean @default(false)
             isUndertime Boolean @default(false)
-            overtimeHours  Int?
+            overtimeHours  Float?
             status  attendance_Status @default(NONE)
-            totalHours Int?  
+            totalHours Float?  
             createdAt DateTime @default(now())
             updatedAt DateTime @updatedAt
             editedByAdminId String?
@@ -89,15 +89,16 @@
           }
         
   model tbl_overtime {
-          id Int    @id @default(autoincrement())
-          attendance_id Int @unique // enforce unique to ensure one to one rs
-          attendance tbl_attendance @relation(fields: [attendance_id], references: [attendanceId])
-          requested_hours Int 
-          time_out  DateTime  @default(now())
-          overtime_status OvertimeStatus @default(NONE)
-          approved_by  String
-          approve_user User @relation("approvedBy", fields: [approved_by], references: [employeeId])
-          approved_at DateTime
+            id Int    @id @default(autoincrement())
+            attendance_id Int @unique // enforce unique to ensure one to one rs
+            attendance tbl_attendance @relation(fields: [attendance_id], references: [attendanceId])
+            requested_hours Float?
+            time_out  DateTime  @default(now())
+            time_out_loc String?
+            overtime_status OvertimeStatus @default(PENDING)
+            approved_by  String?
+            approve_user User? @relation("approvedBy", fields: [approved_by], references: [employeeId])
+            approved_at DateTime?
 
         }
 
