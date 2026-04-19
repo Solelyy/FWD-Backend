@@ -27,11 +27,13 @@
       }
 
       enum attendance_Status {
-        NONE
+        ABSENT
         IN_PROGRESS
         COMPLETED
         ON_LEAVE
         SUSPENDED
+        MISSING_TIMEOUT
+        OVERTIME_REQUEST 
       }
 
       enum OvertimeStatus {
@@ -80,7 +82,7 @@
             isOvertime Boolean @default(false)
             isUndertime Boolean @default(false)
             overtimeHours  Float?
-            status  attendance_Status @default(NONE)
+            status  attendance_Status @default(ABSENT)
             totalHours Float?  
             createdAt DateTime @default(now())
             updatedAt DateTime @updatedAt
