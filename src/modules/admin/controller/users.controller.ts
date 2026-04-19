@@ -6,6 +6,7 @@ import {
   Req,
   NotFoundException,
   UseGuards,
+  Patch,
 } from '@nestjs/common';
 import { AdminService } from '../service/admin.service';
 import { CreateUserDto } from '../dto/create-admin.dto';
@@ -31,7 +32,7 @@ export class AdminController {
     };
   }
 
-  @Post('admin-data-policy')
+  @Patch('admin-data-policy')
   @Roles('ADMIN')
   @UseGuards(AuthGuard, RolesGuard)
   async setDataPolicy(@Req() req: RequestData) {
@@ -41,11 +42,18 @@ export class AdminController {
       throw new NotFoundException('User not found');
     }
 
-    await this.AdminService.acceptDataPolicy(data);
+    const update = await this.AdminService.acceptDataPolicy(data);
 
     return {
       success: true,
       message: 'data policy accepted',
+      id: update.id,
+      employeeId: update.employeeId,
+      firstname:update.firstname,
+      lastname: update.lastname,
+      role: update.role,
+      email: update.email,
+      isDataPolicyAccepted: update.isDataPolicyAccepted
     };
   }
 }

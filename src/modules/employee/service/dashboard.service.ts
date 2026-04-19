@@ -17,6 +17,16 @@ export class DashboardService {
         isDataPolicyAccepted: true,
       },
     });
+
+    return {
+      id: update.id,
+      employeeId: update.employeeId,
+      firstname:update.firstname,
+      lastname: update.lastname,
+      role: update.role,
+      email: update.email,
+      isDataPolicyAccepted: update.isDataPolicyAccepted
+    }
   }
 
   async getAttendanceSummary(year: number, month: number, employeeId: string) {
