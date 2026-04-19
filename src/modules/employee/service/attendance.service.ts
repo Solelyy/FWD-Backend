@@ -149,6 +149,12 @@ export class EmployeeAttendanceService {
       findAttendance.timeIn,
       date,
     );
+
+    const totalHours = this.date.calculateHoursWorked(
+      findAttendance.timeIn,
+      date,
+    );
+
     const updateRec = await this.prisma.tbl_attendance.update({
       where: {
         attendanceId: findAttendance.attendanceId,
@@ -159,6 +165,7 @@ export class EmployeeAttendanceService {
         overtime: {
           create: {
             requested_hours: reqHours,
+            time_out: date,
           },
         },
       },

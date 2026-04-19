@@ -28,7 +28,7 @@ export class DashboardService {
     });
 
     if (!find) {
-      throw new NotFoundException('User not found');
+      throw new NotFoundException('etst');
     }
 
     const date = this.date.getSpanAttendanceDatesLogs(year, month);
@@ -57,6 +57,10 @@ export class DashboardService {
     const totalLogs = await this.prisma.tbl_attendance.count({
       where: {
         employeeId: employeeId,
+        date: {
+          gte: date?.date.gte,
+          lte: date?.date.lte,
+        },
       },
     });
 

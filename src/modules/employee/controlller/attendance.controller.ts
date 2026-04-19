@@ -14,12 +14,15 @@ import type { RequestData } from 'src/modules/auth/interface/reqdata';
 import { EmployeeAttendanceService } from '../service/attendance.service';
 import { AttendanceDTO } from '../dto/attendance.dto';
 import { CustomValidationPipe } from '../../../common/custom-pipes/pipes.custom-pipes';
-import type { AttendanceLogsQueries } from '../interface/log-queries.interface';
 import { RolesGuard } from 'src/modules/auth/guard/roles.guard';
 import { Roles } from 'src/common/custom-decorators/Roles.decorator';
+import { ImageConfigs } from 'src/common/helper/image-base64';
 @Controller('employee')
 export class AttendanceController {
-  constructor(private readonly service: EmployeeAttendanceService) {}
+  constructor(
+    private readonly service: EmployeeAttendanceService,
+    private readonly image: ImageConfigs,
+  ) {}
 
   @Post('attendance/time-in')
   @Roles('EMPLOYEE')
@@ -28,13 +31,23 @@ export class AttendanceController {
     @Req() req: RequestData,
     @Body(CustomValidationPipe) user: AttendanceDTO,
   ) {
+    // image is sent via base64 and not a file, multer cant be used here
     const data = req.user?.employeeId;
+    const { location } = user;
 
     if (!data) {
       throw new NotFoundException('User not found');
     }
 
-    const service = await this.service.EmployeeTimein(data, user);
+    let imagePath = '';
+    if (user.imageUrl && user.imageUrl.startsWith('data:image')) {
+      imagePath = await this.image.saveBase64Image(user.imageUrl);
+    }
+
+    const service = await this.service.EmployeeTimein(data, {
+      location,
+      imageUrl: imagePath,
+    });
 
     return {
       success: true,

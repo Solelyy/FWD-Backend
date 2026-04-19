@@ -67,7 +67,7 @@ export class DashboardController {
 
     return {
       success: true,
-      message: 'User can now time out as overtime',
+      message: 'Overtime fetched',
       isOvertime: service.isOvertime,
     };
   }
