@@ -8,7 +8,7 @@ CREATE TYPE "Status" AS ENUM ('PENDING', 'ACTIVE', 'INACTIVE', 'EXPIRED', 'SUSPE
 CREATE TYPE "Provider" AS ENUM ('LOCAL', 'GOOGLE');
 
 -- CreateEnum
-CREATE TYPE "attendance_Status" AS ENUM ('NONE', 'IN_PROGRESS', 'COMPLETED', 'ON_LEAVE', 'SUSPENDED');
+CREATE TYPE "attendance_Status" AS ENUM ('NO_RECORD', 'IN_PROGRESS', 'COMPLETED', 'ON_LEAVE', 'SUSPENDED', 'MISSING_TIMEOUT', 'OVERTIME_REQUEST');
 
 -- CreateEnum
 CREATE TYPE "OvertimeStatus" AS ENUM ('NONE', 'PENDING', 'APPROVED', 'REJECTED');
@@ -43,7 +43,7 @@ CREATE TABLE "tbl_attendance" (
     "canTimeIn" BOOLEAN NOT NULL DEFAULT true,
     "date" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "timeIn" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "timeOut" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "timeOut" TIMESTAMP(3),
     "timeInLoc" TEXT,
     "timeOutLoc" TEXT,
     "timeInImg" TEXT,
@@ -51,9 +51,9 @@ CREATE TABLE "tbl_attendance" (
     "isLate" BOOLEAN NOT NULL DEFAULT false,
     "isOvertime" BOOLEAN NOT NULL DEFAULT false,
     "isUndertime" BOOLEAN NOT NULL DEFAULT false,
-    "overtimeHours" INTEGER,
-    "status" "attendance_Status" NOT NULL DEFAULT 'NONE',
-    "totalHours" INTEGER,
+    "overtimeHours" DOUBLE PRECISION,
+    "status" "attendance_Status" NOT NULL DEFAULT 'NO_RECORD',
+    "totalHours" DOUBLE PRECISION,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "editedByAdminId" TEXT,
@@ -65,11 +65,12 @@ CREATE TABLE "tbl_attendance" (
 CREATE TABLE "tbl_overtime" (
     "id" SERIAL NOT NULL,
     "attendance_id" INTEGER NOT NULL,
-    "requested_hours" INTEGER NOT NULL,
-    "time_out" TIMESTAMP(3) NOT NULL,
-    "overtime_status" "OvertimeStatus" NOT NULL DEFAULT 'NONE',
-    "approved_by" TEXT NOT NULL,
-    "approved_at" TIMESTAMP(3) NOT NULL,
+    "requested_hours" DOUBLE PRECISION,
+    "time_out" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "time_out_loc" TEXT,
+    "overtime_status" "OvertimeStatus" NOT NULL DEFAULT 'PENDING',
+    "approved_by" TEXT,
+    "approved_at" TIMESTAMP(3),
 
     CONSTRAINT "tbl_overtime_pkey" PRIMARY KEY ("id")
 );
@@ -93,4 +94,4 @@ ALTER TABLE "tbl_attendance" ADD CONSTRAINT "tbl_attendance_employeeId_fkey" FOR
 ALTER TABLE "tbl_overtime" ADD CONSTRAINT "tbl_overtime_attendance_id_fkey" FOREIGN KEY ("attendance_id") REFERENCES "tbl_attendance"("attendanceId") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "tbl_overtime" ADD CONSTRAINT "tbl_overtime_approved_by_fkey" FOREIGN KEY ("approved_by") REFERENCES "User"("employeeId") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "tbl_overtime" ADD CONSTRAINT "tbl_overtime_approved_by_fkey" FOREIGN KEY ("approved_by") REFERENCES "User"("employeeId") ON DELETE SET NULL ON UPDATE CASCADE;
