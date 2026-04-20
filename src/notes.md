@@ -79,6 +79,9 @@ getTTL(): 5. Dynamically sets the Time-to-Live (duration) for the rate-limiting 
 
 ## Prisma relations label
 - labels or parameters on binding a key is just a label to help distinguish what it is for, you can declare it or not but still works, its not mandatory. Still it needs a another attribute to be bind
+
+## update & delete
+- prisma can't delete a record from the table if its not using unique att or key. Therefore unique key is needed for this operation
 ### Syntax
 
 ## spread operator

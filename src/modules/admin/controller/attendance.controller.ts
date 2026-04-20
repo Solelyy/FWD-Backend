@@ -1,4 +1,4 @@
-import { Controller, Get, ParseIntPipe, Body, Query, UseGuards } from '@nestjs/common';
+import { Controller, Get, ParseIntPipe,Post, Body, Query, UseGuards } from '@nestjs/common';
 import { AuthGuard } from 'src/modules/auth/guard/auth.guard';
 import { ExternalService } from '../service/external-admin.service';
 import { Roles } from 'src/common/custom-decorators/Roles.decorator';
@@ -34,10 +34,15 @@ export class AdminAttendanceController {
 
  @Roles('ADMIN')
   @UseGuards(AuthGuard, RolesGuard)
-  @Get('employee/employee-attendance')
+  @Post('employee/add-attendance')
   async addEmployeeAttenadance (
     @Body(CustomValidationPipe) employee: AddAttendanceDTO
   ){
     const service = await this.service.addAttedance(employee)
+
+    return{
+        success: true,
+        message: 'Successfully added attendance for employee'
+    }
   }
 }

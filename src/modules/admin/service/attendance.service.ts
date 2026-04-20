@@ -139,8 +139,8 @@ export class AdminAttendanceService {
       where : {employeeId: employee.employeeId}
     })
 
-    if(!existingEmployee){
-      throw new ConflictException("User already exists")
+    if(existingEmployee){
+      throw new ConflictException("attendance already exists")
     }
 
     const createUserAttendance = await this.prisma.tbl_attendance.create({
@@ -149,6 +149,44 @@ export class AdminAttendanceService {
         timeIn: employee.timeIn,
         timeOut: employee.timeOut,
         status: attendance_Status.COMPLETED
+      }
+    })
+    
+    return;
+  }
+
+  async markAbsent (employeeId: string){
+    const date = this.date.getEmployeeToday()
+
+    // any rs that is one to many is always returns an array depends what attribute is decalred as array
+    const existingEmployee = await this.prisma.user.findUnique({
+      where : {employeeId: employeeId
+      },
+      include : {
+        attendance : {
+         where: {
+          employeeId: employeeId,
+          date: {
+            lte: date.lte,
+            gte: date.gte
+          }
+         }
+        }
+      }
+    })
+
+     if(!existingEmployee){
+      throw new ConflictException("User doesnt exists")
+    }
+
+    const attendanceRecord = existingEmployee.attendance[0];
+  
+    // always use a unique att to update
+    const updateEmployeeRecord = await this.prisma.tbl_attendance.update({
+      where : {attendanceId : attendanceRecord.attendanceId},
+      data : {
+        status: attendance_Status.NO_RECORD,
+        updatedAt: new Date()
       }
     })
     
