@@ -9,6 +9,7 @@ import {
 } from '@nestjs/common';
 import { attendance_Status, OvertimeStatus } from '@prisma/client';
 import { AddAttendanceDTO } from '../dto/add-attendance.dto';
+import { AttendanceFilterHelper } from '../../../common/helper/filter';
 
 @Injectable()
 export class AdminAttendanceService {
@@ -67,26 +68,24 @@ export class AdminAttendanceService {
     };
   }
 
-  async getEmployeeAttendanceLogs(
-    employeeId: string,
+  async getAllAttendance(
     page: number,
     limit: number,
     year: number,
     month: number,
     filter: string,
-  ): Promise<EmployeeAttendanceLog> {
+  ) {
     const dates = this.date.getSpanAttendanceDatesLogs(year, month);
+    const statusFilter = AttendanceFilterHelper(filter);
 
-    const employee = await this.prisma.user.findUnique({
-      where: { employeeId: employeeId },
+    const allLogs = await this.prisma.user.findMany({
       include: {
         attendance: {
-          // skip and take are top level for arrays like findMany
-          // if single object (findUnique) then skip and take params are called inside of the nessted attribute
           where: {
+            ...(statusFilter && { status: statusFilter }),
             date: {
-              gte: dates?.date.gte,
               lte: dates?.date.lte,
+              gte: dates?.date.gte,
             },
           },
           skip: (page - 1) * limit,
@@ -94,36 +93,45 @@ export class AdminAttendanceService {
           orderBy: {
             date: 'desc',
           },
-          include: { overtime: true },
+          include: {
+            overtime: true,
+          },
         },
       },
     });
 
-    if (!employee) {
-      throw new NotFoundException('Employee not found');
+    if (!allLogs) {
+      throw new NotFoundException('No attendance logs for this month and year');
     }
 
     const total = await this.prisma.tbl_attendance.count({
       where: {
-        employeeId: employeeId,
-        ...(dates && { date: dates.date }),
+        ...(statusFilter && { status: statusFilter }),
+        date: {
+          lte: dates?.date.lte,
+          gte: dates?.date.gte,
+        },
       },
     });
 
-    const logs = employee.attendance.map((attendance) => ({
-      id: attendance.attendanceId,
-      employeeId: attendance.employeeId,
-      date: attendance.date,
-      timeIn: {
-        timestamp: attendance.timeIn,
-      },
-      timeOut: {
-        timestamp: attendance.timeOut,
-      },
-      status: attendance.status,
-      overtimeStatus: attendance.overtime?.overtime_status || 'NONE', // default fallback since overtimeStatus can only have a value when a record is created
-      totalHours: attendance.totalHours,
-    }));
+    const logs = allLogs.flatMap((user) =>
+      user.attendance.map((attendance) => ({
+        id: attendance.attendanceId,
+        attendanceId: attendance.attendanceId,
+        employeeId: user.employeeId,
+        firstname: user.firstname,
+        lastname: user.lastname,
+        timeIn: {
+          timestamp: attendance.timeIn,
+        },
+        timeOut: {
+          timestamp: attendance.timeOut,
+        },
+        status: attendance.status,
+        overtimeStatus: attendance.overtime?.overtime_status || 'NONE',
+        totalHours: attendance.totalHours,
+      })),
+    );
 
     return {
       logs: logs,
@@ -156,44 +164,100 @@ export class AdminAttendanceService {
     return;
   }
 
-  async markAbsent(employeeId: string, status: string) {
+  async markAbsent(attendanceId: number, status: string) {
     const date = this.date.getEmployeeToday();
 
     // any rs that is one to many is always returns an array depends what attribute is decalred as array
-    const existingEmployee = await this.prisma.user.findUnique({
-      where: { employeeId: employeeId },
-      include: {
-        attendance: {
-          where: {
-            employeeId: employeeId,
-            date: {
-              lte: date.lte,
-              gte: date.gte,
-            },
-          },
-        },
-      },
+    const findAttendance = await this.prisma.tbl_attendance.findUnique({
+      where: { attendanceId: attendanceId },
     });
 
-    if (!existingEmployee) {
-      throw new ConflictException('User doesnt exists');
-    }
-
-    const attendanceRecord = existingEmployee.attendance[0];
-
-    if (!attendanceRecord) {
-      throw new NotFoundException('User doesnt have an attendance for today');
+    if (!findAttendance) {
+      throw new ConflictException('no attendance record');
     }
 
     // always use a unique att to update
     const updateEmployeeRecord = await this.prisma.tbl_attendance.update({
-      where: { attendanceId: attendanceRecord.attendanceId },
+      where: { attendanceId: findAttendance.attendanceId },
       data: {
         status: status as attendance_Status, // type assertion, ovveriding
         updatedAt: new Date(),
       },
     });
 
+    return {
+      status: updateEmployeeRecord.status,
+      employeeId: updateEmployeeRecord.employeeId,
+    };
+  }
+
+  async updateAttendance(employee: AddAttendanceDTO) {
+    const date = this.date.getEmployeeToday();
+
+    const findEmployee = await this.prisma.tbl_attendance.findFirst({
+      where: {
+        employeeId: employee.employeeId,
+        date: {
+          lte: date.lte,
+          gte: date.gte,
+        },
+      },
+    });
+
+    if (!findEmployee) {
+      throw new NotFoundException('User doesnt have any attendance for today');
+    }
+
+    const update = await this.prisma.tbl_attendance.update({
+      where: {
+        attendanceId: findEmployee.attendanceId,
+      },
+      data: {
+        timeIn: employee.timeIn,
+        timeOut: employee.timeOut,
+        updatedAt: new Date(),
+        status: attendance_Status.COMPLETED,
+      },
+    });
+
     return;
+  }
+
+  async approveOvertime(adminId: string, attendanceId: number, status: string) {
+    const date = this.date.getEmployeeToday();
+
+    const findEmployee = await this.prisma.tbl_attendance.findUnique({
+      where: {
+        attendanceId: attendanceId,
+      },
+      include: {
+        overtime: {
+          select: {
+            attendance_id: true,
+          },
+        },
+      },
+    });
+
+    if (!findEmployee) {
+      throw new NotFoundException('this attendance doesnt exists');
+    }
+
+    if (!findEmployee.overtime) {
+      throw new NotFoundException('no overtime record for this attendance');
+    }
+
+    const update = await this.prisma.tbl_overtime.update({
+      where: { attendance_id: findEmployee.overtime.attendance_id },
+      data: {
+        overtime_status: status as OvertimeStatus,
+        approved_by: adminId,
+        approved_at: new Date(),
+      },
+    });
+
+    return {
+      update: update.approved_by,
+    };
   }
 }

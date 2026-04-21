@@ -12,7 +12,7 @@ export class PrismaService
   private node_env: string;
 
   constructor() {
-    const environment = process.env.NODE_ENV || 'production';
+    const environment = process.env.NODE_ENV || 'development';
     const path = `.env.${environment}`;
 
     env.config({ path: path });

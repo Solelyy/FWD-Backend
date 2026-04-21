@@ -1,0 +1,8 @@
+export enum AttendanceStatusFilter {
+  ALL = 'ALL',
+  PRESENT = 'COMPLETED',
+  ABSENT = 'NO_RECORD',
+  ON_LEAVE = 'ON_LEAVE',
+  OVERTIME_REQUEST = 'OVERTIME_REQUEST',
+  MISSING_TIMEOUT = 'MISSING_TIMEOUT',
+}

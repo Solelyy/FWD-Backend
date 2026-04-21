@@ -80,8 +80,16 @@ export class AuthService {
       throw new NotFoundException('token do not match');
     }
 
-    const { id, employeeId, firstname, lastname, role, email, isDataPolicyAccepted, ...others } =
-      user;
+    const {
+      id,
+      employeeId,
+      firstname,
+      lastname,
+      role,
+      email,
+      isDataPolicyAccepted,
+      ...others
+    } = user;
 
     return {
       id,
@@ -90,7 +98,7 @@ export class AuthService {
       lastname,
       role,
       email,
-      isDataPolicyAccepted
+      isDataPolicyAccepted,
     };
   }
 
