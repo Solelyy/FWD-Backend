@@ -77,6 +77,11 @@ getTTL(): 5. Dynamically sets the Time-to-Live (duration) for the rate-limiting 
 
 - add a unique keyword for a record one to one, and avoid having duplicate records of a specific table, example is if a employee can have one record of attendance only then set @unique to avoid multiple records of attendance with the same employeeId, same as on the date if you dont want to have multiple records of attendance per day
 
+## Prisma relations label
+- labels or parameters on binding a key is just a label to help distinguish what it is for, you can declare it or not but still works, its not mandatory. Still it needs a another attribute to be bind
+
+## update & delete
+- prisma can't delete a record from the table if its not using unique att or key. Therefore unique key is needed for this operation
 ### Syntax
 
 ## spread operator

@@ -27,7 +27,7 @@
       }
 
       enum attendance_Status {
-        ABSENT
+        NO_RECORD
         IN_PROGRESS
         COMPLETED
         ON_LEAVE
@@ -68,7 +68,7 @@
 
           model tbl_attendance {
             attendanceId                  Int    @id @default(autoincrement())
-            employeeId String // as long the reference is unique it can be used as a reference
+            employeeId String @unique // as long the reference is unique it can be used as a reference
             user User @relation(fields: [employeeId], references: [employeeId]) // the table relies on the user table therefore the attendance is recorded for a specific employee
             canTimeIn Boolean @default(true)
             date DateTime  @default(now())
@@ -82,7 +82,7 @@
             isOvertime Boolean @default(false)
             isUndertime Boolean @default(false)
             overtimeHours  Float?
-            status  attendance_Status @default(ABSENT)
+            status  attendance_Status @default(NO_RECORD)
             totalHours Float?  
             createdAt DateTime @default(now())
             updatedAt DateTime @updatedAt

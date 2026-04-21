@@ -9,6 +9,10 @@ import { ManagementServiceFeature } from '../service/management.service';
 import { ManagementControllerFeature } from '../controller/management.controller';
 import { ExternalService } from '../service/external-admin.service';
 import { ExternalAdminController } from '../controller/external.admin.controller';
+import { AttendanceController } from 'src/modules/employee/controlller/attendance.controller';
+import { AdminAttendanceService} from '../service/attendance.service';
+import { AdminAttendanceController } from '../controller/attendance.controller';
+import { DateHelper } from 'src/utils/date.utils';
 
 @Module({
   imports: [AuthModule, UtilModule, EmailModule],
@@ -16,7 +20,8 @@ import { ExternalAdminController } from '../controller/external.admin.controller
     AdminController,
     ManagementControllerFeature,
     ExternalAdminController,
+    AdminAttendanceController
   ],
-  providers: [AdminService, ManagementServiceFeature, ExternalService],
+  providers: [AdminService, ManagementServiceFeature, ExternalService, AdminAttendanceService, DateHelper],
 })
 export class AdminModule {}
