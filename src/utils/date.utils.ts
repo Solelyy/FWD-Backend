@@ -130,4 +130,14 @@ export class DateHelper {
 
     return overtimeWorkingHours;
   }
+
+  leaveSpan(startDate: string, endDate: string) {
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+
+    const calMS = end.getTime() - start.getTime();
+    const convertToDaysDecimal = calMS / (1000 * 60 * 60 * 24);
+
+    return convertToDaysDecimal;
+  }
 }

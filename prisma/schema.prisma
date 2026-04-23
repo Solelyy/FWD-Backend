@@ -44,7 +44,6 @@ enum OvertimeStatus {
 }
 
 enum LeaveType {
-   NONE
    SICK
    VACATION
    ACCUMULATED
@@ -119,13 +118,19 @@ model tbl_leave {
   id Int @id @default(autoincrement())
   employeeId String
   employee User @relation("leave_records", fields: [employeeId], references: [employeeId])
-  leave_type LeaveType @default(NONE)
+  leaveType LeaveType
   startDate DateTime @default(now())
-  endDate DateTime?
+  endDate DateTime
   days_requested Decimal?
-  status OvertimeStatus @default(NONE)
+  reason String?
+  attachment String?
+  vacationBalance Int      @default(6)
+  sickBalance     Int      @default(6)
+  otherBalance    Int      @default(6)
+  accumulatedBal Int @default(1)
+  status OvertimeStatus @default(PENDING)
   submittedAt DateTime @default(now())
   validateAt DateTime?
-  validated_by String
-  validatedBy User @relation("validated_by",fields: [validated_by],references: [employeeId])
+  validated_by String?
+  validatedBy User? @relation("validated_by",fields: [validated_by],references: [employeeId])
 }
