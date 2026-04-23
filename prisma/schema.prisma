@@ -6,6 +6,53 @@ datasource db {
   provider = "postgresql"
 }
 
+enum Role {
+  SUPER_ADMIN
+  ADMIN
+  EMPLOYEE
+}
+
+enum Status {
+  PENDING
+  ACTIVE
+  INACTIVE
+  EXPIRED
+  SUSPENDED
+  REMOVED
+}
+
+enum Provider {
+  LOCAL
+  GOOGLE
+}
+
+enum attendance_Status {
+  NO_RECORD
+  IN_PROGRESS
+  COMPLETED
+  ON_LEAVE
+  SUSPENDED
+  MISSING_TIMEOUT
+  OVERTIME_REQUEST
+}
+
+enum OvertimeStatus {
+  NONE
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum LeaveType {
+   NONE
+   SICK
+   VACATION
+   ACCUMULATED
+   OTHER
+}
+
+
+
 model User {
   id                   Int              @id @default(autoincrement())
   employeeId           String           @unique
@@ -26,7 +73,8 @@ model User {
   isDataPolicyAccepted Boolean          @default(false)
   attendance           tbl_attendance[]
   approved_overtime    tbl_overtime[]   @relation("approvedBy")
-
+  leave_records tbl_leave[] @relation("leave_records")
+  validated_leaves tbl_leave[] @relation("validated_by")
   @@index([role, status])
 }
 
@@ -67,39 +115,17 @@ model tbl_overtime {
   attendance      tbl_attendance @relation(fields: [attendance_id], references: [attendanceId])
 }
 
-enum Role {
-  SUPER_ADMIN
-  ADMIN
-  EMPLOYEE
-}
-
-enum Status {
-  PENDING
-  ACTIVE
-  INACTIVE
-  EXPIRED
-  SUSPENDED
-  REMOVED
-}
-
-enum Provider {
-  LOCAL
-  GOOGLE
-}
-
-enum attendance_Status {
-  NO_RECORD
-  IN_PROGRESS
-  COMPLETED
-  ON_LEAVE
-  SUSPENDED
-  MISSING_TIMEOUT
-  OVERTIME_REQUEST
-}
-
-enum OvertimeStatus {
-  NONE
-  PENDING
-  APPROVED
-  REJECTED
+model tbl_leave {
+  id Int @id @default(autoincrement())
+  employeeId String
+  employee User @relation("leave_records", fields: [employeeId], references: [employeeId])
+  leave_type LeaveType @default(NONE)
+  startDate DateTime @default(now())
+  endDate DateTime?
+  days_requested Decimal?
+  status OvertimeStatus @default(NONE)
+  submittedAt DateTime @default(now())
+  validateAt DateTime?
+  validated_by String
+  validatedBy User @relation("validated_by",fields: [validated_by],references: [employeeId])
 }

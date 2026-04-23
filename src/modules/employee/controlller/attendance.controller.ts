@@ -55,6 +55,7 @@ export class AttendanceController {
       isLate: service.isLate,
       timeIn: service.timeIn,
       status: service.status,
+      canTimeIn: service.canTimeIn,
     };
   }
 

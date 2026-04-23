@@ -59,6 +59,7 @@ export class EmployeeAttendanceService {
         timeInImg: employee.imageUrl,
         isLate: this.isLate,
         status: attendance_Status.IN_PROGRESS,
+        canTimeIn: false,
       },
     });
 
@@ -69,6 +70,7 @@ export class EmployeeAttendanceService {
         hour12: true,
       }),
       status: storeAttendance.status,
+      canTimeIn: storeAttendance.canTimeIn,
     };
   }
 
