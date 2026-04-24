@@ -8,7 +8,8 @@ import { EmployeeAttendanceService } from './service/attendance.service';
 import { ImageConfigs } from 'src/common/helper/image-base64';
 import { LeaveService } from './service/leave.service';
 import { LeaveQuery } from 'src/common/queries/leave';
-import { LeaveHelper } from 'src/common/helper/bal-check';
+import { LeaveHelper } from 'src/common/helper/leave-helper';
+import { AttendanceHelper } from 'src/common/helper/attendance-helper';
 @Module({
   imports: [AuthModule, UtilModule],
   providers: [
@@ -18,6 +19,7 @@ import { LeaveHelper } from 'src/common/helper/bal-check';
     LeaveService,
     LeaveQuery,
     LeaveHelper,
+    AttendanceHelper,
   ],
   controllers: [DashboardController, AttendanceController],
   exports: [],

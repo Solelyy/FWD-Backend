@@ -70,6 +70,11 @@ model User {
   endDate              DateTime?
   isDeleted            Boolean          @default(false)
   isDataPolicyAccepted Boolean          @default(false)
+   vacationBalance Int      @default(6)
+  sickBalance     Int      @default(6)
+  otherBalance    Int      @default(6)
+  accumulatedBal Int @default(0)
+  remainingOvertimeHours Float @default(0)
   attendance           tbl_attendance[]
   approved_overtime    tbl_overtime[]   @relation("approvedBy")
   leave_records tbl_leave[] @relation("leave_records")
@@ -124,10 +129,6 @@ model tbl_leave {
   days_requested Decimal?
   reason String?
   attachment String?
-  vacationBalance Int      @default(6)
-  sickBalance     Int      @default(6)
-  otherBalance    Int      @default(6)
-  accumulatedBal Int @default(1)
   status OvertimeStatus @default(PENDING)
   submittedAt DateTime @default(now())
   validateAt DateTime?

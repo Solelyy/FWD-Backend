@@ -3,7 +3,7 @@ import { PrismaService } from 'src/prisma_global/prisma.service';
 import { EmployeeLeaveDTO } from '../dto/create-leave';
 import { LeaveQuery } from 'src/common/queries/leave';
 import { OvertimeStatus, tbl_leave } from '@prisma/client';
-import { LeaveHelper } from 'src/common/helper/bal-check';
+import { LeaveHelper } from 'src/common/helper/leave-helper';
 import { DateHelper } from 'src/utils/date.utils';
 @Injectable()
 export class LeaveService {

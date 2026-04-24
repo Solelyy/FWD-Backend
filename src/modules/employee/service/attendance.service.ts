@@ -9,6 +9,7 @@ import { DateHelper } from 'src/utils/date.utils';
 import { WorkingConstraints } from '../interface/get-time.interface';
 import { EmployeeAttendanceLog } from '../types/attendancelog.types';
 import { attendance_Status } from '@prisma/client';
+import { AttendanceHelper } from 'src/common/helper/attendance-helper';
 @Injectable()
 export class EmployeeAttendanceService {
   private isLate: boolean;
@@ -17,6 +18,7 @@ export class EmployeeAttendanceService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly date: DateHelper,
+    private readonly attendance: AttendanceHelper,
   ) {
     this.getTime = date.getWorkingConstraints();
   }
@@ -176,6 +178,8 @@ export class EmployeeAttendanceService {
         overtime: true,
       },
     });
+
+    await this.attendance.sumRequestedLeave(employeeId);
 
     return {
       status: updateRec.overtime?.overtime_status,
