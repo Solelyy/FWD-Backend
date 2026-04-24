@@ -103,4 +103,45 @@ export class ManagementServiceFeature {
       },
     });
   }
+
+  async getAllEmployees() {
+    let totalActive: number = 0;
+    let totalInactive: number = 0;
+    let totalPending: number = 0;
+    let totalExpired: number = 0;
+    let totalSuspended: number = 0;
+
+    const getAll = await this.prisma.user.findMany({
+      where: {
+        role: Role.EMPLOYEE,
+      },
+    });
+
+    for (let users of getAll) {
+      if (users.status === Status.ACTIVE) {
+        totalActive++;
+      } else if (users.status === Status.INACTIVE) {
+        totalInactive++;
+      } else if (users.status === Status.PENDING) {
+        totalPending++;
+      } else if (users.status === Status.EXPIRED) {
+        totalExpired++;
+      } else if (users.status === Status.SUSPENDED) {
+        totalSuspended;
+      }
+    }
+
+    const total = await this.prisma.user.count({
+      where: { role: Role.EMPLOYEE },
+    });
+
+    return {
+      totalAccounts: total,
+      totalActive: totalActive,
+      totalInactive: totalInactive,
+      totalPending: totalPending,
+      totalExpired: totalExpired,
+      totalSuspended: totalSuspended,
+    };
+  }
 }

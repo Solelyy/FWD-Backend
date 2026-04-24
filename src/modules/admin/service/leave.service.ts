@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { OvertimeStatus, Role } from '@prisma/client';
 import { PrismaService } from 'src/prisma_global/prisma.service';
 import { DateHelper } from 'src/utils/date.utils';
@@ -91,5 +95,77 @@ export class AdminLeaveService {
         total: total,
       },
     };
+  }
+
+  async getEmployeeLeaveSummary(year: number, month: number) {
+    let pending: number = 0;
+    let approved: number = 0;
+    let rejected: number = 0;
+
+    const date = this.date.getSpanAttendanceDatesLogs(year, month);
+
+    const leaveRecords = await this.prisma.tbl_leave.findMany({
+      where: {
+        submittedAt: {
+          gte: date?.date.gte,
+          lte: date?.date.lte,
+        },
+      },
+    });
+
+    if (leaveRecords.length === 0) {
+      throw new NotFoundException('No leave records for this month');
+    }
+
+    for (let record of leaveRecords) {
+      if (record.status === OvertimeStatus.APPROVED) {
+        approved++;
+      } else if (record.status === OvertimeStatus.PENDING) {
+        pending++;
+      } else if (record.status === OvertimeStatus.REJECTED) {
+        rejected++;
+      }
+    }
+
+    const total = await this.prisma.tbl_leave.count({
+      where: {
+        submittedAt: {
+          gte: date?.date.gte,
+          lte: date?.date.lte,
+        },
+      },
+    });
+
+    return {
+      totalRequests: total,
+      pending: pending,
+      approved: approved,
+      rejected: rejected,
+    };
+  }
+
+  async approveLeave(employeeId: string, leaveId: number, status: string) {
+    const findRecord = await this.prisma.tbl_leave.findUnique({
+      where: {
+        id: leaveId,
+      },
+    });
+
+    if (!findRecord) {
+      throw new BadRequestException('Record doesnt exists');
+    }
+
+    const updateRec = await this.prisma.tbl_leave.update({
+      where: {
+        id: findRecord.id,
+      },
+      data: {
+        status: status as OvertimeStatus,
+        validated_by: employeeId,
+        validateAt: new Date(),
+      },
+    });
+
+    return updateRec;
   }
 }
