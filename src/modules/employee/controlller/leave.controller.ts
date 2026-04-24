@@ -15,7 +15,7 @@ import { AuthGuard } from 'src/modules/auth/guard/auth.guard';
 import { RolesGuard } from 'src/modules/auth/guard/roles.guard';
 
 @Controller('employee')
-class LeaveController {
+export class LeaveController {
   constructor(private readonly service: LeaveService) {}
 
   @Post('create-leave')

@@ -10,6 +10,7 @@ import { LeaveService } from './service/leave.service';
 import { LeaveQuery } from 'src/common/queries/leave';
 import { LeaveHelper } from 'src/common/helper/leave-helper';
 import { AttendanceHelper } from 'src/common/helper/attendance-helper';
+import { LeaveController } from './controlller/leave.controller';
 @Module({
   imports: [AuthModule, UtilModule],
   providers: [
@@ -20,8 +21,9 @@ import { AttendanceHelper } from 'src/common/helper/attendance-helper';
     LeaveQuery,
     LeaveHelper,
     AttendanceHelper,
+    LeaveService,
   ],
-  controllers: [DashboardController, AttendanceController],
+  controllers: [DashboardController, AttendanceController, LeaveController],
   exports: [],
 })
 export class EmployeeModule {}

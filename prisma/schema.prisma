@@ -126,7 +126,7 @@ model tbl_leave {
   leaveType LeaveType
   startDate DateTime @default(now())
   endDate DateTime
-  days_requested Decimal?
+  days_requested Int?
   reason String?
   attachment String?
   status OvertimeStatus @default(PENDING)

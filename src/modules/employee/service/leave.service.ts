@@ -42,10 +42,11 @@ export class LeaveService {
       {
         employeeId: employeeId,
         leaveType: leaveType,
-        data: employeeData,
+        days_requested: leaveDays,
+        ...employeeData,
       },
     );
 
-    return checkBal;
+    return checkBal.remainingBalance;
   }
 }

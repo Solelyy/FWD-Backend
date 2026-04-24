@@ -35,7 +35,6 @@ export class EmployeeLeaveDTO {
   })
   reason: string;
 
-  @IsNotEmpty()
   @IsString()
   @IsOptional()
   attachment: string;
