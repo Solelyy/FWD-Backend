@@ -70,10 +70,10 @@ model User {
   endDate              DateTime?
   isDeleted            Boolean          @default(false)
   isDataPolicyAccepted Boolean          @default(false)
-   vacationBalance Int      @default(6)
-  sickBalance     Int      @default(6)
+   vacationLeaveBalance Int      @default(6)
+  sickLeaveBalance     Int      @default(6)
   otherBalance    Int      @default(6)
-  accumulatedBal Int @default(0)
+  accumulatedLeave Int @default(0)
   remainingOvertimeHours Float @default(0)
   attendance           tbl_attendance[]
   approved_overtime    tbl_overtime[]   @relation("approvedBy")

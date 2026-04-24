@@ -35,10 +35,10 @@ CREATE TABLE "User" (
     "endDate" TIMESTAMP(3),
     "isDeleted" BOOLEAN NOT NULL DEFAULT false,
     "isDataPolicyAccepted" BOOLEAN NOT NULL DEFAULT false,
-    "vacationBalance" INTEGER NOT NULL DEFAULT 6,
-    "sickBalance" INTEGER NOT NULL DEFAULT 6,
+    "vacationLeaveBalance" INTEGER NOT NULL DEFAULT 6,
+    "sickLeaveBalance" INTEGER NOT NULL DEFAULT 6,
     "otherBalance" INTEGER NOT NULL DEFAULT 6,
-    "accumulatedBal" INTEGER NOT NULL DEFAULT 0,
+    "accumulatedLeave" INTEGER NOT NULL DEFAULT 0,
     "remainingOvertimeHours" DOUBLE PRECISION NOT NULL DEFAULT 0,
 
     CONSTRAINT "User_pkey" PRIMARY KEY ("id")

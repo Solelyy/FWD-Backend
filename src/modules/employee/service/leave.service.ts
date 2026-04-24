@@ -49,4 +49,33 @@ export class LeaveService {
 
     return checkBal.remainingBalance;
   }
+
+  async getLeaveBalances(employeeId: string) {
+    const get = await this.prisma.user.findUnique({
+      where: { employeeId: employeeId },
+      select: {
+        sickLeaveBalance: true,
+        vacationLeaveBalance: true,
+        accumulatedLeave: true,
+      },
+    });
+
+    return get;
+  }
+
+  async getLeaveRequests(employeeId: string) {
+    const get = await this.prisma.tbl_leave.findMany({
+      where: { employeeId: employeeId },
+      select: {
+        id: true,
+        submittedAt: true,
+        leaveType: true,
+        startDate: true,
+        endDate: true,
+        status: true,
+      },
+    });
+
+    return get;
+  }
 }
