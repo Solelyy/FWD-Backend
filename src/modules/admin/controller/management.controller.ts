@@ -90,4 +90,22 @@ export class ManagementControllerFeature {
       deleted: res.isDeleted,
     };
   }
+
+  @Roles('ADMIN')
+  @UseGuards(AuthGuard, RolesGuard)
+  @Get('employees')
+  async getAllEmployees() {
+    const service = await this.management.getAllEmployees();
+
+    return {
+      success: true,
+      message: 'account status retrieved successfully',
+      totalAccounts: service.totalAccounts,
+      totalActive: service.totalActive,
+      totalInactive: service.totalInactive,
+      totalPending: service.totalPending,
+      totalExpired: service.totalExpired,
+      totalSuspended: service.totalSuspended,
+    };
+  }
 }
