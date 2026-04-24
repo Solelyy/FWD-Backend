@@ -7,7 +7,7 @@ export class LeaveHelper {
   constructor(private readonly prisma: PrismaService) {}
 
   async getLeaveBal(employeeId: string, span: number, leaveType: LeaveEnum) {
-    const userBalance = await this.prisma.tbl_leave.findFirst({
+    const userBalance = await this.prisma.user.findFirst({
       where: {
         employeeId: employeeId,
       },
