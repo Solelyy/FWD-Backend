@@ -137,7 +137,7 @@ export class DateHelper {
 
     const calMS = end.getTime() - start.getTime();
     const convertToDaysDecimal = calMS / (1000 * 60 * 60 * 24);
-
-    return convertToDaysDecimal;
+    const wholeDays = Math.round(convertToDaysDecimal);
+    return wholeDays;
   }
 }

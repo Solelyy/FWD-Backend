@@ -12,7 +12,7 @@ export class AttendanceHelper {
     });
 
     let totalHours: number = findRemainingOvertime?.remainingOvertimeHours || 0;
-    let accumulatedLeave: number = findRemainingOvertime?.accumulatedBal || 0;
+    let accumulatedLeave: number = findRemainingOvertime?.accumulatedLeave || 0;
     const sum = await this.prisma.tbl_attendance.findMany({
       where: { employeeId: employeeId },
       select: {
@@ -35,13 +35,13 @@ export class AttendanceHelper {
     const updateRecord = await this.prisma.user.update({
       where: { employeeId: employeeId },
       data: {
-        accumulatedBal: accumulatedLeave,
+        accumulatedLeave: accumulatedLeave,
         remainingOvertimeHours: remainingBal,
       },
     });
 
     return {
-      accumulatedLeave: updateRecord.accumulatedBal,
+      accumulatedLeave: updateRecord.accumulatedLeave,
       remainingBal: updateRecord.remainingOvertimeHours,
     };
   }

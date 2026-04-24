@@ -1,6 +1,6 @@
 export enum LeaveEnum {
-  SICK,
-  VACATION,
-  ACCUMULATED,
-  OTHER,
+  SICK = 'SICK',
+  VACATION = 'VACATION',
+  ACCUMULATED = 'ACCUMULATED',
+  OTHER = 'OTHER',
 }

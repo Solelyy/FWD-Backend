@@ -14,15 +14,31 @@ export class LeaveHelper {
     });
 
     // explicitly determine key
-    const balance = {
-      [LeaveEnum.SICK]: userBalance?.sickBalance,
-      [LeaveEnum.VACATION]: userBalance?.vacationBalance,
-      [LeaveEnum.OTHER]: userBalance?.otherBalance,
-      [LeaveEnum.ACCUMULATED]: userBalance?.accumulatedBal,
+    // by the value of self
+    // with squarebracket this uses the value of a passed variable
+    // eg. test = 123 [test] : 456
+    const leaveData = {
+      [LeaveEnum.SICK]: {
+        value: userBalance?.sickLeaveBalance,
+        field: 'sickBalance',
+      },
+      [LeaveEnum.VACATION]: {
+        value: userBalance?.vacationLeaveBalance,
+        field: 'vacationBalance',
+      },
+      [LeaveEnum.OTHER]: {
+        value: userBalance?.otherBalance,
+        field: 'otherBalance',
+      },
+      [LeaveEnum.ACCUMULATED]: {
+        value: userBalance?.accumulatedLeave,
+        field: 'accumulatedBal',
+      },
     };
 
     // can be treat as params the object
-    const currentBalance = balance[leaveType]!;
+    const currentBalance = leaveData[leaveType].value!;
+    const fieldname = leaveData[leaveType].field;
 
     if (span > currentBalance) {
       throw new BadRequestException(
@@ -30,7 +46,18 @@ export class LeaveHelper {
       );
     }
 
-    const remainingBal = currentBalance - span;
-    return remainingBal;
+    const updatedUser = await this.prisma.user.update({
+      where: { employeeId: employeeId },
+      data: {
+        [fieldname]: {
+          decrement: span,
+        },
+      },
+    });
+
+    return {
+      remainingBalance: updatedUser[fieldname],
+      deductedAmount: span,
+    };
   }
 }
