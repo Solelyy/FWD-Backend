@@ -14,6 +14,9 @@ CREATE TYPE "attendance_Status" AS ENUM ('NO_RECORD', 'IN_PROGRESS', 'COMPLETED'
 CREATE TYPE "OvertimeStatus" AS ENUM ('NONE', 'PENDING', 'APPROVED', 'REJECTED');
 
 -- CreateEnum
+CREATE TYPE "LeaveStatus" AS ENUM ('NONE', 'PENDING', 'APPROVED', 'REJECTED');
+
+-- CreateEnum
 CREATE TYPE "LeaveType" AS ENUM ('SICK', 'VACATION', 'ACCUMULATED', 'OTHER');
 
 -- CreateTable
@@ -93,8 +96,8 @@ CREATE TABLE "tbl_leave" (
     "days_requested" INTEGER,
     "reason" TEXT,
     "attachment" TEXT,
-    "status" "OvertimeStatus" NOT NULL DEFAULT 'PENDING',
-    "submittedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "status" "LeaveStatus" NOT NULL DEFAULT 'PENDING',
+    "date" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "validateAt" TIMESTAMP(3),
     "validated_by" TEXT,
 
