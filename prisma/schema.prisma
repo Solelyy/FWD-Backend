@@ -43,6 +43,14 @@ enum OvertimeStatus {
   REJECTED
 }
 
+
+enum LeaveStatus {
+  NONE
+  PENDING
+  APPROVED
+  REJECTED
+}
+
 enum LeaveType {
    SICK
    VACATION
@@ -129,8 +137,8 @@ model tbl_leave {
   days_requested Int?
   reason String?
   attachment String?
-  status OvertimeStatus @default(PENDING)
-  submittedAt DateTime @default(now())
+  status LeaveStatus @default(PENDING)
+  date DateTime @default(now())
   validateAt DateTime?
   validated_by String?
   validatedBy User? @relation("validated_by",fields: [validated_by],references: [employeeId])

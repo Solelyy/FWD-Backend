@@ -3,7 +3,9 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { OvertimeStatus, Role } from '@prisma/client';
+import { LeaveStatus, OvertimeStatus, Role } from '@prisma/client';
+import { LeaveHelper } from 'src/common/helper/leave-helper';
+import { LeaveEnum } from 'src/modules/employee/types/create-leave';
 import { PrismaService } from 'src/prisma_global/prisma.service';
 import { DateHelper } from 'src/utils/date.utils';
 
@@ -12,6 +14,7 @@ export class AdminLeaveService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly date: DateHelper,
+    private readonly leaveHelper: LeaveHelper,
   ) {}
 
   async getLeaveBalances() {
@@ -46,7 +49,7 @@ export class AdminLeaveService {
         leave_records: {
           where: {
             ...(statusFilter && { status: statusFilter }),
-            submittedAt: {
+            date: {
               lte: dates?.date.lte,
               gte: dates?.date.gte,
             },
@@ -54,7 +57,7 @@ export class AdminLeaveService {
           skip: (page - 1) * limit,
           take: limit,
           orderBy: {
-            submittedAt: 'desc',
+            date: 'desc',
           },
         },
       },
@@ -67,7 +70,7 @@ export class AdminLeaveService {
     const total = await this.prisma.tbl_leave.count({
       where: {
         ...(statusFilter && { status: statusFilter }),
-        submittedAt: {
+        date: {
           lte: dates?.date.lte,
           gte: dates?.date.gte,
         },
@@ -106,7 +109,7 @@ export class AdminLeaveService {
 
     const leaveRecords = await this.prisma.tbl_leave.findMany({
       where: {
-        submittedAt: {
+        date: {
           gte: date?.date.gte,
           lte: date?.date.lte,
         },
@@ -129,7 +132,7 @@ export class AdminLeaveService {
 
     const total = await this.prisma.tbl_leave.count({
       where: {
-        submittedAt: {
+        date: {
           gte: date?.date.gte,
           lte: date?.date.lte,
         },
@@ -160,11 +163,19 @@ export class AdminLeaveService {
         id: findRecord.id,
       },
       data: {
-        status: status as OvertimeStatus,
+        status: status as LeaveStatus,
         validated_by: employeeId,
         validateAt: new Date(),
       },
     });
+
+    if (updateRec.status === LeaveStatus.APPROVED) {
+      await this.leaveHelper.getLeaveBal(
+        updateRec.employeeId,
+        updateRec.days_requested!,
+        updateRec.leaveType as LeaveEnum,
+      );
+    }
 
     return updateRec;
   }

@@ -20,11 +20,11 @@ export class LeaveHelper {
     const leaveData = {
       [LeaveEnum.SICK]: {
         value: userBalance?.sickLeaveBalance,
-        field: 'sickBalance',
+        field: 'sickLeaveBalance',
       },
       [LeaveEnum.VACATION]: {
         value: userBalance?.vacationLeaveBalance,
-        field: 'vacationBalance',
+        field: 'vacationLeaveBalance',
       },
       [LeaveEnum.OTHER]: {
         value: userBalance?.otherBalance,
@@ -32,7 +32,7 @@ export class LeaveHelper {
       },
       [LeaveEnum.ACCUMULATED]: {
         value: userBalance?.accumulatedLeave,
-        field: 'accumulatedBal',
+        field: 'accumulatedLeave',
       },
     };
 

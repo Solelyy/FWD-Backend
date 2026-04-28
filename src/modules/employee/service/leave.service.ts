@@ -2,7 +2,7 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma_global/prisma.service';
 import { EmployeeLeaveDTO } from '../dto/create-leave';
 import { LeaveQuery } from 'src/common/queries/leave';
-import { OvertimeStatus, tbl_leave } from '@prisma/client';
+import { LeaveStatus, tbl_leave } from '@prisma/client';
 import { LeaveHelper } from 'src/common/helper/leave-helper';
 import { DateHelper } from 'src/utils/date.utils';
 @Injectable()
@@ -16,9 +16,9 @@ export class LeaveService {
 
   async createLeave(employeeId: string, employee: EmployeeLeaveDTO) {
     const findLeave = await this.prisma.tbl_leave.findFirst({
-      where: { status: OvertimeStatus.PENDING, employeeId: employeeId },
+      where: { status: LeaveStatus.PENDING, employeeId: employeeId },
       orderBy: {
-        submittedAt: 'desc',
+        date: 'desc',
       },
     });
 
@@ -29,12 +29,6 @@ export class LeaveService {
     }
     const leaveDays = this.date.leaveSpan(employee.startDate, employee.endDate);
 
-    const checkBal = await this.leaveHelper.getLeaveBal(
-      employeeId,
-      leaveDays,
-      employee.leaveType,
-    );
-
     const { leaveType, ...employeeData } = employee;
 
     const createLeave = await this.leaveQuery.createLeave<tbl_leave>(
@@ -43,11 +37,10 @@ export class LeaveService {
         employeeId: employeeId,
         leaveType: leaveType,
         days_requested: leaveDays,
+        status: LeaveStatus.PENDING,
         ...employeeData,
       },
     );
-
-    return checkBal.remainingBalance;
   }
 
   async getLeaveBalances(employeeId: string) {
@@ -68,14 +61,13 @@ export class LeaveService {
       where: { employeeId: employeeId },
       select: {
         id: true,
-        submittedAt: true,
+        date: true,
         leaveType: true,
         startDate: true,
         endDate: true,
         status: true,
       },
     });
-
     return get;
   }
 }

@@ -27,9 +27,6 @@ export class EmployeeLeaveDTO {
   endDate: string;
 
   @IsString()
-  @MinLength(300, {
-    message: 'Description too short',
-  })
   @MaxLength(600, {
     message: 'Descriptions too long',
   })
