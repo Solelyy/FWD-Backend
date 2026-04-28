@@ -15,6 +15,7 @@ import { AdminAttendanceController } from '../controller/attendance.controller';
 import { DateHelper } from 'src/utils/date.utils';
 import { AdminLeaveController } from '../controller/leave.controller';
 import { AdminLeaveService } from '../service/leave.service';
+import { LeaveHelper } from 'src/common/helper/leave-helper';
 
 @Module({
   imports: [AuthModule, UtilModule, EmailModule],
@@ -32,6 +33,7 @@ import { AdminLeaveService } from '../service/leave.service';
     AdminAttendanceService,
     DateHelper,
     AdminLeaveService,
+    LeaveHelper,
   ],
 })
 export class AdminModule {}
