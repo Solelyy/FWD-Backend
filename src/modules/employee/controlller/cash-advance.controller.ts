@@ -17,11 +17,15 @@ import { CashAdvanceService } from '../service/cash-advance.service';
 @Controller('employee')
 export class CashAdvanceController {
   constructor(private readonly service: CashAdvanceService) {}
+
+  @Roles('EMPLOYEE')
+  @UseGuards(AuthGuard, RolesGuard)
   @Post('create-cash-request')
   async createLeave(@Req() req: RequestData, employee: CreateCashAdvanceDTO) {
     const employeeId = req.user?.employeeId;
 
     if (!employeeId) {
+      console.log(employeeId);
       throw new NotFoundException('User does not exists');
     }
 
