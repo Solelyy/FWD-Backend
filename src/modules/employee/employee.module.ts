@@ -7,7 +7,7 @@ import { AttendanceController } from './controlller/attendance.controller';
 import { EmployeeAttendanceService } from './service/attendance.service';
 import { ImageConfigs } from 'src/common/helper/image-base64';
 import { LeaveService } from './service/leave.service';
-import { LeaveQuery } from 'src/common/queries/leave';
+import { QueryHelper } from 'src/common/queries/leave';
 import { LeaveHelper } from 'src/common/helper/leave-helper';
 import { AttendanceHelper } from 'src/common/helper/attendance-helper';
 import { LeaveController } from './controlller/leave.controller';
@@ -18,7 +18,7 @@ import { LeaveController } from './controlller/leave.controller';
     EmployeeAttendanceService,
     ImageConfigs,
     LeaveService,
-    LeaveQuery,
+    QueryHelper,
     LeaveHelper,
     AttendanceHelper,
     LeaveService,
