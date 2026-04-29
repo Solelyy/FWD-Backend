@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma_global/prisma.service';
 
 @Injectable()
-export class LeaveQuery {
+export class QueryHelper {
   constructor(private readonly prisma: PrismaService) {}
 
   /**
