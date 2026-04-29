@@ -13,6 +13,7 @@ import { AuthGuard } from 'src/modules/auth/guard/auth.guard';
 import { RolesGuard } from 'src/modules/auth/guard/roles.guard';
 import { CreateCashAdvanceDTO } from '../dto/cash-advance';
 import { CashAdvanceService } from '../service/cash-advance.service';
+import { CustomValidationPipe } from 'src/common/custom-pipes/pipes.custom-pipes';
 
 @Controller('employee')
 export class CashAdvanceController {
@@ -21,7 +22,10 @@ export class CashAdvanceController {
   @Roles('EMPLOYEE')
   @UseGuards(AuthGuard, RolesGuard)
   @Post('create-cash-request')
-  async createLeave(@Req() req: RequestData, employee: CreateCashAdvanceDTO) {
+  async createLeave(
+    @Req() req: RequestData,
+    @Body(CustomValidationPipe) employee: CreateCashAdvanceDTO,
+  ) {
     const employeeId = req.user?.employeeId;
 
     if (!employeeId) {
