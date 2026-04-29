@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma_global/prisma.service';
 import { EmployeeLeaveDTO } from '../dto/create-leave';
-import { LeaveQuery } from 'src/common/queries/leave';
+import { QueryHelper } from 'src/common/queries/leave';
 import { LeaveStatus, tbl_leave } from '@prisma/client';
 import { LeaveHelper } from 'src/common/helper/leave-helper';
 import { DateHelper } from 'src/utils/date.utils';
@@ -9,7 +9,7 @@ import { DateHelper } from 'src/utils/date.utils';
 export class LeaveService {
   constructor(
     private readonly prisma: PrismaService,
-    private readonly leaveQuery: LeaveQuery,
+    private readonly QueryHelper: QueryHelper,
     private readonly date: DateHelper,
     private readonly leaveHelper: LeaveHelper,
   ) {}
@@ -31,7 +31,7 @@ export class LeaveService {
 
     const { leaveType, ...employeeData } = employee;
 
-    const createLeave = await this.leaveQuery.createLeave<tbl_leave>(
+    const createLeave = await this.QueryHelper.createLeave<tbl_leave>(
       'tbl_leave',
       {
         employeeId: employeeId,

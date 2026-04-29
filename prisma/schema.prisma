@@ -1,145 +1,159 @@
-generator client {
-  provider = "prisma-client-js"
-}
+  generator client {
+    provider = "prisma-client-js"
+  }
 
-datasource db {
-  provider = "postgresql"
-}
+  datasource db {
+    provider = "postgresql"
+  }
 
-enum Role {
-  SUPER_ADMIN
-  ADMIN
-  EMPLOYEE
-}
+  enum Role {
+    SUPER_ADMIN
+    ADMIN
+    EMPLOYEE
+  }
 
-enum Status {
-  PENDING
-  ACTIVE
-  INACTIVE
-  EXPIRED
-  SUSPENDED
-  REMOVED
-}
+  enum Status {
+    PENDING
+    ACTIVE
+    INACTIVE
+    EXPIRED
+    SUSPENDED
+    REMOVED
+  }
 
-enum Provider {
-  LOCAL
-  GOOGLE
-}
+  enum Provider {
+    LOCAL
+    GOOGLE
+  }
 
-enum attendance_Status {
-  NO_RECORD
-  IN_PROGRESS
-  COMPLETED
-  ON_LEAVE
-  SUSPENDED
-  MISSING_TIMEOUT
-  OVERTIME_REQUEST
-}
+  enum attendance_Status {
+    NO_RECORD
+    IN_PROGRESS
+    COMPLETED
+    ON_LEAVE
+    SUSPENDED
+    MISSING_TIMEOUT
+    OVERTIME_REQUEST
+  }
 
-enum OvertimeStatus {
-  NONE
-  PENDING
-  APPROVED
-  REJECTED
-}
-
-
-enum LeaveStatus {
-  NONE
-  PENDING
-  APPROVED
-  REJECTED
-}
-
-enum LeaveType {
-   SICK
-   VACATION
-   ACCUMULATED
-   OTHER
-}
+  enum OvertimeStatus {
+    NONE
+    PENDING
+    APPROVED
+    REJECTED
+  }
 
 
+  enum LeaveStatus {
+    NONE
+    PENDING
+    APPROVED
+    REJECTED
+  }
 
-model User {
-  id                   Int              @id @default(autoincrement())
-  employeeId           String           @unique
-  firstname            String
-  lastname             String
-  email                String           @unique
-  role                 Role             @default(EMPLOYEE)
-  status               Status           @default(PENDING)
-  password             String?
-  createdAt            DateTime         @default(now())
-  updatedAt            DateTime         @updatedAt
-  session              String?
-  invitationDate       String?
-  verificationToken    String?
-  startDate            DateTime?
-  endDate              DateTime?
-  isDeleted            Boolean          @default(false)
-  isDataPolicyAccepted Boolean          @default(false)
-   vacationLeaveBalance Int      @default(6)
-  sickLeaveBalance     Int      @default(6)
-  otherBalance    Int      @default(6)
-  accumulatedLeave Int @default(0)
-  remainingOvertimeHours Float @default(0)
-  attendance           tbl_attendance[]
-  approved_overtime    tbl_overtime[]   @relation("approvedBy")
-  leave_records tbl_leave[] @relation("leave_records")
-  validated_leaves tbl_leave[] @relation("validated_by")
-  @@index([role, status])
-}
+  enum LeaveType {
+    SICK
+    VACATION
+    ACCUMULATED
+    OTHER
+  }
 
-model tbl_attendance {
-  attendanceId    Int               @id @default(autoincrement())
-  employeeId      String
-  canTimeIn       Boolean           @default(true)
-  date            DateTime          @default(now())
-  timeIn          DateTime          @default(now())
-  timeOut         DateTime?
-  timeInLoc       String?
-  timeOutLoc      String?
-  timeInImg       String?
-  timeOutImg      String?
-  isLate          Boolean           @default(false)
-  isOvertime      Boolean           @default(false)
-  isUndertime     Boolean           @default(false)
-  overtimeHours   Float?
-  status          attendance_Status @default(NO_RECORD)
-  totalHours      Float?
-  createdAt       DateTime          @default(now())
-  updatedAt       DateTime          @updatedAt
-  editedByAdminId String?
-  user            User              @relation(fields: [employeeId], references: [employeeId])
-  overtime        tbl_overtime?
-}
 
-model tbl_overtime {
-  id              Int            @id @default(autoincrement())
-  attendance_id   Int            @unique
-  requested_hours Float?
-  time_out        DateTime       @default(now())
-  time_out_loc    String?
-  overtime_status OvertimeStatus @default(PENDING)
-  approved_by     String?
-  approved_at     DateTime?
-  approve_user    User?          @relation("approvedBy", fields: [approved_by], references: [employeeId])
-  attendance      tbl_attendance @relation(fields: [attendance_id], references: [attendanceId])
-}
 
-model tbl_leave {
-  id Int @id @default(autoincrement())
-  employeeId String
-  employee User @relation("leave_records", fields: [employeeId], references: [employeeId])
-  leaveType LeaveType
-  startDate DateTime @default(now())
-  endDate DateTime
-  days_requested Int?
-  reason String?
-  attachment String?
-  status LeaveStatus @default(PENDING)
-  date DateTime @default(now())
-  validateAt DateTime?
-  validated_by String?
-  validatedBy User? @relation("validated_by",fields: [validated_by],references: [employeeId])
-}
+  model User {
+    id                   Int              @id @default(autoincrement())
+    employeeId           String           @unique
+    firstname            String
+    lastname             String
+    email                String           @unique
+    role                 Role             @default(EMPLOYEE)
+    status               Status           @default(PENDING)
+    password             String?
+    createdAt            DateTime         @default(now())
+    updatedAt            DateTime         @updatedAt
+    session              String?
+    invitationDate       String?
+    verificationToken    String?
+    startDate            DateTime?
+    endDate              DateTime?
+    isDeleted            Boolean          @default(false)
+    isDataPolicyAccepted Boolean          @default(false)
+    vacationLeaveBalance Int      @default(6)
+    sickLeaveBalance     Int      @default(6)
+    otherBalance    Int      @default(6)
+    accumulatedLeave Int @default(0)
+    remainingOvertimeHours Float @default(0)
+    attendance           tbl_attendance[]
+    approved_overtime    tbl_overtime[]   @relation("approvedBy")
+    leave_records tbl_leave[] @relation("leave_records")
+    cas tbl_cashadvance[] @relation("cashadvance")
+    @@index([role, status])
+  }
+
+  model tbl_attendance {
+    attendanceId    Int               @id @default(autoincrement())
+    employeeId      String
+    canTimeIn       Boolean           @default(true)
+    date            DateTime          @default(now())
+    timeIn          DateTime          @default(now())
+    timeOut         DateTime?
+    timeInLoc       String?
+    timeOutLoc      String?
+    timeInImg       String?
+    timeOutImg      String?
+    isLate          Boolean           @default(false)
+    isOvertime      Boolean           @default(false)
+    isUndertime     Boolean           @default(false)
+    overtimeHours   Float?
+    status          attendance_Status @default(NO_RECORD)
+    totalHours      Float?
+    createdAt       DateTime          @default(now())
+    updatedAt       DateTime          @updatedAt
+    editedByAdminId String?
+    user            User              @relation(fields: [employeeId], references: [employeeId])
+    overtime        tbl_overtime?
+  }
+
+  model tbl_overtime {
+    id              Int            @id @default(autoincrement())
+    attendance_id   Int            @unique
+    requested_hours Float?
+    time_out        DateTime       @default(now())
+    time_out_loc    String?
+    overtime_status OvertimeStatus @default(PENDING)
+    approved_by     String?
+    approved_at     DateTime?
+    approve_user    User?          @relation("approvedBy", fields: [approved_by], references: [employeeId])
+    attendance      tbl_attendance @relation(fields: [attendance_id], references: [attendanceId])
+  }
+
+  model tbl_leave {
+    id Int @id @default(autoincrement())
+    employeeId String
+    employee User @relation("leave_records", fields: [employeeId], references: [employeeId])
+    leaveType LeaveType
+    startDate DateTime @default(now())
+    endDate DateTime
+    days_requested Int?
+    reason String?
+    attachment String?
+    status LeaveStatus @default(PENDING)
+    date DateTime @default(now())
+    validateAt DateTime?
+    validated_by String?
+  }
+
+
+  model tbl_cashadvance {
+    id Int @id @default(autoincrement())
+    employeeId String
+    employee User @relation("cashadvance", fields: [employeeId], references: [employeeId])
+    amountRequested Int?
+    amountApproved Int?
+    reason String?
+    status LeaveStatus @default(PENDING)
+    dateSubmitted DateTime @default(now())
+    approvedAt DateTime?
+    approved_by String?
+    approvedBy String?
+  }
