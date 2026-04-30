@@ -124,7 +124,6 @@ CREATE TABLE "tbl_cashadvance" (
     "dateSubmitted" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "approvedAt" TIMESTAMP(3),
     "approved_by" TEXT,
-    "approvedBy" TEXT,
 
     CONSTRAINT "tbl_cashadvance_pkey" PRIMARY KEY ("id")
 );
@@ -136,6 +135,7 @@ CREATE TABLE "tbl_reimbursements" (
     "amountRequested" INTEGER,
     "amountApproved" INTEGER,
     "reason" TEXT,
+    "attachment" TEXT,
     "type" "ReimbursementType" NOT NULL,
     "status" "ReimbursmentStatus" NOT NULL DEFAULT 'PENDING',
     "dateSubmitted" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,

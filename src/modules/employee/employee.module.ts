@@ -13,6 +13,8 @@ import { AttendanceHelper } from 'src/common/helper/attendance-helper';
 import { LeaveController } from './controlller/leave.controller';
 import { CashAdvanceController } from './controlller/cash-advance.controller';
 import { CashAdvanceService } from './service/cash-advance.service';
+import { ReimbursementService } from './service/reimbursements.service';
+import { ReimbursementController } from './controlller/reimbursement.controller';
 @Module({
   imports: [AuthModule, UtilModule],
   providers: [
@@ -25,12 +27,14 @@ import { CashAdvanceService } from './service/cash-advance.service';
     AttendanceHelper,
     LeaveService,
     CashAdvanceService,
+    ReimbursementService,
   ],
   controllers: [
     DashboardController,
     AttendanceController,
     LeaveController,
     CashAdvanceController,
+    ReimbursementController,
   ],
   exports: [],
 })
