@@ -11,6 +11,8 @@ import { QueryHelper } from 'src/common/queries/leave';
 import { LeaveHelper } from 'src/common/helper/leave-helper';
 import { AttendanceHelper } from 'src/common/helper/attendance-helper';
 import { LeaveController } from './controlller/leave.controller';
+import { CashAdvanceController } from './controlller/cash-advance.controller';
+import { CashAdvanceService } from './service/cash-advance.service';
 @Module({
   imports: [AuthModule, UtilModule],
   providers: [
@@ -22,8 +24,14 @@ import { LeaveController } from './controlller/leave.controller';
     LeaveHelper,
     AttendanceHelper,
     LeaveService,
+    CashAdvanceService,
   ],
-  controllers: [DashboardController, AttendanceController, LeaveController],
+  controllers: [
+    DashboardController,
+    AttendanceController,
+    LeaveController,
+    CashAdvanceController,
+  ],
   exports: [],
 })
 export class EmployeeModule {}
