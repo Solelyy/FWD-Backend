@@ -1,0 +1,81 @@
+import { BadRequestException, Injectable } from '@nestjs/common';
+import { PrismaService } from 'src/prisma_global/prisma.service';
+import { QueryHelper } from 'src/common/queries/leave';
+import {
+  ReimbursmentStatus,
+  tbl_cashadvance,
+  tbl_reimbursements,
+} from '@prisma/client';
+import { CreateReimbursement } from '../types/reimbursements';
+@Injectable()
+export class ReimbursementService {
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly query: QueryHelper,
+  ) {}
+
+  async createReimbursementRec(employeeId: string, req: CreateReimbursement) {
+    const findRecord = await this.prisma.tbl_reimbursements.findFirst({
+      where: {
+        employeeId: employeeId,
+        status: 'PENDING',
+      },
+      orderBy: {
+        dateSubmitted: 'desc',
+      },
+    });
+
+    if (findRecord) {
+      throw new BadRequestException(
+        'User have a pending requests, cant request one more reimbursement',
+      );
+    }
+
+    const createRec = await this.query.createLeave<tbl_reimbursements>(
+      'tbl_reimbursements',
+      {
+        employeeId: employeeId,
+        ...req,
+      },
+    );
+
+    return createRec;
+  }
+
+  async getMyRecords(employeId: string) {
+    const get = await this.prisma.tbl_reimbursements.findMany({
+      where: { employeeId: employeId },
+      select: {
+        id: true,
+        dateSubmitted: true,
+        type: true,
+        amountRequested: true,
+        amountApproved: true,
+        status: true,
+      },
+    });
+
+    return get;
+  }
+
+  async totalCashAdvance(employeeId: string) {
+    const totalApproved = await this.prisma.tbl_reimbursements.count({
+      where: {
+        employeeId: employeeId,
+        status: ReimbursmentStatus.APPROVED,
+      },
+    });
+
+    const totalPending = await this.prisma.tbl_reimbursements.count({
+      where: {
+        employeeId: employeeId,
+        status: ReimbursmentStatus.PENDING,
+      },
+    });
+
+    return {
+      totalApproved: totalApproved,
+      totalPending: totalPending,
+    };
+  }
+}

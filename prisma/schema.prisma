@@ -166,8 +166,8 @@ enum ReimbursementType {
     id Int @id @default(autoincrement())
     employeeId String
     employee User @relation("cashadvance", fields: [employeeId], references: [employeeId])
-    amountRequested Int?
-    amountApproved Int?
+    amountRequested Int? @default(0)
+    amountApproved Int? @default(0)
     reason String?
     status CashAdvanceStatus @default(PENDING)
     dateSubmitted DateTime @default(now())
@@ -179,13 +179,13 @@ enum ReimbursementType {
     id Int @id @default(autoincrement())
     employeeId String
     employee User @relation("reimbursement", fields: [employeeId], references: [employeeId])
-    amountRequested Int?
-    amountApproved Int?
+    amountRequested Int? @default(0)
+    amountApproved Int? @default(0)
     reason String?
+    attachment String?
     type ReimbursementType
     status ReimbursmentStatus @default(PENDING)
     dateSubmitted DateTime @default(now())
     approvedAt DateTime?
-    approved_by String?
-    approvedBy String?
+    approved_by String? 
   }

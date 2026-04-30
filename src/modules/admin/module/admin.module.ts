@@ -16,6 +16,8 @@ import { AdminLeaveService } from '../service/leave.service';
 import { LeaveHelper } from 'src/common/helper/leave-helper';
 import { AdminCashAdvanceService } from '../service/cash-advance.service';
 import { AdminCashAdvanceController } from '../controller/cash-advance.controller';
+import { AdminReimbursementController } from '../controller/reimbursement.controller';
+import { AdminReimbursementService } from '../service/reimbursement.service';
 @Module({
   imports: [AuthModule, UtilModule, EmailModule],
   controllers: [
@@ -25,6 +27,7 @@ import { AdminCashAdvanceController } from '../controller/cash-advance.controlle
     AdminAttendanceController,
     AdminLeaveController,
     AdminCashAdvanceController,
+    AdminReimbursementController,
   ],
   providers: [
     AdminService,
@@ -35,6 +38,7 @@ import { AdminCashAdvanceController } from '../controller/cash-advance.controlle
     AdminLeaveService,
     LeaveHelper,
     AdminCashAdvanceService,
+    AdminReimbursementService,
   ],
 })
 export class AdminModule {}
