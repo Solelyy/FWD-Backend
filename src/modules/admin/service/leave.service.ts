@@ -42,7 +42,8 @@ export class AdminLeaveService {
     filter: string,
   ) {
     const dates = this.date.getSpanAttendanceDatesLogs(year, month);
-    const statusFilter = filter as OvertimeStatus | undefined;
+    const statusFilter =
+      filter === 'ALL' ? undefined : (filter as OvertimeStatus);
 
     const allLogs = await this.prisma.user.findMany({
       include: {

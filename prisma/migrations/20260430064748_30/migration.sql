@@ -11,13 +11,22 @@ CREATE TYPE "Provider" AS ENUM ('LOCAL', 'GOOGLE');
 CREATE TYPE "attendance_Status" AS ENUM ('NO_RECORD', 'IN_PROGRESS', 'COMPLETED', 'ON_LEAVE', 'SUSPENDED', 'MISSING_TIMEOUT', 'OVERTIME_REQUEST');
 
 -- CreateEnum
-CREATE TYPE "OvertimeStatus" AS ENUM ('NONE', 'PENDING', 'APPROVED', 'REJECTED');
+CREATE TYPE "OvertimeStatus" AS ENUM ('PENDING', 'APPROVED', 'REJECTED');
 
 -- CreateEnum
-CREATE TYPE "LeaveStatus" AS ENUM ('NONE', 'PENDING', 'APPROVED', 'REJECTED');
+CREATE TYPE "LeaveStatus" AS ENUM ('PENDING', 'APPROVED', 'REJECTED');
+
+-- CreateEnum
+CREATE TYPE "CashAdvanceStatus" AS ENUM ('PENDING', 'APPROVED', 'REJECTED');
+
+-- CreateEnum
+CREATE TYPE "ReimbursmentStatus" AS ENUM ('PENDING', 'APPROVED', 'REJECTED');
 
 -- CreateEnum
 CREATE TYPE "LeaveType" AS ENUM ('SICK', 'VACATION', 'ACCUMULATED', 'OTHER');
+
+-- CreateEnum
+CREATE TYPE "ReimbursementType" AS ENUM ('FOOD', 'TRANSPORTATION', 'OTHER');
 
 -- CreateTable
 CREATE TABLE "User" (
@@ -111,13 +120,30 @@ CREATE TABLE "tbl_cashadvance" (
     "amountRequested" INTEGER,
     "amountApproved" INTEGER,
     "reason" TEXT,
-    "status" "LeaveStatus" NOT NULL DEFAULT 'PENDING',
+    "status" "CashAdvanceStatus" NOT NULL DEFAULT 'PENDING',
     "dateSubmitted" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "approvedAt" TIMESTAMP(3),
     "approved_by" TEXT,
     "approvedBy" TEXT,
 
     CONSTRAINT "tbl_cashadvance_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "tbl_reimbursements" (
+    "id" SERIAL NOT NULL,
+    "employeeId" TEXT NOT NULL,
+    "amountRequested" INTEGER,
+    "amountApproved" INTEGER,
+    "reason" TEXT,
+    "type" "ReimbursementType" NOT NULL,
+    "status" "ReimbursmentStatus" NOT NULL DEFAULT 'PENDING',
+    "dateSubmitted" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "approvedAt" TIMESTAMP(3),
+    "approved_by" TEXT,
+    "approvedBy" TEXT,
+
+    CONSTRAINT "tbl_reimbursements_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateIndex
@@ -146,3 +172,6 @@ ALTER TABLE "tbl_leave" ADD CONSTRAINT "tbl_leave_employeeId_fkey" FOREIGN KEY (
 
 -- AddForeignKey
 ALTER TABLE "tbl_cashadvance" ADD CONSTRAINT "tbl_cashadvance_employeeId_fkey" FOREIGN KEY ("employeeId") REFERENCES "User"("employeeId") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "tbl_reimbursements" ADD CONSTRAINT "tbl_reimbursements_employeeId_fkey" FOREIGN KEY ("employeeId") REFERENCES "User"("employeeId") ON DELETE RESTRICT ON UPDATE CASCADE;

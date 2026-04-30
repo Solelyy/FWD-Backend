@@ -21,7 +21,7 @@ export class CashAdvanceController {
 
   @Roles('EMPLOYEE')
   @UseGuards(AuthGuard, RolesGuard)
-  @Post('create-cash-request')
+  @Post('cash-advance-request')
   async createLeave(
     @Req() req: RequestData,
     @Body(CustomValidationPipe) employee: CreateCashAdvanceDTO,
@@ -39,6 +39,46 @@ export class CashAdvanceController {
       success: true,
       message: 'added cash advance request successfully',
       cashRecordId: service.id,
+    };
+  }
+
+  @Roles('EMPLOYEE')
+  @UseGuards(AuthGuard, RolesGuard)
+  @Get('cash-advance-requests')
+  async getRequests(@Req() req: RequestData) {
+    const employeeId = req.user?.employeeId;
+
+    if (!employeeId) {
+      console.log(employeeId);
+      throw new NotFoundException('User does not exists');
+    }
+
+    const service = await this.service.getMyRecords(employeeId);
+
+    return {
+      success: true,
+      message: 'added cash advance request successfully',
+      records: service,
+    };
+  }
+
+  @Roles('EMPLOYEE')
+  @UseGuards(AuthGuard, RolesGuard)
+  @Get('cash-advance-summary')
+  async totalRecords(@Req() req: RequestData) {
+    const employeeId = req.user?.employeeId;
+
+    if (!employeeId) {
+      console.log(employeeId);
+      throw new NotFoundException('User does not exists');
+    }
+
+    const service = await this.service.totalCashAdvance(employeeId);
+
+    return {
+      success: true,
+      message: 'total amount of cash advance retrieved successfully',
+      totalAdvanced: service,
     };
   }
 }

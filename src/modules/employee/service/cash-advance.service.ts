@@ -38,4 +38,32 @@ export class CashAdvanceService {
 
     return createRec;
   }
+
+  async getMyRecords(employeId: string) {
+    const get = await this.prisma.tbl_cashadvance.findMany({
+      where: { employeeId: employeId },
+      select: {
+        id: true,
+        dateSubmitted: true,
+        amountRequested: true,
+        amountApproved: true,
+        status: true,
+      },
+    });
+
+    return get;
+  }
+
+  async totalCashAdvance(employeeId: string) {
+    const count = await this.prisma.tbl_cashadvance.aggregate({
+      where: {
+        employeeId: employeeId,
+      },
+      _sum: {
+        amountApproved: true,
+      },
+    });
+
+    return count._sum.amountApproved;
+  }
 }
