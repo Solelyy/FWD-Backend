@@ -65,8 +65,8 @@ export class DateHelper {
         },
       };
     } else if (year && month) {
-      const startDate = new Date(year, month - 1, 0); // first day
-      const endDate = new Date(year, month, 1); // last day since dates are zero index esp in js
+      const startDate = new Date(year, month - 1, 1); // first day
+      const endDate = new Date(year, month, 0); // last day since dates are zero index esp in js
 
       return {
         date: {
