@@ -165,11 +165,15 @@ export class EmployeeAttendanceService {
       },
       data: {
         status: attendance_Status.COMPLETED,
+        timeOut: date,
+        timeOutLoc: employee.location,
+        timeOutImg: employee.imageUrl,
         // can create a new data inside of data object in update action of prisma
         overtime: {
           create: {
             requested_hours: reqHours,
             time_out: date,
+            time_out_loc: employee.location,
           },
         },
       },
