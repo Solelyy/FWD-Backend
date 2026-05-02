@@ -59,23 +59,29 @@ export class ReimbursementService {
   }
 
   async totalCashAdvance(employeeId: string) {
-    const totalApproved = await this.prisma.tbl_reimbursements.count({
+    const totalApproved = await this.prisma.tbl_reimbursements.aggregate({
       where: {
         employeeId: employeeId,
         status: ReimbursmentStatus.APPROVED,
       },
+      _sum: {
+        amountApproved: true,
+      },
     });
 
-    const totalPending = await this.prisma.tbl_reimbursements.count({
+    const totalPending = await this.prisma.tbl_reimbursements.aggregate({
       where: {
         employeeId: employeeId,
         status: ReimbursmentStatus.PENDING,
       },
+      _sum: {
+        amountRequested: true,
+      },
     });
 
     return {
-      totalApproved: totalApproved,
-      totalPending: totalPending,
+      totalApproved: totalApproved._sum.amountApproved,
+      totalPending: totalPending._sum.amountRequested,
     };
   }
 }
