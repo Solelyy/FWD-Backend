@@ -108,4 +108,17 @@ export class ManagementControllerFeature {
       totalSuspended: service.totalSuspended,
     };
   }
+
+  @Roles('ADMIN')
+  @UseGuards(AuthGuard, RolesGuard)
+  @Get('get-employee-data')
+  async getEmployeeData() {
+    const service = await this.management.getSummaryDashboardEmployeeRecords();
+
+    return {
+      sucess: true,
+      message: 'successfully retrieved employee data',
+      ...service,
+    };
+  }
 }

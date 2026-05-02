@@ -4,12 +4,21 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { PrismaService } from 'src/prisma_global/prisma.service';
-import { Role, Status } from '@prisma/client';
+import {
+  CashAdvanceStatus,
+  ReimbursmentStatus,
+  Role,
+  Status,
+} from '@prisma/client';
 import { EmployeeStatusDTO } from '../dto/admin.status.dto';
 import { EmployeeStatusSuspendedDTO } from '../dto/admin.status.suspended.dto';
+import { DateHelper } from 'src/utils/date.utils';
 @Injectable()
 export class ManagementServiceFeature {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly date: DateHelper,
+  ) {}
 
   async viewAdmins() {
     // refer to crud operations at prisma orm queries
@@ -142,6 +151,56 @@ export class ManagementServiceFeature {
       totalPending: totalPending,
       totalExpired: totalExpired,
       totalSuspended: totalSuspended,
+    };
+  }
+
+  async getSummaryDashboardEmployeeRecords() {
+    const date = this.date.getEmployeeToday();
+
+    const getTotal = await this.prisma.user.count({
+      where: {
+        role: Role.EMPLOYEE,
+      },
+    });
+
+    const getPresentToday = await this.prisma.tbl_attendance.count({
+      where: {
+        date: {
+          lte: date.lte,
+          gte: date.gte,
+        },
+      },
+    });
+
+    const getLeaveToday = await this.prisma.tbl_leave.count({
+      where: {
+        date: {
+          lte: date.lte,
+          gte: date.gte,
+        },
+      },
+    });
+
+    const getPendingReimbursements = await this.prisma.tbl_reimbursements.count(
+      {
+        where: {
+          status: ReimbursmentStatus.PENDING,
+        },
+      },
+    );
+
+    const getPendingCashAdvance = await this.prisma.tbl_cashadvance.count({
+      where: {
+        status: CashAdvanceStatus.PENDING,
+      },
+    });
+
+    return {
+      totalEmployees: getTotal,
+      presentToday: getPresentToday,
+      onLeaveToday: getLeaveToday,
+      pendingReimbursementRequests: getPendingReimbursements,
+      pendingCashAdvanceRequests: getPendingCashAdvance,
     };
   }
 }

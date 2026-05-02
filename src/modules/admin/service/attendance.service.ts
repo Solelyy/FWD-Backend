@@ -123,9 +123,13 @@ export class AdminAttendanceService {
         lastname: user.lastname,
         timeIn: {
           timestamp: attendance.timeIn,
+          location: attendance.timeInLoc,
+          image: attendance.timeInImg,
         },
         timeOut: {
           timestamp: attendance.timeOut,
+          location: attendance.timeOutLoc,
+          image: attendance.timeOutLoc,
         },
         status: attendance.status,
         overtimeStatus: attendance.overtime?.overtime_status || 'NONE',
