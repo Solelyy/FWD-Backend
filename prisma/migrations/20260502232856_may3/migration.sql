@@ -14,7 +14,7 @@ CREATE TYPE "attendance_Status" AS ENUM ('NO_RECORD', 'IN_PROGRESS', 'COMPLETED'
 CREATE TYPE "OvertimeStatus" AS ENUM ('PENDING', 'APPROVED', 'REJECTED');
 
 -- CreateEnum
-CREATE TYPE "LeaveStatus" AS ENUM ('PENDING', 'APPROVED', 'REJECTED');
+CREATE TYPE "LeaveStatus" AS ENUM ('PENDING', 'APPROVE', 'REJECT');
 
 -- CreateEnum
 CREATE TYPE "CashAdvanceStatus" AS ENUM ('PENDING', 'APPROVED', 'REJECTED');
@@ -117,8 +117,8 @@ CREATE TABLE "tbl_leave" (
 CREATE TABLE "tbl_cashadvance" (
     "id" SERIAL NOT NULL,
     "employeeId" TEXT NOT NULL,
-    "amountRequested" INTEGER,
-    "amountApproved" INTEGER,
+    "amountRequested" INTEGER DEFAULT 0,
+    "amountApproved" INTEGER DEFAULT 0,
     "reason" TEXT,
     "status" "CashAdvanceStatus" NOT NULL DEFAULT 'PENDING',
     "dateSubmitted" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -132,8 +132,8 @@ CREATE TABLE "tbl_cashadvance" (
 CREATE TABLE "tbl_reimbursements" (
     "id" SERIAL NOT NULL,
     "employeeId" TEXT NOT NULL,
-    "amountRequested" INTEGER,
-    "amountApproved" INTEGER,
+    "amountRequested" INTEGER DEFAULT 0,
+    "amountApproved" INTEGER DEFAULT 0,
     "reason" TEXT,
     "attachment" TEXT,
     "type" "ReimbursementType" NOT NULL,
@@ -141,7 +141,6 @@ CREATE TABLE "tbl_reimbursements" (
     "dateSubmitted" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "approvedAt" TIMESTAMP(3),
     "approved_by" TEXT,
-    "approvedBy" TEXT,
 
     CONSTRAINT "tbl_reimbursements_pkey" PRIMARY KEY ("id")
 );

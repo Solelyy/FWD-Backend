@@ -15,22 +15,6 @@ export class ReimbursementService {
   ) {}
 
   async createReimbursementRec(employeeId: string, req: CreateReimbursement) {
-    const findRecord = await this.prisma.tbl_reimbursements.findFirst({
-      where: {
-        employeeId: employeeId,
-        status: 'PENDING',
-      },
-      orderBy: {
-        dateSubmitted: 'desc',
-      },
-    });
-
-    if (findRecord) {
-      throw new BadRequestException(
-        'User have a pending requests, cant request one more reimbursement',
-      );
-    }
-
     const createRec = await this.query.createLeave<tbl_reimbursements>(
       'tbl_reimbursements',
       {

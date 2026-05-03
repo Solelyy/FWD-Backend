@@ -1,5 +1,11 @@
 import { OvertimeStatus } from '@prisma/client';
-import { IsEnum, IsNotEmpty, IsNumber } from 'class-validator';
+import {
+  IsEnum,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 import { CashAdvanceStatus } from '@prisma/client';
 export class UpdateCashAdvanceDTO {
   @IsNotEmpty()
@@ -9,4 +15,8 @@ export class UpdateCashAdvanceDTO {
   @IsNotEmpty()
   @IsEnum(CashAdvanceStatus)
   status: CashAdvanceStatus;
+
+  @IsOptional()
+  @IsNumber()
+  approvedAmount: number;
 }

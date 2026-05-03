@@ -120,7 +120,7 @@ export class AdminReimbursementService {
       }
     }
 
-    const totalReq = await this.prisma.tbl_cashadvance.count({
+    const totalReq = await this.prisma.tbl_reimbursements.count({
       where: {
         dateSubmitted: {
           gte: date?.date.gte,
@@ -169,7 +169,7 @@ export class AdminReimbursementService {
         id: findReimbursement.id,
       },
       data: {
-        status: status as LeaveStatus,
+        status: status as ReimbursmentStatus,
         approved_by: employeeId,
         approvedAt: new Date(),
         amountApproved: findReimbursement.amountRequested,

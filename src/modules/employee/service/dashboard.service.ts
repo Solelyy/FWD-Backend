@@ -1,5 +1,11 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { OvertimeStatus } from '@prisma/client';
+import {
+  CashAdvanceStatus,
+  LeaveStatus,
+  OvertimeStatus,
+  ReimbursmentStatus,
+  Role,
+} from '@prisma/client';
 import { PrismaService } from 'src/prisma_global/prisma.service';
 import { DateHelper } from 'src/utils/date.utils';
 
@@ -21,12 +27,12 @@ export class DashboardService {
     return {
       id: update.id,
       employeeId: update.employeeId,
-      firstname:update.firstname,
+      firstname: update.firstname,
       lastname: update.lastname,
       role: update.role,
       email: update.email,
-      isDataPolicyAccepted: update.isDataPolicyAccepted
-    }
+      isDataPolicyAccepted: update.isDataPolicyAccepted,
+    };
   }
 
   async getAttendanceSummary(year: number, month: number, employeeId: string) {
@@ -112,5 +118,119 @@ export class DashboardService {
     return {
       isOvertime,
     };
+  }
+
+  async getCoworkerAttendance() {
+    const getAll = await this.prisma.user.findMany({
+      where: {
+        role: Role.EMPLOYEE,
+      },
+      include: {
+        attendance: true,
+      },
+    });
+
+    if (!getAll) {
+      throw new NotFoundException('No coworker record attendance yet');
+    }
+
+    const res = getAll.flatMap((user) =>
+      user.attendance.map((attendance) => ({
+        employeeId: user.employeeId,
+        firstname: user.firstname,
+        lastname: user.lastname,
+        timeIn: {
+          timeStamp: attendance.timeIn,
+          location: attendance.timeInLoc,
+        },
+        timeOut: {
+          timeStamp: attendance.timeOut,
+          location: attendance.timeOutLoc,
+        },
+        status: attendance.status,
+      })),
+    );
+
+    return res;
+  }
+
+  async getAllMyRequests(employeeId: string, year: number, month: number) {
+    const date = this.date.getSpanAttendanceDatesLogs(year, month);
+    const user = await this.prisma.user.findUnique({
+      where: {
+        employeeId: employeeId,
+      },
+      include: {
+        leave_records: {
+          where: {
+            date: {
+              lte: date?.date.lte,
+              gte: date?.date.gte,
+            },
+            status: LeaveStatus.PENDING,
+          },
+        },
+        cas: {
+          where: {
+            dateSubmitted: {
+              lte: date?.date.lte,
+              gte: date?.date.gte,
+            },
+            status: CashAdvanceStatus.PENDING,
+          },
+        },
+        reimbursements: {
+          where: {
+            dateSubmitted: {
+              lte: date?.date.lte,
+              gte: date?.date.gte,
+            },
+            status: ReimbursmentStatus.PENDING,
+          },
+        },
+        approved_overtime: true,
+      },
+    });
+
+    if (!user) {
+      throw new NotFoundException('user doenst have requests in this month');
+    }
+
+    // spread operators are same level
+    // declared a an array cause its not loop by an array method
+    const requests = [
+      ...user.leave_records.map((leave) => ({
+        id: leave.id,
+        type: leave.leaveType,
+        leaveType: leave.leaveType,
+        submittedAt: leave.date,
+        startDate: leave.startDate,
+        endDate: leave.endDate,
+        status: leave.status,
+      })),
+      ...user.cas.map((ca) => ({
+        id: ca.id,
+        type: 'CASH_ADVANCE',
+        submittedAt: ca.dateSubmitted,
+        status: ca.status,
+        amount: ca.amountApproved,
+      })),
+      ...user.reimbursements.map((reimbursement) => ({
+        id: reimbursement.id,
+        type: 'REIMBURSEMENT',
+        submittedAt: reimbursement.dateSubmitted,
+        reimbursementType: reimbursement.type,
+        status: 'PENDING',
+        amount: reimbursement.amountApproved,
+      })),
+      ...user.approved_overtime.map((ot) => ({
+        id: ot.id,
+        type: 'OVERTIME',
+        //submittedAt: ot.,
+        status: ot.overtime_status,
+      })),
+    ];
+
+    return requests;
   }
 }

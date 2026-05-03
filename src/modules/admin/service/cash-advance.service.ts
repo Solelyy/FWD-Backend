@@ -3,7 +3,7 @@ import {
   NotFoundException,
   BadRequestException,
 } from '@nestjs/common';
-import { LeaveStatus, Role } from '@prisma/client';
+import { CashAdvanceStatus, LeaveStatus, Role } from '@prisma/client';
 import { PrismaService } from 'src/prisma_global/prisma.service';
 import { DateHelper } from 'src/utils/date.utils';
 @Injectable()
@@ -65,7 +65,8 @@ export class AdminCashAdvanceService {
     filter: string,
   ) {
     const dates = this.date.getSpanAttendanceDatesLogs(year, month);
-    const statusFilter = filter === 'ALL' ? undefined : (filter as LeaveStatus);
+    const statusFilter =
+      filter === 'ALL' ? undefined : (filter as CashAdvanceStatus);
 
     const allLogs = await this.prisma.user.findMany({
       include: {
@@ -160,7 +161,7 @@ export class AdminCashAdvanceService {
 
     const totalCashAdvc = await this.prisma.tbl_cashadvance.aggregate({
       where: {
-        status: LeaveStatus.APPROVED,
+        status: CashAdvanceStatus.APPROVED,
         dateSubmitted: {
           gte: date?.date.gte,
           lte: date?.date.lte,
@@ -182,6 +183,7 @@ export class AdminCashAdvanceService {
     employeeId: string,
     cashAdvanceId: number,
     status: string,
+    approvedAmount: number,
   ) {
     const findCaRecord = await this.prisma.tbl_cashadvance.findUnique({
       where: {
@@ -198,10 +200,10 @@ export class AdminCashAdvanceService {
         id: findCaRecord.id,
       },
       data: {
-        status: status as LeaveStatus,
+        status: status as CashAdvanceStatus,
         approved_by: employeeId,
         approvedAt: new Date(),
-        amountApproved: findCaRecord.amountRequested,
+        amountApproved: findCaRecord.amountApproved || approvedAmount,
       },
     });
 
