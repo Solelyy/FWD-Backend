@@ -121,12 +121,21 @@ export class DashboardService {
   }
 
   async getCoworkerAttendance() {
+    const date = this.date.getEmployeeToday();
+
     const getAll = await this.prisma.user.findMany({
       where: {
         role: Role.EMPLOYEE,
       },
       include: {
-        attendance: true,
+        attendance: {
+          where: {
+            date: {
+              lte: date.lte,
+              gte: date.gte,
+            },
+          },
+        },
       },
     });
 
