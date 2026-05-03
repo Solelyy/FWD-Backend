@@ -100,6 +100,7 @@ export class AdminCashAdvanceController {
       employeeId,
       update.id,
       update.status,
+      update.approvedAmount,
     );
 
     return {

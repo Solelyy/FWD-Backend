@@ -7,6 +7,7 @@ import {
   Query,
   NotFoundException,
   ParseIntPipe,
+  BadRequestException,
 } from '@nestjs/common';
 import { AuthGuard } from 'src/modules/auth/guard/auth.guard';
 import { DashboardService } from '../service/dashboard.service';
@@ -34,11 +35,11 @@ export class DashboardController {
       message: 'data policy accepted',
       id: update.id,
       employeeId: update.employeeId,
-      firstname:update.firstname,
+      firstname: update.firstname,
       lastname: update.lastname,
       role: update.role,
       email: update.email,
-      isDataPolicyAccepted: update.isDataPolicyAccepted
+      isDataPolicyAccepted: update.isDataPolicyAccepted,
     };
   }
 
@@ -77,5 +78,37 @@ export class DashboardController {
       message: 'Overtime fetched',
       isOvertime: service.isOvertime,
     };
+  }
+
+  @Get('coworkers-attendance')
+  @Roles('EMPLOYEE')
+  @UseGuards(AuthGuard, RolesGuard)
+  async getCoworkers() {
+    const service = await this.service.getCoworkerAttendance();
+
+    return service;
+  }
+
+  @Get('my-requests')
+  @Roles('EMPLOYEE')
+  @UseGuards(AuthGuard, RolesGuard)
+  async getRequests(
+    @Req() req: RequestData,
+    @Query('year', ParseIntPipe) year: number,
+    @Query('month', ParseIntPipe) month: number,
+  ) {
+    const employeeId = req.user?.employeeId;
+
+    if (!employeeId) {
+      throw new BadRequestException('invalid id');
+    }
+
+    const service = await this.service.getAllMyRequests(
+      employeeId,
+      year,
+      month,
+    );
+
+    return service;
   }
 }

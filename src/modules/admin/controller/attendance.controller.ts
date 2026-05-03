@@ -54,6 +54,7 @@ export class AdminAttendanceController {
     @Query('page', ParseIntPipe) page: number,
     @Query('limit', ParseIntPipe) limit: number,
     @Query('filter') filter: string,
+    @Query('day', ParseIntPipe) day: number,
   ) {
     const service = await this.service.getAllAttendance(
       page,
@@ -61,6 +62,7 @@ export class AdminAttendanceController {
       year,
       month,
       filter,
+      day,
     );
 
     return {

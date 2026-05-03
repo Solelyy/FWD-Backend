@@ -245,8 +245,6 @@ export class EmployeeAttendanceService {
       where: { employeeId: employeeId },
       include: {
         attendance: {
-          // skip and take are top level for arrays like findMany
-          // if single object (findUnique) then skip and take params are called inside of the nessted attribute
           where: {
             date: {
               gte: dates?.date.gte,
@@ -264,7 +262,9 @@ export class EmployeeAttendanceService {
     });
 
     if (!employee) {
-      throw new NotFoundException('Employee not found');
+      throw new NotFoundException(
+        'this employee does not have an attendance records',
+      );
     }
 
     const total = await this.prisma.tbl_attendance.count({

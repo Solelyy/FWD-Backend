@@ -42,8 +42,7 @@ export class AdminLeaveService {
     filter: string,
   ) {
     const dates = this.date.getSpanAttendanceDatesLogs(year, month);
-    const statusFilter =
-      filter === 'ALL' ? undefined : (filter as OvertimeStatus);
+    const statusFilter = filter === 'ALL' ? undefined : (filter as LeaveStatus);
 
     const allLogs = await this.prisma.user.findMany({
       include: {
@@ -88,6 +87,7 @@ export class AdminLeaveService {
         startDate: leave.startDate,
         endDate: leave.endDate,
         status: leave.status,
+        date: leave.date,
       })),
     );
 
@@ -122,11 +122,11 @@ export class AdminLeaveService {
     }
 
     for (let record of leaveRecords) {
-      if (record.status === OvertimeStatus.APPROVED) {
+      if (record.status === LeaveStatus.APPROVE) {
         approved++;
-      } else if (record.status === OvertimeStatus.PENDING) {
+      } else if (record.status === LeaveStatus.PENDING) {
         pending++;
-      } else if (record.status === OvertimeStatus.REJECTED) {
+      } else if (record.status === LeaveStatus.REJECT) {
         rejected++;
       }
     }
@@ -170,7 +170,7 @@ export class AdminLeaveService {
       },
     });
 
-    if (updateRec.status === LeaveStatus.APPROVED) {
+    if (updateRec.status === LeaveStatus.APPROVE) {
       await this.leaveHelper.getLeaveBal(
         updateRec.employeeId,
         updateRec.days_requested!,

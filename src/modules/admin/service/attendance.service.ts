@@ -74,8 +74,9 @@ export class AdminAttendanceService {
     year: number,
     month: number,
     filter: string,
+    day: number,
   ) {
-    const dates = this.date.getSpanAttendanceDatesLogs(year, month);
+    const dates = this.date.getSpanAttendanceDatesLogs(year, month, day);
     const statusFilter = AttendanceFilterHelper(filter);
 
     const allLogs = await this.prisma.user.findMany({

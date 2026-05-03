@@ -45,8 +45,8 @@
 
   enum LeaveStatus {
     PENDING
-    APPROVED
-    REJECTED
+    APPROVE
+    REJECT
   }
 
   enum CashAdvanceStatus {
