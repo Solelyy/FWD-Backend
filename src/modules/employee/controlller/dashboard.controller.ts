@@ -86,7 +86,9 @@ export class DashboardController {
   async getCoworkers() {
     const service = await this.service.getCoworkerAttendance();
 
-    return service;
+    return {
+      data: service,
+    };
   }
 
   @Get('my-requests')
